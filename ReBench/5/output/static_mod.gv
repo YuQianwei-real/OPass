@@ -1,0 +1,63 @@
+digraph static_mod {
+	node [fontname="Linux Biolinum O" shape=record]
+	in0 [label="in0: Tensor[(3, 3, 5), float32]"]
+	in1 [label="in1: Tensor[(3, 3, 3), int32]"]
+	opr0 [label="{{<i0>Tensor[(3, 3, 5), float32]|<i1>Tensor[(3, 3, 3), int32]}|cast_like\n|{<o0>Tensor[(3, 3, 5), int32]}}"]
+	in0 -> opr0:i0
+	in1 -> opr0:i1
+	in2 [label="in2: Tensor[(3, 3, 5), float32]"]
+	opr1 [label="{{<i0>Tensor[(3, 3, 5), float32]|<i1>Tensor[(3, 3, 5), float32]}|subtract\n|{<o0>Tensor[(3, 3, 5), float32]}}"]
+	in0 -> opr1:i0
+	in2 -> opr1:i1
+	con0 [label="con0: float32"]
+	opr2 [label="{{<i0>Tensor[(3, 3, 5), float32]|<i1>float32}|add\n|{<o0>Tensor[(3, 3, 5), float32]}}"]
+	opr1:o0 -> opr2:i0
+	con0 -> opr2:i1
+	opr3 [label="{{<i0>Tensor[(3, 3, 5), float32]}|exp\n|{<o0>Tensor[(3, 3, 5), float32]}}"]
+	opr2:o0 -> opr3:i0
+	opr4 [label="{{<i0>Tensor[(3, 3, 5), float32]}|squeeze\naxis=None|{<o0>Tensor[(3, 3, 5), float32]}}"]
+	opr3:o0 -> opr4:i0
+	opr5 [label="{{<i0>Tensor[(3, 3, 5), float32]|<i1>Tensor[(3, 3, 5), float32]}|multiply\n|{<o0>Tensor[(3, 3, 5), float32]}}"]
+	opr1:o0 -> opr5:i0
+	in2 -> opr5:i1
+	opr6 [label="{{<i0>Tensor[(3, 3, 5), float32]}|zeros_like\n|{<o0>Tensor[(3, 3, 5), float32]}}"]
+	opr5:o0 -> opr6:i0
+	opr7 [label="{{<i0>Tensor[(3, 3, 5), float32]|<i1>Tensor[(3, 3, 5), float32]}|add\n|{<o0>Tensor[(3, 3, 5), float32]}}"]
+	opr5:o0 -> opr7:i0
+	opr6:o0 -> opr7:i1
+	in3 [label="in3: Tensor[(5,), float32]"]
+	opr8 [label="{{<i0>Tensor[(5,), float32]|<i1>Tensor[(3, 3, 5), float32]}|broadcast_to_like\n|{<o0>Tensor[(3, 3, 5), float32]}}"]
+	in3 -> opr8:i0
+	opr6:o0 -> opr8:i1
+	in4 [label="in4: Tensor[(5,), float32]"]
+	opr9 [label="{{<i0>Tensor[(5,), float32]|<i1>Tensor[(3, 3, 5), float32]}|broadcast_to_like\n|{<o0>Tensor[(3, 3, 5), float32]}}"]
+	in4 -> opr9:i0
+	opr3:o0 -> opr9:i1
+	con1 [label="con1: int32"]
+	in5 [label="in5: Tensor[(5,), float32]"]
+	opr10 [label="{{<i0>Tensor[(3, 3, 5), float32]|<i1>Tensor[(5,), float32]}|collapse_sum_like\n|{<o0>Tensor[(5,), float32]}}"]
+	opr2:o0 -> opr10:i0
+	in5 -> opr10:i1
+	in6 [label="in6: Tensor[(10,), int32]"]
+	opr11 [label="{{<i0>Tensor[(5,), float32]|<i1>Tensor[(10,), int32]}|cast_like\n|{<o0>Tensor[(5,), int32]}}"]
+	opr10:o0 -> opr11:i0
+	in6 -> opr11:i1
+	in7 [label="in7: int32"]
+	in8 [label="in8: int32"]
+	opr12 [label="{{<i0>Tensor[(3, 3, 3), int32]|<i1>int32|<i2>int32}|one_hot\ndepth=6\naxis=0\ndtype=\"float32\"|{<o0>Tensor[(6, 3, 3, 3), float32]}}"]
+	in1 -> opr12:i0
+	in7 -> opr12:i1
+	in8 -> opr12:i2
+	opr13 [label="{{<i0>Tensor[(3, 3, 5), int32]|<i1>Tensor[(3, 3, 5), float32]|<i2>Tensor[(3, 3, 5), float32]|<i3>Tensor[(3, 3, 5), float32]|<i4>Tensor[(3, 3, 5), float32]|<i5>int32|<i6>Tensor[(5,), int32]|<i7>Tensor[(6, 3, 3, 3), float32]}|tuple\n|{<o0>(Tensor[(3, 3, 5), int32], Tensor[(3, 3, 5), float32], Tensor[(3, 3, 5), float32], Tensor[(3, 3, 5), float32], Tensor[(3, 3, 5), float32], int32, Tensor[(5,), int32], Tensor[(6, 3, 3, 3), float32])}}"]
+	opr0:o0 -> opr13:i0
+	opr4:o0 -> opr13:i1
+	opr7:o0 -> opr13:i2
+	opr8:o0 -> opr13:i3
+	opr9:o0 -> opr13:i4
+	con1 -> opr13:i5
+	opr11:o0 -> opr13:i6
+	opr12:o0 -> opr13:i7
+	out0 [label="out0: (Tensor[(3, 3, 5), int32], Tensor[(3, 3, 5), float32], Tensor[(3, 3, 5), float32], Tensor[(3, 3, 5), float32], Tensor[(3, 3, 5), float32], int32, Tensor[(5,), int32], Tensor[(6, 3, 3, 3), float32])"]
+	opr13:o0 -> out0
+	in9 [label="in9: Tensor[(5,), float32]"]
+}

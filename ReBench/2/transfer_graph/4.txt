@@ -1,0 +1,40 @@
+#[version = "0.0.5"]
+def @main(%x0: Tensor[(1, 128, 56, 56), float32] /* ty=Tensor[(1, 128, 56, 56), float32] span=from_string:3:13 */, %x1: Tensor[(64, 128, 3, 3), float32] /* ty=Tensor[(64, 128, 3, 3), float32] span=from_string:8:13 */) -> (Tensor[(1, 128, 56, 56), float16], Tensor[(1, 64, 56, 56), float16], Tensor[(1, 32, 56, 56, 4), float16], Tensor[(128, 56, 56), float32], Tensor[(1, 64, 56, 56), float16], Tensor[(56, 64, 56, 1), float16], Tensor[(1, 64, 56, 56), float16]) {
+  let %x_0 = cast(%x0, dtype="float16");
+  let %x_1 = ones_like(%x_0);
+  let %x_2 = add(%x_0, %x_1);
+  let %x_3 = layout_transform(%x_0, src_layout="NCHW", dst_layout="NCHW4c");
+  let %x_4 = layout_transform(%x_3, src_layout="NCHW4c", dst_layout="NCHW");
+  let %x_5 = nn.relu(%x_4);
+  let %x_6 = cast(%x1, dtype="float16");
+  let %x_7 = nn.conv2d(%x_5, %x_6, padding=[1, 1, 1, 1], channels=64, kernel_size=[3, 3], out_dtype="float16");
+  let %x_8 = nn.relu(%x_7);
+  let %x_9 = layout_transform(%x_3, src_layout="NCHW4c", dst_layout="NCHW8c");
+  let %x_10 = layout_transform(%x_9, src_layout="NCHW8c", dst_layout="NCHW4c");
+  let %x_11 = nn.relu(%x_10);
+  let %x_12 = 1f /* ty=float32 span=from_string:12:15 */;
+  let %x_13 = cast(%x_12, dtype="float16");
+  let %x_14 = add(%x_5, %x_13);
+  let %x_15 = cast(%x_14, dtype="float32");
+  let %x_16 = exp(%x_15);
+  let %x_17 = squeeze(%x_16);
+  let %x_18 = add(%x_7, %x_7);
+  let %x_19 = transpose(%x_18, axes=[0, 3, 1, 2]);
+  let %x_20 = layout_transform(%x_19, src_layout="NCHW", dst_layout="NCHW4c");
+  let %x_21 = nn.relu(%x_20);
+  let %x_22 = layout_transform(%x_21, src_layout="NCHW4c", dst_layout="NCHW");
+  let %x_23 = transpose(%x_22, axes=[0, 2, 3, 1]);
+  let %x_24 = layout_transform(%x_22, src_layout="NCHW", dst_layout="NHWC");
+  let %x_25 = layout_transform(%x_24, src_layout="NHWC", dst_layout="CHWN");
+  let %x_26 = nn.relu(%x_25);
+  let %x_27 = transpose(%x_19, axes=[0, 2, 3, 1]);
+  let %x_28 = layout_transform(%x_27, src_layout="NHWC", dst_layout="HWCN");
+  let %x_29 = transpose(%x_28, axes=[3, 0, 1, 2]);
+  let %x_30 = transpose(%x_29, axes=[0, 3, 1, 2]);
+  let %x_31 = layout_transform(%x_30, src_layout="NCHW", dst_layout="NCHW4c");
+  let %x_32 = nn.relu(%x_31);
+  let %x_33 = layout_transform(%x_32, src_layout="NCHW4c", dst_layout="NCHW");
+  let %x_34 = transpose(%x_33, axes=[0, 2, 3, 1]);
+  let %x_35 = (%x_2, %x_8, %x_11, %x_17, %x_23, %x_26, %x_34) /* ty=(Tensor[(1, 128, 56, 56), float16], Tensor[(1, 64, 56, 56), float16], Tensor[(1, 32, 56, 56, 4), float16], Tensor[(128, 56, 56), float32], Tensor[(1, 64, 56, 56), float16], Tensor[(56, 64, 56, 1), float16], Tensor[(1, 64, 56, 56), float16]) span=from_string:3:3 */;
+  %x_35
+}

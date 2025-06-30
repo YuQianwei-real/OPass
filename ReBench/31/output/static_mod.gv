@@ -1,0 +1,67 @@
+digraph static_mod {
+	node [fontname="Linux Biolinum O" shape=record]
+	in0 [label="in0: int32"]
+	con0 [label="con0: int32"]
+	opr0 [label="{{<i0>int32|<i1>int32}|less\n|{<o0>int1}}"]
+	in0 -> opr0:i0
+	con0 -> opr0:i1
+	opr1 [label="{{<i0>int1}|min\naxis=None\nkeepdims=0\nexclude=0|{<o0>int1}}"]
+	opr0:o0 -> opr1:i0
+	con1 [label="con1: uint8"]
+	con2 [label="con2: float32"]
+	con3 [label="con3: int32"]
+	opr2 [label="{{<i0>uint8|<i1>float32|<i2>int32}|qnn.dequantize\naxis=-1|{<o0>float32}}"]
+	con1 -> opr2:i0
+	con2 -> opr2:i1
+	con3 -> opr2:i2
+	opr3 [label="{{<i0>float32}|nn.leaky_relu\nalpha=0.1f|{<o0>float32}}"]
+	opr2:o0 -> opr3:i0
+	con4 [label="con4: float32"]
+	con5 [label="con5: int32"]
+	opr4 [label="{{<i0>float32|<i1>float32|<i2>int32}|qnn.quantize\nout_dtype=\"uint8\"\naxis=-1|{<o0>uint8}}"]
+	opr3:o0 -> opr4:i0
+	con4 -> opr4:i1
+	con5 -> opr4:i2
+	con6 [label="con6: int32"]
+	con7 [label="con7: int32"]
+	con8 [label="con8: uint8"]
+	con9 [label="con9: float32"]
+	con10 [label="con10: int32"]
+	opr5 [label="{{<i0>uint8|<i1>float32|<i2>int32}|qnn.dequantize\naxis=-1|{<o0>float32}}"]
+	con8 -> opr5:i0
+	con9 -> opr5:i1
+	con10 -> opr5:i2
+	opr6 [label="{{<i0>float32}|clip\na_min=0.0f\na_max=6.0f|{<o0>float32}}"]
+	opr5:o0 -> opr6:i0
+	con11 [label="con11: float32"]
+	con12 [label="con12: int32"]
+	opr7 [label="{{<i0>float32|<i1>float32|<i2>int32}|qnn.quantize\nout_dtype=\"uint8\"\naxis=-1|{<o0>uint8}}"]
+	opr6:o0 -> opr7:i0
+	con11 -> opr7:i1
+	con12 -> opr7:i2
+	con13 [label="con13: int32"]
+	opr8 [label="{{<i0>int32}|let\n|{<o0>int32}}"]
+	in0 -> opr8:i0
+	con14 [label="con14: float32"]
+	opr9 [label="{{<i0>float32|<i1>float32}|add\n|{<o0>float32}}"]
+	opr5:o0 -> opr9:i0
+	con14 -> opr9:i1
+	opr10 [label="{{<i0>float32}|exp\n|{<o0>float32}}"]
+	opr9:o0 -> opr10:i0
+	opr11 [label="{{<i0>float32}|squeeze\naxis=None|{<o0>float32}}"]
+	opr10:o0 -> opr11:i0
+	opr12 [label="{{<i0>int1|<i1>uint8|<i2>int32|<i3>int32|<i4>uint8|<i5>int32|<i6>int32|<i7>float32}|tuple\n|{<o0>(int1, uint8, int32, int32, uint8, int32, int32, float32)}}"]
+	opr1:o0 -> opr12:i0
+	opr4:o0 -> opr12:i1
+	con6 -> opr12:i2
+	con7 -> opr12:i3
+	opr7:o0 -> opr12:i4
+	con13 -> opr12:i5
+	opr8:o0 -> opr12:i6
+	opr11:o0 -> opr12:i7
+	out0 [label="out0: (int1, uint8, int32, int32, uint8, int32, int32, float32)"]
+	opr12:o0 -> out0
+	in1 [label="in1: int32"]
+	opr13 [label="{{<i0>int32}|let\n|{<o0>int32}}"]
+	in1 -> opr13:i0
+}

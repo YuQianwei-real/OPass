@@ -1,0 +1,16 @@
+#[version = "0.0.5"]
+def @main(%x0: Tensor[(1, 5, 5, 4), float32] /* ty=Tensor[(1, 5, 5, 4), float32] span=from_string:3:12 */, %x1: Tensor[(1, 5, 5, 62), float32] /* ty=Tensor[(1, 5, 5, 62), float32] span=from_string:6:13 */, %x2: Tensor[(1, 5, 5, 36), float32] /* ty=Tensor[(1, 5, 5, 36), float32] span=from_string:6:18 */, %x3: Tensor[(5, 5, 4), float32] /* ty=Tensor[(5, 5, 4), float32] */, %x4: Tensor[(4, 5, 1, 1), float32] /* ty=Tensor[(4, 5, 1, 1), float32] */) -> (Tensor[(1, 5, 5, 4), float32], Tensor[(1, 5, 5, 102), float32], Tensor[(1, 5, 5, 4), float32], int32, Tensor[(5, 5, 4), float32], int32) {
+  %0 = add(%x0, 1f /* ty=float32 span=from_string:3:19 */) /* ty=Tensor[(1, 5, 5, 4), float32] span=from_string:15:13 */;
+  %1 = annotation.stop_fusion(%0) /* ty=Tensor[(1, 5, 5, 4), float32] span=from_string:7:16 */;
+  %2 = exp(%1) /* ty=Tensor[(1, 5, 5, 4), float32] span=from_string:10:25 */;
+  %3 = (%2, %x1, %x2) /* ty=(Tensor[(1, 5, 5, 4), float32], Tensor[(1, 5, 5, 62), float32], Tensor[(1, 5, 5, 36), float32]) span=from_string:16:21 */;
+  %4 = transpose(%2, axes=[1, 2, 3, 0]) /* ty=Tensor[(5, 5, 4, 1), float32] */;
+  %5 = nn.relu(%4) /* ty=Tensor[(5, 5, 4, 1), float32] span=from_string:13:13 */;
+  %6 = add(%5, 1f /* ty=float32 span=from_string:13:19 */) /* ty=Tensor[(5, 5, 4, 1), float32] span=from_string:14:13 */;
+  %7 = exp(%6) /* ty=Tensor[(5, 5, 4, 1), float32] span=from_string:18:17 */;
+  %8 = exp(%0) /* ty=Tensor[(1, 5, 5, 4), float32] span=from_string:19:4 */;
+  %9 = concatenate(%3, axis=3) /* ty=Tensor[(1, 5, 5, 102), float32] span=from_string:19:9 */;
+  %10 = reshape(%1, newshape=[1, 5, 5, 4]) /* ty=Tensor[(1, 5, 5, 4), float32] */;
+  %11 = squeeze(%7) /* ty=Tensor[(5, 5, 4), float32] span=from_string:19:38 */;
+  (%8, %9, %10, 20 /* ty=int32 span=from_string:19:21 */, %11, 2 /* ty=int32 span=from_string:19:44 */) /* ty=(Tensor[(1, 5, 5, 4), float32], Tensor[(1, 5, 5, 102), float32], Tensor[(1, 5, 5, 4), float32], int32, Tensor[(5, 5, 4), float32], int32) span=from_string:3:3 */
+}

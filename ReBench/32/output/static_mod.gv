@@ -1,0 +1,75 @@
+digraph static_mod {
+	node [fontname="Linux Biolinum O" shape=record]
+	in0 [label="in0: Tensor[(1, 3, 100, 100), float32]"]
+	opr0 [label="{{<i0>Tensor[(1, 3, 100, 100), float32]|<i1>Tensor[(1, 3, 100, 100), float32]}|add\n|{<o0>Tensor[(1, 3, 100, 100), float32]}}"]
+	in0 -> opr0:i0
+	in0 -> opr0:i1
+	opr1 [label="{{<i0>Tensor[(1, 3, 100, 100), float32]}|reshape\nnewshape=[3, 100, 100]\nallowzero=0|{<o0>Tensor[(3, 100, 100), float32]}}"]
+	opr0:o0 -> opr1:i0
+	opr2 [label="{{<i0>Tensor[(3, 100, 100), float32]}|reshape\nnewshape=[1, 3, 100, 100]\nallowzero=0|{<o0>Tensor[(1, 3, 100, 100), float32]}}"]
+	opr1:o0 -> opr2:i0
+	opr3 [label="{{<i0>Tensor[(1, 3, 100, 100), float32]}|reshape\nnewshape=[3, 100, 100]\nallowzero=0|{<o0>Tensor[(3, 100, 100), float32]}}"]
+	opr2:o0 -> opr3:i0
+	opr4 [label="{{<i0>Tensor[(3, 100, 100), float32]}|reshape\nnewshape=[1, 3, 100, 100]\nallowzero=0|{<o0>Tensor[(1, 3, 100, 100), float32]}}"]
+	opr3:o0 -> opr4:i0
+	con0 [label="con0: Tensor[(3,), int32]"]
+	con1 [label="con1: Tensor[(3,), uint8]"]
+	con2 [label="con2: float32"]
+	con3 [label="con3: int32"]
+	opr5 [label="{{<i0>Tensor[(3,), uint8]|<i1>float32|<i2>int32}|qnn.dequantize\naxis=-1|{<o0>Tensor[(3,), float32]}}"]
+	con1 -> opr5:i0
+	con2 -> opr5:i1
+	con3 -> opr5:i2
+	opr6 [label="{{<i0>Tensor[(3,), float32]}|nn.relu\n|{<o0>Tensor[(3,), float32]}}"]
+	opr5:o0 -> opr6:i0
+	con4 [label="con4: float32"]
+	con5 [label="con5: int32"]
+	opr7 [label="{{<i0>Tensor[(3,), float32]|<i1>float32|<i2>int32}|qnn.quantize\nout_dtype=\"uint8\"\naxis=-1|{<o0>Tensor[(3,), uint8]}}"]
+	opr6:o0 -> opr7:i0
+	con4 -> opr7:i1
+	con5 -> opr7:i2
+	in1 [label="in1: Tensor[(64, 3, 3, 3), float32]"]
+	opr8 [label="{{<i0>Tensor[(1, 3, 100, 100), float32]|<i1>Tensor[(64, 3, 3, 3), float32]}|nn.conv2d\nstrides=[1, 1]\npadding=[1, 1, 1, 1]\ndilation=[1, 1]\ngroups=1\nchannels=64\nkernel_size=[3, 3]\ndata_layout=\"NCHW\"\nkernel_layout=\"OIHW\"\nout_layout=\"\"\nout_dtype=\"\"|{<o0>Tensor[(1, 64, 100, 100), float32]}}"]
+	in0 -> opr8:i0
+	in1 -> opr8:i1
+	opr9 [label="{{<i0>Tensor[(1, 64, 100, 100), float32]}|nn.relu\n|{<o0>Tensor[(1, 64, 100, 100), float32]}}"]
+	opr8:o0 -> opr9:i0
+	opr10 [label="{{<i0>Tensor[(1, 64, 100, 100), float32]}|reshape\nnewshape=[64, 100, 100]\nallowzero=0|{<o0>Tensor[(64, 100, 100), float32]}}"]
+	opr9:o0 -> opr10:i0
+	opr11 [label="{{<i0>Tensor[(64, 100, 100), float32]}|reshape\nnewshape=[1, 64, 100, 100]\nallowzero=0|{<o0>Tensor[(1, 64, 100, 100), float32]}}"]
+	opr10:o0 -> opr11:i0
+	opr12 [label="{{<i0>Tensor[(1, 64, 100, 100), float32]}|reshape\nnewshape=[64, 100, 100]\nallowzero=0|{<o0>Tensor[(64, 100, 100), float32]}}"]
+	opr11:o0 -> opr12:i0
+	opr13 [label="{{<i0>Tensor[(64, 100, 100), float32]}|reshape\nnewshape=[1, 64, 100, 100]\nallowzero=0|{<o0>Tensor[(1, 64, 100, 100), float32]}}"]
+	opr12:o0 -> opr13:i0
+	con6 [label="con6: float32"]
+	opr14 [label="{{<i0>Tensor[(64, 3, 3, 3), float32]}|nn.softmax\naxis=-1|{<o0>Tensor[(64, 3, 3, 3), float32]}}"]
+	in1 -> opr14:i0
+	opr15 [label="{{<i0>Tensor[(1, 64, 100, 100), float32]}|nn.softmax\naxis=-1|{<o0>Tensor[(1, 64, 100, 100), float32]}}"]
+	opr8:o0 -> opr15:i0
+	opr16 [label="{{<i0>Tensor[(1, 64, 100, 100), float32]}|cast\ndtype=\"float16\"|{<o0>Tensor[(1, 64, 100, 100), float16]}}"]
+	opr15:o0 -> opr16:i0
+	opr17 [label="{{<i0>Tensor[(1, 64, 100, 100), float32]}|layout_transform\nsrc_layout=\"NHWC\"\ndst_layout=\"NCHW\"|{<o0>Tensor[(1, 100, 64, 100), float32]}}"]
+	opr15:o0 -> opr17:i0
+	opr18 [label="{{<i0>Tensor[(1, 100, 64, 100), float32]}|layout_transform\nsrc_layout=\"NCHW\"\ndst_layout=\"NCHW4c\"|{<o0>Tensor[(1, 25, 64, 100, 4), float32]}}"]
+	opr17:o0 -> opr18:i0
+	opr19 [label="{{<i0>Tensor[(1, 25, 64, 100, 4), float32]}|nn.relu\n|{<o0>Tensor[(1, 25, 64, 100, 4), float32]}}"]
+	opr18:o0 -> opr19:i0
+	opr20 [label="{{<i0>Tensor[(1, 25, 64, 100, 4), float32]}|layout_transform\nsrc_layout=\"NCHW4c\"\ndst_layout=\"NCHW\"|{<o0>Tensor[(1, 100, 64, 100), float32]}}"]
+	opr19:o0 -> opr20:i0
+	opr21 [label="{{<i0>Tensor[(1, 100, 64, 100), float32]}|layout_transform\nsrc_layout=\"NCHW\"\ndst_layout=\"NHWC\"|{<o0>Tensor[(1, 64, 100, 100), float32]}}"]
+	opr20:o0 -> opr21:i0
+	opr22 [label="{{<i0>Tensor[(1, 3, 100, 100), float32]|<i1>Tensor[(3,), int32]|<i2>Tensor[(3,), uint8]|<i3>Tensor[(1, 64, 100, 100), float32]|<i4>float32|<i5>Tensor[(64, 3, 3, 3), float32]|<i6>Tensor[(1, 64, 100, 100), float16]|<i7>Tensor[(1, 64, 100, 100), float32]}|tuple\n|{<o0>(Tensor[(1, 3, 100, 100), float32], Tensor[(3,), int32], Tensor[(3,), uint8], Tensor[(1, 64, 100, 100), float32], float32, Tensor[(64, 3, 3, 3), float32], Tensor[(1, 64, 100, 100), float16], Tensor[(1, 64, 100, 100), float32])}}"]
+	opr4:o0 -> opr22:i0
+	con0 -> opr22:i1
+	opr7:o0 -> opr22:i2
+	opr13:o0 -> opr22:i3
+	con6 -> opr22:i4
+	opr14:o0 -> opr22:i5
+	opr16:o0 -> opr22:i6
+	opr21:o0 -> opr22:i7
+	out0 [label="out0: (Tensor[(1, 3, 100, 100), float32], Tensor[(3,), int32], Tensor[(3,), uint8], Tensor[(1, 64, 100, 100), float32], float32, Tensor[(64, 3, 3, 3), float32], Tensor[(1, 64, 100, 100), float16], Tensor[(1, 64, 100, 100), float32])"]
+	opr22:o0 -> out0
+	in2 [label="in2: Tensor[(3, 100, 100), float32]"]
+	in3 [label="in3: Tensor[(64, 100, 100), float32]"]
+}

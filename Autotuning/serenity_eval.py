@@ -1,6 +1,7 @@
 from time import time
 from networkx import DiGraph
 from typing import List, cast, Tuple, Optional
+
 from .graph.abs import GraphAbsForMem
 
 def simu_mem_serenity(g, time_limit: Optional[int] = None) -> float:
@@ -76,7 +77,7 @@ def simu_mem_serenity(g, time_limit: Optional[int] = None) -> float:
                 if z_next not in M_next or (z_next in M_next and mem_peak_next < M_next[z_next][2]):
                     M_next[z_next] = (s_next, mem_next, mem_peak_next)
 
-                # print(s_next, mem_next, mem_peak_next, z_next, zero_outs)
+                #  print(s_next, mem_next, mem_peak_next, z_next, zero_outs)
         M = M_next
 
     return M[()][2]

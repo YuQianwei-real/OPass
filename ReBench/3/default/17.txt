@@ -1,0 +1,16 @@
+#[version = "0.0.5"]
+def @main(%x0: Tensor[(1, 5, 5, 4), float32] /* ty=Tensor[(1, 5, 5, 4), float32] span=from_string:3:12 */, %x1: Tensor[(1, 5, 5, 62), float32] /* ty=Tensor[(1, 5, 5, 62), float32] span=from_string:6:13 */, %x2: Tensor[(1, 5, 5, 36), float32] /* ty=Tensor[(1, 5, 5, 36), float32] span=from_string:6:18 */, %x3: Tensor[(5, 5, 4), float32] /* ty=Tensor[(5, 5, 4), float32] */, %x4: Tensor[(4, 5, 1, 1), float32] /* ty=Tensor[(4, 5, 1, 1), float32] */) -> (Tensor[(1, 5, 5, 4), float32], Tensor[(1, 5, 5, 102), float32], Tensor[(1, 5, 5, 4), float32], int32, Tensor[(5, 5, 4), float32], int32) {
+  %0 = add(%x0, 1f /* ty=float32 span=from_string:3:19 */) /* ty=Tensor[(1, 5, 5, 4), float32] span=from_string:11:12 */;
+  %1 = annotation.stop_fusion(%0) /* ty=Tensor[(1, 5, 5, 4), float32] span=from_string:13:17 */;
+  %2 = fast_exp(%1) /* ty=Tensor[(1, 5, 5, 4), float32] */;
+  %3 = (%2, %x1, %x2) /* ty=(Tensor[(1, 5, 5, 4), float32], Tensor[(1, 5, 5, 62), float32], Tensor[(1, 5, 5, 36), float32]) span=from_string:12:20 */;
+  %4 = transpose(%2, axes=[1, 2, 3, 0]) /* ty=Tensor[(5, 5, 4, 1), float32] span=from_string:8:16 */;
+  %5 = nn.relu(%4) /* ty=Tensor[(5, 5, 4, 1), float32] span=from_string:9:12 */;
+  %6 = add(%5, 1f /* ty=float32 span=from_string:9:18 */) /* ty=Tensor[(5, 5, 4, 1), float32] span=from_string:10:12 */;
+  %7 = fast_exp(%6) /* ty=Tensor[(5, 5, 4, 1), float32] */;
+  %8 = fast_exp(%0) /* ty=Tensor[(1, 5, 5, 4), float32] */;
+  %9 = concatenate(%3, axis=3) /* ty=Tensor[(1, 5, 5, 102), float32] span=from_string:15:8 */;
+  %10 = reshape(%1, newshape=[1, 5, 5, 4]) /* ty=Tensor[(1, 5, 5, 4), float32] span=from_string:15:12 */;
+  %11 = squeeze(%7) /* ty=Tensor[(5, 5, 4), float32] span=from_string:15:59 */;
+  (%8, %9, %10, 20 /* ty=int32 span=from_string:15:19 */, %11, 2 /* ty=int32 span=from_string:15:65 */) /* ty=(Tensor[(1, 5, 5, 4), float32], Tensor[(1, 5, 5, 102), float32], Tensor[(1, 5, 5, 4), float32], int32, Tensor[(5, 5, 4), float32], int32) span=from_string:3:3 */
+}

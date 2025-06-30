@@ -1,0 +1,35 @@
+#[version = "0.0.5"]
+def @main(%x0: Tensor[(1, 64, 56, 56), float32] /* ty=Tensor[(1, 64, 56, 56), float32] span=from_string:4:18 */, %x1: Tensor[(64, 64, 3, 3), float32] /* ty=Tensor[(64, 64, 3, 3), float32] span=from_string:17:10 */, %x2: Tensor[(4096, 3, 3), float32] /* ty=Tensor[(4096, 3, 3), float32] */, %x3: Tensor[(1, 64, 56, 56), float32] /* ty=Tensor[(1, 64, 56, 56), float32] */, %x4: float32 /* ty=float32 span=from_string:25:14 */, %x5: Tensor[(4, 64, 3, 3), float32] /* ty=Tensor[(4, 64, 3, 3), float32] span=from_string:17:15 */) -> (Tensor[(1, 128, 56, 56), float32], float32, Tensor[(64, 64, 3, 3), float32], Tensor[(64, 64, 3, 3), float32], Tensor[(1, 64, 56, 56), float32], Tensor[(4), int32], Tensor[(68, 64, 3, 3), float32], bool) {
+  let %x_0 = 2f /* ty=float32 span=from_string:3:25 */;
+  let %x_1 = multiply(%x1, %x_0);
+  let %x_2 = nn.conv2d(%x0, %x_1, padding=[1, 1, 1, 1], channels=64, kernel_size=[3, 3]);
+  let %x_3 = nn.relu(%x_2);
+  let %x_4 = nn.max_pool2d(%x_3, pool_size=[2, 2], strides=[2, 2], padding=[0, 0, 0, 0]);
+  let %x_5 = nn.upsampling(%x_4, scale_h=2f, scale_w=2f);
+  let %x_6 = (%x_5, %x_3) /* ty=(Tensor[(1, 64, 56, 56), float32], Tensor[(1, 64, 56, 56), float32]) span=from_string:9:20 */;
+  let %x_7 = concatenate(%x_6, axis=1);
+  let %x_8 = annotation.stop_fusion(%x_7);
+  let %x_9 = (%x_8,) /* ty=(Tensor[(1, 128, 56, 56), float32],) span=from_string:12:20 */;
+  let %x_10 = concatenate(%x_9, axis=1);
+  let %x_11 = 1f /* ty=float32 span=from_string:21:19 */;
+  let %x_12 = add(%x_10, %x_11);
+  let %x_13 = 2f /* ty=float32 span=from_string:27:11 */;
+  let %x_14 = nn.relu(%x_1);
+  let %x_15 = 1f /* ty=float32 span=from_string:15:20 */;
+  let %x_16 = add(%x_14, %x_15);
+  let %x_17 = nn.relu(%x_1);
+  let %x_18 = 1f /* ty=float32 span=from_string:16:20 */;
+  let %x_19 = add(%x_17, %x_18);
+  let %x_20 = add(%x_16, %x_19);
+  let %x_21 = reshape(%x_14, newshape=[64, 64, 3, 3]);
+  let %x_22 = nn.relu(%x_5);
+  let %x_23 = full(%x4, shape=[4], dtype="int32");
+  let %x_24 = (%x1, %x5) /* ty=(Tensor[(64, 64, 3, 3), float32], Tensor[(4, 64, 3, 3), float32]) span=from_string:18:21 */;
+  let %x_25 = concatenate(%x_24);
+  let %x_26 = annotation.stop_fusion(%x_25);
+  let %x_27 = (%x_26,) /* ty=(Tensor[(68, 64, 3, 3), float32],) span=from_string:26:21 */;
+  let %x_28 = concatenate(%x_27);
+  let %x_29 = False /* ty=bool span=from_string:27:78 */;
+  let %x_30 = (%x_12, %x_13, %x_20, %x_21, %x_22, %x_23, %x_28, %x_29) /* ty=(Tensor[(1, 128, 56, 56), float32], float32, Tensor[(64, 64, 3, 3), float32], Tensor[(64, 64, 3, 3), float32], Tensor[(1, 64, 56, 56), float32], Tensor[(4), int32], Tensor[(68, 64, 3, 3), float32], bool) span=from_string:3:3 */;
+  %x_30
+}

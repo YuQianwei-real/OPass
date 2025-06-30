@@ -14,7 +14,7 @@ from Autotuning.tune.beam import Beam
 from Autotuning.tune.sa import SimulatedAnnealing
 from Autotuning.tune.default import DefaultTVM
 
-from Autotuning.util import cal_tvm_mem, simu_mem_from_relay, serenity_mem_from_relay
+from Autotuning.util import cal_tvm_mem, simu_mem_from_relay, serenity_mem_from_relay, hmcos_mem_from_relay
 
 args = Namespace()
 
@@ -22,9 +22,10 @@ def parse_args():
     global args
     p = ArgumentParser()
     p.add_argument('-r', '--root', type=str, default='./', help='Root directory of TVM source code.')
-    p.add_argument('-p', '--path', type=str, default='/home/nie/RelayOpt/out/ReBench/36ShipNet/code.txt', help='Code path.')
+    p.add_argument('-p', '--path', type=str, default='/home/yqw/OPass/ReBench/36ShipNet/code.txt', help='Code path.')
     p.add_argument('-s', '--seed', type=int, default=55, help='Random seed of graph generator.')
     p.add_argument('-e', '--epochs', type=int, default=200, help='Total iteration number.')
+    p.add_argument('-m', '--profiler', type=str, default='static', help='Memory profiler name.')
     args = p.parse_args()
 
 def gen_tensor_value(var: Var, rng: Generator):
@@ -44,8 +45,14 @@ def main():
     with open(args.path+'.txt', 'w') as f:
         f.write(mod.astext())
 
-    # profiler = serenity_mem_from_relay
-    profiler = simu_mem_from_relay
+    if args.profiler == 'static':
+        profiler = simu_mem_from_relay
+    elif args.profiler == 'serenity':
+        profiler = serenity_mem_from_relay
+    elif args.profiler == 'hmcos':
+        profiler = hmcos_mem_from_relay
+    else:
+        exit(1)
 
     # print(profiler(mod), 'MB')
     # print(simu_mem_from_relay(mod), 'MB')
@@ -63,7 +70,7 @@ def main():
     print('Origin:', tune_results['Origin'][0], 'mb')
 
     # s_time = time.time()
-
+    
     default = DefaultTVM(args.path+'.txt', rng, profiler=profiler)
     mem, seq = default.run()
     tune_results['Default'] = (mem, str(seq))
@@ -71,19 +78,19 @@ def main():
     greedy = Greedy(args.path+'.txt', rng, profiler=profiler)
     mem, seq = greedy.run(args.epochs)
     tune_results['Greedy'] = (mem, str(seq))
-
+    
     beam = Beam(args.path+'.txt', 3, rng, profiler=profiler)
     mem, seq = beam.run(args.epochs, True)
     tune_results['Beam'] = (mem, str(seq))
-
+    
     sa = SimulatedAnnealing(args.path+'.txt', rng, profiler=profiler)
     mem, seq = sa.run(int(args.epochs/20), 20)
     tune_results['SA'] = (mem, str(seq))
-
+    
     transferG = TranferGraph(args.path+'.txt', rng, profiler=profiler) # , profiler=cal_tvm_mem
     mem, seq = transferG.run(args.epochs)
     tune_results['Transfer'] = (mem, str(seq))
-
+    
     # d_time = time.time()
     # cost = d_time - s_time
     # print('Time:', cost, 's') 
@@ -95,6 +102,8 @@ def main():
 
     if profiler == serenity_mem_from_relay:
         res_fn = 'tune_results_serenity.json'
+    elif profiler == hmcos_mem_from_relay:
+        res_fn = 'tune_results_hmcos.json'
     else:
         res_fn = 'tune_results.json'
     with open(os.path.join(os.path.dirname(args.path), res_fn), 'w') as f:

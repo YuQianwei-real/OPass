@@ -1,0 +1,38 @@
+#[version = "0.0.5"]
+def @main(%x0: Tensor[(1, 128, 56, 56), float32] /* ty=Tensor[(1, 128, 56, 56), float32] span=from_string:3:13 */, %x1: Tensor[(64, 128, 3, 3), float32] /* ty=Tensor[(64, 128, 3, 3), float32] span=from_string:8:13 */) -> (Tensor[(1, 128, 56, 56), float16], Tensor[(1, 64, 56, 56), float16], Tensor[(1, 32, 56, 56, 4), float16], Tensor[(128, 56, 56), float32], Tensor[(1, 64, 56, 56), float16], Tensor[(56, 64, 56, 1), float16], Tensor[(1, 64, 56, 56), float16]) {
+  %0 = cast(%x0, dtype="float16");
+  %1 = ones_like(%0);
+  %2 = layout_transform(%0, src_layout="NCHW", dst_layout="NCHW4c");
+  %3 = layout_transform(%2, src_layout="NCHW4c", dst_layout="NCHW");
+  %4 = nn.relu(%3);
+  %5 = cast(%x1, dtype="float16");
+  %6 = nn.conv2d(%4, %5, padding=[1, 1, 1, 1], channels=64, kernel_size=[3, 3], out_dtype="float16");
+  %7 = layout_transform(%2, src_layout="NCHW4c", dst_layout="NCHW8c");
+  %8 = layout_transform(%7, src_layout="NCHW8c", dst_layout="NCHW4c");
+  %9 = cast(1f /* ty=float32 span=from_string:12:15 */, dtype="float16");
+  %10 = add(%4, %9);
+  %11 = cast(%10, dtype="float32");
+  %12 = exp(%11);
+  %13 = add(%6, %6);
+  %14 = transpose(%13, axes=[0, 3, 1, 2]);
+  %15 = layout_transform(%14, src_layout="NCHW", dst_layout="NCHW4c");
+  %16 = nn.relu(%15);
+  %17 = layout_transform(%16, src_layout="NCHW4c", dst_layout="NCHW");
+  %18 = layout_transform(%17, src_layout="NCHW", dst_layout="NHWC");
+  %19 = layout_transform(%18, src_layout="NHWC", dst_layout="CHWN");
+  %20 = transpose(%14, axes=[0, 2, 3, 1]);
+  %21 = layout_transform(%20, src_layout="NHWC", dst_layout="HWCN");
+  %22 = transpose(%21, axes=[3, 0, 1, 2]);
+  %23 = transpose(%22, axes=[0, 3, 1, 2]);
+  %24 = layout_transform(%23, src_layout="NCHW", dst_layout="NCHW4c");
+  %25 = nn.relu(%24);
+  %26 = layout_transform(%25, src_layout="NCHW4c", dst_layout="NCHW");
+  %27 = add(%0, %1);
+  %28 = nn.relu(%6);
+  %29 = nn.relu(%8);
+  %30 = squeeze(%12);
+  %31 = transpose(%17, axes=[0, 2, 3, 1]);
+  %32 = nn.relu(%19);
+  %33 = transpose(%26, axes=[0, 2, 3, 1]);
+  (%27, %28, %29, %30, %31, %32, %33) /* ty=(Tensor[(1, 128, 56, 56), float16], Tensor[(1, 64, 56, 56), float16], Tensor[(1, 32, 56, 56, 4), float16], Tensor[(128, 56, 56), float32], Tensor[(1, 64, 56, 56), float16], Tensor[(56, 64, 56, 1), float16], Tensor[(1, 64, 56, 56), float16]) span=from_string:3:3 */
+}

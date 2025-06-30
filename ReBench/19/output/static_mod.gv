@@ -1,0 +1,143 @@
+digraph static_mod {
+	node [fontname="Linux Biolinum O" shape=record]
+	in0 [label="in0: Tensor[(1, 16, 64, 64), float32]"]
+	opr0 [label="{{<i0>Tensor[(1, 16, 64, 64), float32]}|nn.max_pool2d\npool_size=[2, 2]\nstrides=[2, 2]\ndilation=[1, 1]\npadding=[0, 0, 0, 0]\nlayout=\"NCHW\"\nout_layout=\"\"\nceil_mode=0|{<o0>Tensor[(1, 16, 32, 32), float32]}}"]
+	in0 -> opr0:i0
+	opr1 [label="{{<i0>Tensor[(1, 16, 32, 32), float32]}|nn.upsampling\nscale_h=2.0f\nscale_w=2.0f\nlayout=\"NCHW\"\nmethod=\"nearest_neighbor\"\nalign_corners=0|{<o0>Tensor[(1, 16, 64, 64), float32]}}"]
+	opr0:o0 -> opr1:i0
+	opr2 [label="{{<i0>Tensor[(1, 16, 64, 64), float32]|<i1>Tensor[(1, 16, 64, 64), float32]}|tuple\n|{<o0>(Tensor[(1, 16, 64, 64), float32], Tensor[(1, 16, 64, 64), float32])}}"]
+	opr1:o0 -> opr2:i0
+	in0 -> opr2:i1
+	opr3 [label="{{<i0>(Tensor[(1, 16, 64, 64), float32], Tensor[(1, 16, 64, 64), float32])}|concatenate\naxis=1|{<o0>Tensor[(1, 32, 64, 64), float32]}}"]
+	opr2:o0 -> opr3:i0
+	con0 [label="con0: float32"]
+	opr4 [label="{{<i0>Tensor[(1, 32, 64, 64), float32]|<i1>float32}|add\n|{<o0>Tensor[(1, 32, 64, 64), float32]}}"]
+	opr3:o0 -> opr4:i0
+	con0 -> opr4:i1
+	opr5 [label="{{<i0>Tensor[(1, 16, 32, 32), float32]}|tanh\n|{<o0>Tensor[(1, 16, 32, 32), float32]}}"]
+	opr0:o0 -> opr5:i0
+	opr6 [label="{{<i0>Tensor[(1, 16, 32, 32), float32]}|nn.relu\n|{<o0>Tensor[(1, 16, 32, 32), float32]}}"]
+	opr5:o0 -> opr6:i0
+	opr7 [label="{{<i0>Tensor[(1, 16, 32, 32), float32]}|transpose\naxes=[0, 2, 3, 1]|{<o0>Tensor[(1, 32, 32, 16), float32]}}"]
+	opr6:o0 -> opr7:i0
+	opr8 [label="{{<i0>Tensor[(1, 32, 32, 16), float32]}|transpose\naxes=[1, 2, 3, 0]|{<o0>Tensor[(32, 32, 16, 1), float32]}}"]
+	opr7:o0 -> opr8:i0
+	opr9 [label="{{<i0>Tensor[(32, 32, 16, 1), float32]}|transpose\naxes=[3, 2, 0, 1]|{<o0>Tensor[(1, 16, 32, 32), float32]}}"]
+	opr8:o0 -> opr9:i0
+	opr10 [label="{{<i0>Tensor[(1, 32, 64, 64), float32]}|layout_transform\nsrc_layout=\"NCHW\"\ndst_layout=\"NCHW4c\"|{<o0>Tensor[(1, 8, 64, 64, 4), float32]}}"]
+	opr3:o0 -> opr10:i0
+	opr11 [label="{{<i0>Tensor[(1, 8, 64, 64, 4), float32]}|layout_transform\nsrc_layout=\"NCHW4c\"\ndst_layout=\"NCHW\"|{<o0>Tensor[(1, 32, 64, 64), float32]}}"]
+	opr10:o0 -> opr11:i0
+	opr12 [label="{{<i0>Tensor[(1, 32, 64, 64), float32]}|nn.relu\n|{<o0>Tensor[(1, 32, 64, 64), float32]}}"]
+	opr11:o0 -> opr12:i0
+	in1 [label="in1: Tensor[(16, 16, 3, 3), float32]"]
+	opr13 [label="{{<i0>Tensor[(1, 16, 32, 32), float32]|<i1>Tensor[(16, 16, 3, 3), float32]}|nn.conv2d\nstrides=[1, 1]\npadding=[1, 1, 1, 1]\ndilation=[1, 1]\ngroups=1\nchannels=16\nkernel_size=[3, 3]\ndata_layout=\"NCHW\"\nkernel_layout=\"OIHW\"\nout_layout=\"\"\nout_dtype=\"\"|{<o0>Tensor[(1, 16, 32, 32), float32]}}"]
+	opr6:o0 -> opr13:i0
+	in1 -> opr13:i1
+	opr14 [label="{{<i0>Tensor[(1, 16, 32, 32), float32]}|nn.relu\n|{<o0>Tensor[(1, 16, 32, 32), float32]}}"]
+	opr13:o0 -> opr14:i0
+	in2 [label="in2: Tensor[(16, 16, 3, 3), float32]"]
+	opr15 [label="{{<i0>Tensor[(1, 16, 32, 32), float32]|<i1>Tensor[(16, 16, 3, 3), float32]}|nn.conv2d\nstrides=[1, 1]\npadding=[1, 1, 1, 1]\ndilation=[1, 1]\ngroups=1\nchannels=16\nkernel_size=[3, 3]\ndata_layout=\"NCHW\"\nkernel_layout=\"OIHW\"\nout_layout=\"\"\nout_dtype=\"\"|{<o0>Tensor[(1, 16, 32, 32), float32]}}"]
+	opr6:o0 -> opr15:i0
+	in2 -> opr15:i1
+	opr16 [label="{{<i0>Tensor[(1, 16, 32, 32), float32]}|nn.relu\n|{<o0>Tensor[(1, 16, 32, 32), float32]}}"]
+	opr15:o0 -> opr16:i0
+	opr17 [label="{{<i0>Tensor[(1, 16, 32, 32), float32]|<i1>Tensor[(1, 16, 32, 32), float32]}|tuple\n|{<o0>(Tensor[(1, 16, 32, 32), float32], Tensor[(1, 16, 32, 32), float32])}}"]
+	opr14:o0 -> opr17:i0
+	opr16:o0 -> opr17:i1
+	opr18 [label="{{<i0>(Tensor[(1, 16, 32, 32), float32], Tensor[(1, 16, 32, 32), float32])}|concatenate\naxis=1|{<o0>Tensor[(1, 32, 32, 32), float32]}}"]
+	opr17:o0 -> opr18:i0
+	in3 [label="in3: Tensor[(16, 32, 3, 3), float32]"]
+	opr19 [label="{{<i0>Tensor[(1, 32, 32, 32), float32]|<i1>Tensor[(16, 32, 3, 3), float32]}|nn.conv2d\nstrides=[1, 1]\npadding=[1, 1, 1, 1]\ndilation=[1, 1]\ngroups=1\nchannels=16\nkernel_size=[3, 3]\ndata_layout=\"NCHW\"\nkernel_layout=\"OIHW\"\nout_layout=\"\"\nout_dtype=\"\"|{<o0>Tensor[(1, 16, 32, 32), float32]}}"]
+	opr18:o0 -> opr19:i0
+	in3 -> opr19:i1
+	opr20 [label="{{<i0>Tensor[(1, 16, 32, 32), float32]}|nn.relu\n|{<o0>Tensor[(1, 16, 32, 32), float32]}}"]
+	opr19:o0 -> opr20:i0
+	in4 [label="in4: Tensor[(16, 32, 3, 3), float32]"]
+	opr21 [label="{{<i0>Tensor[(1, 32, 32, 32), float32]|<i1>Tensor[(16, 32, 3, 3), float32]}|nn.conv2d\nstrides=[1, 1]\npadding=[1, 1, 1, 1]\ndilation=[1, 1]\ngroups=1\nchannels=16\nkernel_size=[3, 3]\ndata_layout=\"NCHW\"\nkernel_layout=\"OIHW\"\nout_layout=\"\"\nout_dtype=\"\"|{<o0>Tensor[(1, 16, 32, 32), float32]}}"]
+	opr18:o0 -> opr21:i0
+	in4 -> opr21:i1
+	opr22 [label="{{<i0>Tensor[(1, 16, 32, 32), float32]}|nn.relu\n|{<o0>Tensor[(1, 16, 32, 32), float32]}}"]
+	opr21:o0 -> opr22:i0
+	opr23 [label="{{<i0>Tensor[(1, 16, 32, 32), float32]|<i1>Tensor[(1, 16, 32, 32), float32]}|tuple\n|{<o0>(Tensor[(1, 16, 32, 32), float32], Tensor[(1, 16, 32, 32), float32])}}"]
+	opr20:o0 -> opr23:i0
+	opr22:o0 -> opr23:i1
+	opr24 [label="{{<i0>(Tensor[(1, 16, 32, 32), float32], Tensor[(1, 16, 32, 32), float32])}|concatenate\naxis=1|{<o0>Tensor[(1, 32, 32, 32), float32]}}"]
+	opr23:o0 -> opr24:i0
+	opr25 [label="{{<i0>Tensor[(1, 16, 32, 32), float32]}|layout_transform\nsrc_layout=\"NCHW\"\ndst_layout=\"NHWC\"|{<o0>Tensor[(1, 32, 32, 16), float32]}}"]
+	opr21:o0 -> opr25:i0
+	opr26 [label="{{<i0>Tensor[(1, 32, 32, 16), float32]}|layout_transform\nsrc_layout=\"NHWC\"\ndst_layout=\"CHWN\"|{<o0>Tensor[(16, 32, 32, 1), float32]}}"]
+	opr25:o0 -> opr26:i0
+	opr27 [label="{{<i0>Tensor[(16, 32, 32, 1), float32]}|nn.relu\n|{<o0>Tensor[(16, 32, 32, 1), float32]}}"]
+	opr26:o0 -> opr27:i0
+	opr28 [label="{{<i0>Tensor[(32, 32, 16, 1), float32]}|nn.relu\n|{<o0>Tensor[(32, 32, 16, 1), float32]}}"]
+	opr8:o0 -> opr28:i0
+	con1 [label="con1: float32"]
+	opr29 [label="{{<i0>Tensor[(32, 32, 16, 1), float32]|<i1>float32}|add\n|{<o0>Tensor[(32, 32, 16, 1), float32]}}"]
+	opr28:o0 -> opr29:i0
+	con1 -> opr29:i1
+	opr30 [label="{{<i0>Tensor[(32, 32, 16, 1), float32]}|nn.relu\n|{<o0>Tensor[(32, 32, 16, 1), float32]}}"]
+	opr8:o0 -> opr30:i0
+	con2 [label="con2: float32"]
+	opr31 [label="{{<i0>Tensor[(32, 32, 16, 1), float32]|<i1>float32}|add\n|{<o0>Tensor[(32, 32, 16, 1), float32]}}"]
+	opr30:o0 -> opr31:i0
+	con2 -> opr31:i1
+	opr32 [label="{{<i0>Tensor[(32, 32, 16, 1), float32]|<i1>Tensor[(32, 32, 16, 1), float32]}|add\n|{<o0>Tensor[(32, 32, 16, 1), float32]}}"]
+	opr29:o0 -> opr32:i0
+	opr31:o0 -> opr32:i1
+	con3 [label="con3: float32"]
+	con4 [label="con4: float32"]
+	opr33 [label="{{<i0>Tensor[(32, 32, 16, 1), float32]|<i1>float32}|add\n|{<o0>Tensor[(32, 32, 16, 1), float32]}}"]
+	opr29:o0 -> opr33:i0
+	con4 -> opr33:i1
+	opr34 [label="{{<i0>Tensor[(32, 32, 16, 1), float32]}|exp\n|{<o0>Tensor[(32, 32, 16, 1), float32]}}"]
+	opr33:o0 -> opr34:i0
+	opr35 [label="{{<i0>Tensor[(32, 32, 16, 1), float32]}|squeeze\naxis=None|{<o0>Tensor[(32, 32, 16), float32]}}"]
+	opr34:o0 -> opr35:i0
+	opr36 [label="{{<i0>Tensor[(1, 16, 64, 64), float32]|<i1>Tensor[(1, 16, 64, 64), float32]}|multiply\n|{<o0>Tensor[(1, 16, 64, 64), float32]}}"]
+	opr1:o0 -> opr36:i0
+	opr1:o0 -> opr36:i1
+	opr37 [label="{{<i0>Tensor[(1, 16, 64, 64), float32]}|let\n|{<o0>Tensor[(1, 16, 64, 64), float32]}}"]
+	opr36:o0 -> opr37:i0
+	opr38 [label="{{<i0>Tensor[(1, 16, 64, 64), float32]}|zeros_like\n|{<o0>Tensor[(1, 16, 64, 64), float32]}}"]
+	opr1:o0 -> opr38:i0
+	opr39 [label="{{<i0>Tensor[(1, 16, 64, 64), float32]}|ones_like\n|{<o0>Tensor[(1, 16, 64, 64), float32]}}"]
+	opr37:o0 -> opr39:i0
+	opr40 [label="{{<i0>Tensor[(1, 16, 64, 64), float32]}|let\n|{<o0>Tensor[(1, 16, 64, 64), float32]}}"]
+	opr39:o0 -> opr40:i0
+	opr41 [label="{{<i0>Tensor[(1, 16, 64, 64), float32]|<i1>Tensor[(1, 16, 64, 64), float32]}|multiply\n|{<o0>Tensor[(1, 16, 64, 64), float32]}}"]
+	opr40:o0 -> opr41:i0
+	opr1:o0 -> opr41:i1
+	opr42 [label="{{<i0>Tensor[(1, 16, 64, 64), float32]|<i1>Tensor[(1, 16, 64, 64), float32]}|collapse_sum_like\n|{<o0>Tensor[(1, 16, 64, 64), float32]}}"]
+	opr41:o0 -> opr42:i0
+	opr1:o0 -> opr42:i1
+	opr43 [label="{{<i0>Tensor[(1, 16, 64, 64), float32]|<i1>Tensor[(1, 16, 64, 64), float32]}|add\n|{<o0>Tensor[(1, 16, 64, 64), float32]}}"]
+	opr38:o0 -> opr43:i0
+	opr42:o0 -> opr43:i1
+	opr44 [label="{{<i0>Tensor[(1, 16, 64, 64), float32]|<i1>Tensor[(1, 16, 64, 64), float32]}|multiply\n|{<o0>Tensor[(1, 16, 64, 64), float32]}}"]
+	opr40:o0 -> opr44:i0
+	opr1:o0 -> opr44:i1
+	opr45 [label="{{<i0>Tensor[(1, 16, 64, 64), float32]|<i1>Tensor[(1, 16, 64, 64), float32]}|collapse_sum_like\n|{<o0>Tensor[(1, 16, 64, 64), float32]}}"]
+	opr44:o0 -> opr45:i0
+	opr1:o0 -> opr45:i1
+	opr46 [label="{{<i0>Tensor[(1, 16, 64, 64), float32]|<i1>Tensor[(1, 16, 64, 64), float32]}|add\n|{<o0>Tensor[(1, 16, 64, 64), float32]}}"]
+	opr43:o0 -> opr46:i0
+	opr45:o0 -> opr46:i1
+	opr47 [label="{{<i0>Tensor[(1, 16, 64, 64), float32]}|tuple\n|{<o0>(Tensor[(1, 16, 64, 64), float32])}}"]
+	opr46:o0 -> opr47:i0
+	opr48 [label="{{<i0>Tensor[(1, 16, 64, 64), float32]|<i1>(Tensor[(1, 16, 64, 64), float32])}|tuple\n|{<o0>(Tensor[(1, 16, 64, 64), float32], (Tensor[(1, 16, 64, 64), float32]))}}"]
+	opr37:o0 -> opr48:i0
+	opr47:o0 -> opr48:i1
+	opr49 [label="{{<i0>Tensor[(1, 32, 64, 64), float32]|<i1>Tensor[(1, 16, 32, 32), float32]|<i2>Tensor[(1, 32, 64, 64), float32]|<i3>Tensor[(1, 32, 32, 32), float32]|<i4>Tensor[(16, 32, 32, 1), float32]|<i5>Tensor[(32, 32, 16, 1), float32]|<i6>float32|<i7>Tensor[(32, 32, 16), float32]|<i8>(Tensor[(1, 16, 64, 64), float32], (Tensor[(1, 16, 64, 64), float32]))}|tuple\n|{<o0>(Tensor[(1, 32, 64, 64), float32], Tensor[(1, 16, 32, 32), float32], Tensor[(1, 32, 64, 64), float32], Tensor[(1, 32, 32, 32), float32], Tensor[(16, 32, 32, 1), float32], Tensor[(32, 32, 16, 1), float32], float32, Tensor[(32, 32, 16), float32], (Tensor[(1, 16, 64, 64), float32], (Tensor[(1, 16, 64, 64), float32])))}}"]
+	opr4:o0 -> opr49:i0
+	opr9:o0 -> opr49:i1
+	opr12:o0 -> opr49:i2
+	opr24:o0 -> opr49:i3
+	opr27:o0 -> opr49:i4
+	opr32:o0 -> opr49:i5
+	con3 -> opr49:i6
+	opr35:o0 -> opr49:i7
+	opr48:o0 -> opr49:i8
+	out0 [label="out0: (Tensor[(1, 32, 64, 64), float32], Tensor[(1, 16, 32, 32), float32], Tensor[(1, 32, 64, 64), float32], Tensor[(1, 32, 32, 32), float32], Tensor[(16, 32, 32, 1), float32], Tensor[(32, 32, 16, 1), float32], float32, Tensor[(32, 32, 16), float32], (Tensor[(1, 16, 64, 64), float32], (Tensor[(1, 16, 64, 64), float32])))"]
+	opr49:o0 -> out0
+}

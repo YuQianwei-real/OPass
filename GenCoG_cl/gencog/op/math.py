@@ -103,6 +103,7 @@ Op('ndarray_size', None)
 Op('gather_nd', None)
 Op('contrib_reverse_reshape', None)
 Op('dyn.full', None)
+Op('nn.conv2d_backward_weight', None)
 
 # Virtual operators
 Op('let', None)

@@ -1,0 +1,20 @@
+#[version = "0.0.5"]
+def @main(%x0: Tensor[(1, 5, 5, 4), float32] /* ty=Tensor[(1, 5, 5, 4), float32] span=from_string:17:32 */, %x1: Tensor[(1, 5, 5, 62), float32] /* ty=Tensor[(1, 5, 5, 62), float32] span=from_string:7:15 */, %x2: Tensor[(1, 5, 5, 36), float32] /* ty=Tensor[(1, 5, 5, 36), float32] span=from_string:7:20 */, %x3: Tensor[(5, 5, 4), float32] /* ty=Tensor[(5, 5, 4), float32] span=from_string:9:19 */, %x4: Tensor[(4, 5, 1, 1), float32] /* ty=Tensor[(4, 5, 1, 1), float32] span=from_string:19:20 */) -> (Tensor[(1, 5, 5, 4), float32], Tensor[(1, 5, 5, 102), float32], Tensor[(1, 5, 5, 4), float32], int32, Tensor[(5, 5, 4), float32], int32) {
+  %0 = add(%x0, 1f /* ty=float32 span=from_string:3:23 */) /* ty=Tensor[(1, 5, 5, 4), float32] span=from_string:5:33 */;
+  %1 = annotation.stop_fusion(%0) /* ty=Tensor[(1, 5, 5, 4), float32] span=from_string:11:19 */;
+  %2 = exp(%1) /* ty=Tensor[(1, 5, 5, 4), float32] span=from_string:21:28 */;
+  %3 = (%2, %x1, %x2) /* ty=(Tensor[(1, 5, 5, 4), float32], Tensor[(1, 5, 5, 62), float32], Tensor[(1, 5, 5, 36), float32]) span=from_string:8:22 */;
+  %4 = reshape(%1, newshape=[5, 5, 4]) /* ty=Tensor[(5, 5, 4), float32] */;
+  %5 = reshape(%4, newshape=[1, 5, 5, 4]) /* ty=Tensor[(1, 5, 5, 4), float32] */;
+  %6 = reshape(%5, newshape=[5, 5, 4]) /* ty=Tensor[(5, 5, 4), float32] */;
+  %7 = layout_transform(%2, src_layout="NCHW", dst_layout="NHWC") /* ty=Tensor[(1, 5, 4, 5), float32] span=from_string:22:28 */;
+  %8 = layout_transform(%7, src_layout="NHWC", dst_layout="CHWN") /* ty=Tensor[(5, 5, 4, 1), float32] span=from_string:23:19 */;
+  %9 = nn.relu(%8) /* ty=Tensor[(5, 5, 4, 1), float32] span=from_string:24:15 */;
+  %10 = add(%9, 1f /* ty=float32 span=from_string:24:24 */) /* ty=Tensor[(5, 5, 4, 1), float32] span=from_string:25:15 */;
+  %11 = exp(%10) /* ty=Tensor[(5, 5, 4, 1), float32] span=from_string:26:19 */;
+  %12 = exp(%0) /* ty=Tensor[(1, 5, 5, 4), float32] span=from_string:29:12 */;
+  %13 = concatenate(%3, axis=3) /* ty=Tensor[(1, 5, 5, 102), float32] span=from_string:29:16 */;
+  %14 = reshape(%6, newshape=[1, 5, 5, 4]) /* ty=Tensor[(1, 5, 5, 4), float32] */;
+  %15 = squeeze(%11) /* ty=Tensor[(5, 5, 4), float32] span=from_string:29:30 */;
+  (%12, %13, %14, 20 /* ty=int32 */, %15, 2 /* ty=int32 */) /* ty=(Tensor[(1, 5, 5, 4), float32], Tensor[(1, 5, 5, 102), float32], Tensor[(1, 5, 5, 4), float32], int32, Tensor[(5, 5, 4), float32], int32) span=from_string:31:5 */
+}

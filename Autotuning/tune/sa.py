@@ -9,17 +9,18 @@ from typing import Dict, List, Tuple
 from tqdm import tqdm
 from subprocess import check_output
 from tvm.relay import parse
-from Autotuning.util import load_gmod_from_file, simu_mem_from_relay, cal_tvm_mem, serenity_mem_from_relay
+from Autotuning.util import load_gmod_from_file, simu_mem_from_relay, cal_tvm_mem, serenity_mem_from_relay, hmcos_mem_from_relay
 from Autotuning.sequence import RelayPassTable
 
 def _opt_pass_simu_mem(codePath: str, outPath: str, passName: str, seed: int, profiler):
     env = os.environ.copy()
-    env['PYTHONPATH'] = os.path.join('./', 'python')
+    #env['PYTHONPATH'] = os.path.join('./', 'python')
+    #env['PYTHONPATH'] = '/home/yqw/anaconda3/envs/tvm13/bin/python'
 
     if profiler == simu_mem_from_relay:
         profiler_name = 'static'
-    elif profiler == cal_tvm_mem:
-        profiler_name = 'tvm'
+    elif profiler == hmcos_mem_from_relay:
+        profiler_name = 'hmcos'
     elif profiler == serenity_mem_from_relay:
         profiler_name = 'serenity'
     else:

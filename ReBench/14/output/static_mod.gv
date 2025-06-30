@@ -1,0 +1,114 @@
+digraph static_mod {
+	node [fontname="Linux Biolinum O" shape=record]
+	in0 [label="in0: Tensor[(1, 3, 224, 224), int8]"]
+	con0 [label="con0: float32"]
+	con1 [label="con1: int32"]
+	opr0 [label="{{<i0>Tensor[(1, 3, 224, 224), int8]|<i1>float32|<i2>int32}|qnn.dequantize\naxis=-1|{<o0>Tensor[(1, 3, 224, 224), float32]}}"]
+	in0 -> opr0:i0
+	con0 -> opr0:i1
+	con1 -> opr0:i2
+	opr1 [label="{{<i0>Tensor[(1, 3, 224, 224), float32]}|split\nindices_or_sections=2\naxis=3|{<o0>(Tensor[(1, 3, 224, 112), float32], Tensor[(1, 3, 224, 112), float32])}}"]
+	opr0:o0 -> opr1:i0
+	opr2 [label="{{<i0>(Tensor[(1, 3, 224, 112), float32], Tensor[(1, 3, 224, 112), float32])}|getitem\nindex=0|{<o0>Tensor[(1, 3, 224, 112), float32]}}"]
+	opr1:o0 -> opr2:i0
+	opr3 [label="{{<i0>Tensor[(1, 3, 224, 112), float32]}|transpose\naxes=[0, 3, 1, 2]|{<o0>Tensor[(1, 112, 3, 224), float32]}}"]
+	opr2:o0 -> opr3:i0
+	opr4 [label="{{<i0>Tensor[(1, 112, 3, 224), float32]}|layout_transform\nsrc_layout=\"NCHW\"\ndst_layout=\"NCHW4c\"|{<o0>Tensor[(1, 28, 3, 224, 4), float32]}}"]
+	opr3:o0 -> opr4:i0
+	opr5 [label="{{<i0>Tensor[(1, 28, 3, 224, 4), float32]}|nn.relu\n|{<o0>Tensor[(1, 28, 3, 224, 4), float32]}}"]
+	opr4:o0 -> opr5:i0
+	opr6 [label="{{<i0>Tensor[(1, 28, 3, 224, 4), float32]}|layout_transform\nsrc_layout=\"NCHW4c\"\ndst_layout=\"NCHW\"|{<o0>Tensor[(1, 112, 3, 224), float32]}}"]
+	opr5:o0 -> opr6:i0
+	opr7 [label="{{<i0>Tensor[(1, 112, 3, 224), float32]}|transpose\naxes=[0, 2, 3, 1]|{<o0>Tensor[(1, 3, 224, 112), float32]}}"]
+	opr6:o0 -> opr7:i0
+	opr8 [label="{{<i0>Tensor[(1, 112, 3, 224), float32]}|exp\n|{<o0>Tensor[(1, 112, 3, 224), float32]}}"]
+	opr3:o0 -> opr8:i0
+	con2 [label="con2: int32"]
+	con3 [label="con3: float32"]
+	con4 [label="con4: int32"]
+	opr9 [label="{{<i0>Tensor[(1, 3, 224, 112), float32]|<i1>float32|<i2>int32}|qnn.quantize\nout_dtype=\"int8\"\naxis=-1|{<o0>Tensor[(1, 3, 224, 112), int8]}}"]
+	opr2:o0 -> opr9:i0
+	con3 -> opr9:i1
+	con4 -> opr9:i2
+	con5 [label="con5: float32"]
+	con6 [label="con6: int32"]
+	opr10 [label="{{<i0>Tensor[(1, 3, 224, 112), int8]|<i1>float32|<i2>int32}|qnn.dequantize\naxis=-1|{<o0>Tensor[(1, 3, 224, 112), float32]}}"]
+	opr9:o0 -> opr10:i0
+	con5 -> opr10:i1
+	con6 -> opr10:i2
+	opr11 [label="{{<i0>Tensor[(1, 3, 224, 112), float32]}|image.resize2d\nsize=[4, 4]\nroi=[0.0f, 0.0f, 0.0f, 0.0f]\nlayout=\"NCHW\"\nmethod=\"linear\"\ncoordinate_transformation_mode=\"half_pixel\"\nrounding_method=\"\"\ncubic_alpha=-0.5f\ncubic_exclude=0\nextrapolation_value=0.0f\nout_dtype=\"\"|{<o0>Tensor[(1, 3, 4, 4), float32]}}"]
+	opr10:o0 -> opr11:i0
+	con7 [label="con7: float32"]
+	con8 [label="con8: int32"]
+	opr12 [label="{{<i0>Tensor[(1, 3, 4, 4), float32]|<i1>float32|<i2>int32}|qnn.quantize\nout_dtype=\"int8\"\naxis=-1|{<o0>Tensor[(1, 3, 4, 4), int8]}}"]
+	opr11:o0 -> opr12:i0
+	con7 -> opr12:i1
+	con8 -> opr12:i2
+	con9 [label="con9: float32"]
+	con10 [label="con10: int32"]
+	opr13 [label="{{<i0>Tensor[(1, 3, 4, 4), int8]|<i1>float32|<i2>int32}|qnn.dequantize\naxis=-1|{<o0>Tensor[(1, 3, 4, 4), float32]}}"]
+	opr12:o0 -> opr13:i0
+	con9 -> opr13:i1
+	con10 -> opr13:i2
+	opr14 [label="{{<i0>Tensor[(1, 3, 4, 4), float32]}|split\nindices_or_sections=2\naxis=3|{<o0>(Tensor[(1, 3, 4, 2), float32], Tensor[(1, 3, 4, 2), float32])}}"]
+	opr13:o0 -> opr14:i0
+	opr15 [label="{{<i0>(Tensor[(1, 3, 4, 2), float32], Tensor[(1, 3, 4, 2), float32])}|getitem\nindex=0|{<o0>Tensor[(1, 3, 4, 2), float32]}}"]
+	opr14:o0 -> opr15:i0
+	con11 [label="con11: float32"]
+	con12 [label="con12: int32"]
+	opr16 [label="{{<i0>Tensor[(1, 3, 4, 2), float32]|<i1>float32|<i2>int32}|qnn.quantize\nout_dtype=\"int8\"\naxis=-1|{<o0>Tensor[(1, 3, 4, 2), int8]}}"]
+	opr15:o0 -> opr16:i0
+	con11 -> opr16:i1
+	con12 -> opr16:i2
+	con13 [label="con13: float32"]
+	con14 [label="con14: int32"]
+	opr17 [label="{{<i0>Tensor[(1, 3, 224, 224), int8]|<i1>float32|<i2>int32}|qnn.dequantize\naxis=-1|{<o0>Tensor[(1, 3, 224, 224), float32]}}"]
+	in0 -> opr17:i0
+	con13 -> opr17:i1
+	con14 -> opr17:i2
+	opr18 [label="{{<i0>Tensor[(1, 3, 224, 224), float32]}|topk\nk=1\naxis=0\nret_type=\"values\"\nis_ascend=1\ndtype=\"float32\"|{<o0>Tensor[(1, 3, 224, 224), float32]}}"]
+	opr17:o0 -> opr18:i0
+	con15 [label="con15: float32"]
+	con16 [label="con16: int32"]
+	opr19 [label="{{<i0>Tensor[(1, 3, 224, 224), float32]|<i1>float32|<i2>int32}|qnn.quantize\nout_dtype=\"int8\"\naxis=-1|{<o0>Tensor[(1, 3, 224, 224), int8]}}"]
+	opr18:o0 -> opr19:i0
+	con15 -> opr19:i1
+	con16 -> opr19:i2
+	con17 [label="con17: float32"]
+	con18 [label="con18: int32"]
+	opr20 [label="{{<i0>Tensor[(1, 3, 224, 224), int8]|<i1>float32|<i2>int32}|qnn.dequantize\naxis=-1|{<o0>Tensor[(1, 3, 224, 224), float32]}}"]
+	opr19:o0 -> opr20:i0
+	con17 -> opr20:i1
+	con18 -> opr20:i2
+	opr21 [label="{{<i0>Tensor[(1, 3, 224, 224), float32]}|argsort\naxis=1\nis_ascend=1\ndtype=\"int32\"|{<o0>Tensor[(1, 3, 224, 224), int32]}}"]
+	opr20:o0 -> opr21:i0
+	opr22 [label="{{<i0>Tensor[(1, 28, 3, 224, 4), float32]}|layout_transform\nsrc_layout=\"NCHW4c\"\ndst_layout=\"NCHW8c\"|{<o0>Tensor[(1, 14, 3, 224, 8), float32]}}"]
+	opr4:o0 -> opr22:i0
+	opr23 [label="{{<i0>Tensor[(1, 14, 3, 224, 8), float32]}|layout_transform\nsrc_layout=\"NCHW8c\"\ndst_layout=\"NCHW4c\"|{<o0>Tensor[(1, 28, 3, 224, 4), float32]}}"]
+	opr22:o0 -> opr23:i0
+	opr24 [label="{{<i0>Tensor[(1, 28, 3, 224, 4), float32]}|nn.relu\n|{<o0>Tensor[(1, 28, 3, 224, 4), float32]}}"]
+	opr23:o0 -> opr24:i0
+	opr25 [label="{{<i0>Tensor[(1, 3, 224, 112), float32]}|nn.max_pool2d\npool_size=[2, 2]\nstrides=[2, 2]\ndilation=[1, 1]\npadding=[0, 0, 0, 0]\nlayout=\"NCHW\"\nout_layout=\"\"\nceil_mode=0|{<o0>Tensor[(1, 3, 112, 56), float32]}}"]
+	opr10:o0 -> opr25:i0
+	opr26 [label="{{<i0>Tensor[(1, 3, 112, 56), float32]}|nn.upsampling\nscale_h=2.0f\nscale_w=2.0f\nlayout=\"NCHW\"\nmethod=\"nearest_neighbor\"\nalign_corners=0|{<o0>Tensor[(1, 3, 224, 112), float32]}}"]
+	opr25:o0 -> opr26:i0
+	opr27 [label="{{<i0>Tensor[(1, 3, 224, 112), float32]|<i1>Tensor[(1, 3, 224, 112), float32]}|tuple\n|{<o0>(Tensor[(1, 3, 224, 112), float32], Tensor[(1, 3, 224, 112), float32])}}"]
+	opr26:o0 -> opr27:i0
+	opr10:o0 -> opr27:i1
+	opr28 [label="{{<i0>(Tensor[(1, 3, 224, 112), float32], Tensor[(1, 3, 224, 112), float32])}|concatenate\naxis=1|{<o0>Tensor[(1, 6, 224, 112), float32]}}"]
+	opr27:o0 -> opr28:i0
+	con19 [label="con19: float32"]
+	opr29 [label="{{<i0>Tensor[(1, 6, 224, 112), float32]|<i1>float32}|add\n|{<o0>Tensor[(1, 6, 224, 112), float32]}}"]
+	opr28:o0 -> opr29:i0
+	con19 -> opr29:i1
+	opr30 [label="{{<i0>Tensor[(1, 3, 224, 112), float32]|<i1>Tensor[(1, 112, 3, 224), float32]|<i2>int32|<i3>Tensor[(1, 3, 4, 2), int8]|<i4>Tensor[(1, 3, 224, 224), int32]|<i5>Tensor[(1, 28, 3, 224, 4), float32]|<i6>Tensor[(1, 6, 224, 112), float32]}|tuple\n|{<o0>(Tensor[(1, 3, 224, 112), float32], Tensor[(1, 112, 3, 224), float32], int32, Tensor[(1, 3, 4, 2), int8], Tensor[(1, 3, 224, 224), int32], Tensor[(1, 28, 3, 224, 4), float32], Tensor[(1, 6, 224, 112), float32])}}"]
+	opr7:o0 -> opr30:i0
+	opr8:o0 -> opr30:i1
+	con2 -> opr30:i2
+	opr16:o0 -> opr30:i3
+	opr21:o0 -> opr30:i4
+	opr24:o0 -> opr30:i5
+	opr29:o0 -> opr30:i6
+	out0 [label="out0: (Tensor[(1, 3, 224, 112), float32], Tensor[(1, 112, 3, 224), float32], int32, Tensor[(1, 3, 4, 2), int8], Tensor[(1, 3, 224, 224), int32], Tensor[(1, 28, 3, 224, 4), float32], Tensor[(1, 6, 224, 112), float32])"]
+	opr30:o0 -> out0
+}

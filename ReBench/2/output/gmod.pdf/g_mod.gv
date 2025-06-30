@@ -1,0 +1,166 @@
+digraph g_mod {
+	node [fontname="Linux Biolinum O" shape=record]
+	opr0 [label="{{}|func\n|{<o0>Tensor[(1, 128, 56, 56), float32]}}"]
+	opr1 [label="{{<i0>Tensor[(1, 128, 56, 56), float32]}|ones_like\n|{<o0>Tensor[(1, 128, 56, 56), float32]}}"]
+	opr0:o0 -> opr1:i0
+	opr2 [label="{{<i0>Tensor[(1, 128, 56, 56), float32]|<i1>Tensor[(1, 128, 56, 56), float32]}|add\n|{<o0>Tensor[(1, 128, 56, 56), float32]}}"]
+	opr0:o0 -> opr2:i0
+	opr1:o0 -> opr2:i1
+	opr3 [label="{{<i0>Tensor[(1, 128, 56, 56), float32]|<i1>Tensor[(1, 128, 56, 56), float32]}|def\n|{<o0>(Tensor[(1, 128, 56, 56), float32]) -\> Tensor[(1, 128, 56, 56), float32]}}"]
+	opr0:o0 -> opr3:i0
+	opr2:o0 -> opr3:i1
+	in0 [label="in0: Tensor[(1, 128, 56, 56), float32]"]
+	opr4 [label="{{<i0>(Tensor[(1, 128, 56, 56), float32]) -\> Tensor[(1, 128, 56, 56), float32]|<i1>Tensor[(1, 128, 56, 56), float32]}|call\n|{<o0>Tensor[(1, 128, 56, 56), float32]}}"]
+	opr3:o0 -> opr4:i0
+	in0 -> opr4:i1
+	opr5 [label="{{}|func\n|{<o0>Tensor[(1, 64, 56, 56), float32]}}"]
+	opr6 [label="{{<i0>Tensor[(1, 64, 56, 56), float32]}|nn.relu\n|{<o0>Tensor[(1, 64, 56, 56), float32]}}"]
+	opr5:o0 -> opr6:i0
+	opr7 [label="{{<i0>Tensor[(1, 64, 56, 56), float32]|<i1>Tensor[(1, 64, 56, 56), float32]}|def\n|{<o0>(Tensor[(1, 64, 56, 56), float32]) -\> Tensor[(1, 64, 56, 56), float32]}}"]
+	opr5:o0 -> opr7:i0
+	opr6:o0 -> opr7:i1
+	opr8 [label="{{}|func\n|{<o0>Tensor[(1, 128, 56, 56), float32]|<o1>Tensor[(64, 128, 3, 3), float32]}}"]
+	opr9 [label="{{<i0>Tensor[(1, 128, 56, 56), float32]|<i1>Tensor[(64, 128, 3, 3), float32]}|nn.conv2d\nstrides=[1, 1]\npadding=[1, 1, 1, 1]\ndilation=[1, 1]\ngroups=1\nchannels=64\nkernel_size=[3, 3]\ndata_layout=\"NCHW\"\nkernel_layout=\"OIHW\"\nout_layout=\"\"\nout_dtype=\"\"|{<o0>Tensor[(1, 64, 56, 56), float32]}}"]
+	opr8:o0 -> opr9:i0
+	opr8:o1 -> opr9:i1
+	opr10 [label="{{<i0>Tensor[(1, 128, 56, 56), float32]|<i1>Tensor[(64, 128, 3, 3), float32]|<i2>Tensor[(1, 64, 56, 56), float32]}|def\n|{<o0>(Tensor[(1, 128, 56, 56), float32], Tensor[(64, 128, 3, 3), float32]) -\> Tensor[(1, 64, 56, 56), float32]}}"]
+	opr8:o0 -> opr10:i0
+	opr8:o1 -> opr10:i1
+	opr9:o0 -> opr10:i2
+	opr11 [label="{{}|func\n|{<o0>Tensor[(1, 32, 56, 56, 4), float32]}}"]
+	opr12 [label="{{<i0>Tensor[(1, 32, 56, 56, 4), float32]}|layout_transform\nsrc_layout=\"NCHW4c\"\ndst_layout=\"NCHW\"|{<o0>Tensor[(1, 128, 56, 56), float32]}}"]
+	opr11:o0 -> opr12:i0
+	opr13 [label="{{<i0>Tensor[(1, 128, 56, 56), float32]}|nn.relu\n|{<o0>Tensor[(1, 128, 56, 56), float32]}}"]
+	opr12:o0 -> opr13:i0
+	opr14 [label="{{<i0>Tensor[(1, 32, 56, 56, 4), float32]|<i1>Tensor[(1, 128, 56, 56), float32]}|def\n|{<o0>(Tensor[(1, 32, 56, 56, 4), float32]) -\> Tensor[(1, 128, 56, 56), float32]}}"]
+	opr11:o0 -> opr14:i0
+	opr13:o0 -> opr14:i1
+	opr15 [label="{{}|func\n|{<o0>Tensor[(1, 128, 56, 56), float32]}}"]
+	opr16 [label="{{<i0>Tensor[(1, 128, 56, 56), float32]}|layout_transform\nsrc_layout=\"NCHW\"\ndst_layout=\"NCHW4c\"|{<o0>Tensor[(1, 32, 56, 56, 4), float32]}}"]
+	opr15:o0 -> opr16:i0
+	opr17 [label="{{<i0>Tensor[(1, 128, 56, 56), float32]|<i1>Tensor[(1, 32, 56, 56, 4), float32]}|def\n|{<o0>(Tensor[(1, 128, 56, 56), float32]) -\> Tensor[(1, 32, 56, 56, 4), float32]}}"]
+	opr15:o0 -> opr17:i0
+	opr16:o0 -> opr17:i1
+	opr18 [label="{{<i0>(Tensor[(1, 128, 56, 56), float32]) -\> Tensor[(1, 32, 56, 56, 4), float32]|<i1>Tensor[(1, 128, 56, 56), float32]}|call\n|{<o0>Tensor[(1, 32, 56, 56, 4), float32]}}"]
+	opr17:o0 -> opr18:i0
+	in0 -> opr18:i1
+	opr19 [label="{{<i0>(Tensor[(1, 32, 56, 56, 4), float32]) -\> Tensor[(1, 128, 56, 56), float32]|<i1>Tensor[(1, 32, 56, 56, 4), float32]}|call\n|{<o0>Tensor[(1, 128, 56, 56), float32]}}"]
+	opr14:o0 -> opr19:i0
+	opr18:o0 -> opr19:i1
+	in1 [label="in1: Tensor[(64, 128, 3, 3), float32]"]
+	opr20 [label="{{<i0>(Tensor[(1, 128, 56, 56), float32], Tensor[(64, 128, 3, 3), float32]) -\> Tensor[(1, 64, 56, 56), float32]|<i1>Tensor[(1, 128, 56, 56), float32]|<i2>Tensor[(64, 128, 3, 3), float32]}|call\n|{<o0>Tensor[(1, 64, 56, 56), float32]}}"]
+	opr10:o0 -> opr20:i0
+	opr19:o0 -> opr20:i1
+	in1 -> opr20:i2
+	opr21 [label="{{<i0>(Tensor[(1, 64, 56, 56), float32]) -\> Tensor[(1, 64, 56, 56), float32]|<i1>Tensor[(1, 64, 56, 56), float32]}|call\n|{<o0>Tensor[(1, 64, 56, 56), float32]}}"]
+	opr7:o0 -> opr21:i0
+	opr20:o0 -> opr21:i1
+	opr22 [label="{{}|func\n|{<o0>Tensor[(1, 32, 56, 56, 4), float32]}}"]
+	opr23 [label="{{<i0>Tensor[(1, 32, 56, 56, 4), float32]}|layout_transform\nsrc_layout=\"NCHW4c\"\ndst_layout=\"NCHW8c\"|{<o0>Tensor[(1, 16, 56, 56, 8), float32]}}"]
+	opr22:o0 -> opr23:i0
+	opr24 [label="{{<i0>Tensor[(1, 16, 56, 56, 8), float32]}|layout_transform\nsrc_layout=\"NCHW8c\"\ndst_layout=\"NCHW4c\"|{<o0>Tensor[(1, 32, 56, 56, 4), float32]}}"]
+	opr23:o0 -> opr24:i0
+	opr25 [label="{{<i0>Tensor[(1, 32, 56, 56, 4), float32]}|nn.relu\n|{<o0>Tensor[(1, 32, 56, 56, 4), float32]}}"]
+	opr24:o0 -> opr25:i0
+	opr26 [label="{{<i0>Tensor[(1, 32, 56, 56, 4), float32]|<i1>Tensor[(1, 32, 56, 56, 4), float32]}|def\n|{<o0>(Tensor[(1, 32, 56, 56, 4), float32]) -\> Tensor[(1, 32, 56, 56, 4), float32]}}"]
+	opr22:o0 -> opr26:i0
+	opr25:o0 -> opr26:i1
+	opr27 [label="{{<i0>(Tensor[(1, 32, 56, 56, 4), float32]) -\> Tensor[(1, 32, 56, 56, 4), float32]|<i1>Tensor[(1, 32, 56, 56, 4), float32]}|call\n|{<o0>Tensor[(1, 32, 56, 56, 4), float32]}}"]
+	opr26:o0 -> opr27:i0
+	opr18:o0 -> opr27:i1
+	opr28 [label="{{}|func\n|{<o0>Tensor[(1, 128, 56, 56), float32]}}"]
+	con0 [label="con0: float32"]
+	opr29 [label="{{<i0>Tensor[(1, 128, 56, 56), float32]|<i1>float32}|add\n|{<o0>Tensor[(1, 128, 56, 56), float32]}}"]
+	opr28:o0 -> opr29:i0
+	con0 -> opr29:i1
+	opr30 [label="{{<i0>Tensor[(1, 128, 56, 56), float32]}|exp\n|{<o0>Tensor[(1, 128, 56, 56), float32]}}"]
+	opr29:o0 -> opr30:i0
+	opr31 [label="{{<i0>Tensor[(1, 128, 56, 56), float32]}|squeeze\naxis=None|{<o0>Tensor[(128, 56, 56), float32]}}"]
+	opr30:o0 -> opr31:i0
+	opr32 [label="{{<i0>Tensor[(1, 128, 56, 56), float32]|<i1>Tensor[(128, 56, 56), float32]}|def\n|{<o0>(Tensor[(1, 128, 56, 56), float32]) -\> Tensor[(128, 56, 56), float32]}}"]
+	opr28:o0 -> opr32:i0
+	opr31:o0 -> opr32:i1
+	opr33 [label="{{<i0>(Tensor[(1, 128, 56, 56), float32]) -\> Tensor[(128, 56, 56), float32]|<i1>Tensor[(1, 128, 56, 56), float32]}|call\n|{<o0>Tensor[(128, 56, 56), float32]}}"]
+	opr32:o0 -> opr33:i0
+	opr19:o0 -> opr33:i1
+	opr34 [label="{{}|func\n|{<o0>Tensor[(1, 56, 64, 56), float32]}}"]
+	opr35 [label="{{<i0>Tensor[(1, 56, 64, 56), float32]}|transpose\naxes=[0, 2, 3, 1]|{<o0>Tensor[(1, 64, 56, 56), float32]}}"]
+	opr34:o0 -> opr35:i0
+	opr36 [label="{{<i0>Tensor[(1, 56, 64, 56), float32]|<i1>Tensor[(1, 64, 56, 56), float32]}|def\n|{<o0>(Tensor[(1, 56, 64, 56), float32]) -\> Tensor[(1, 64, 56, 56), float32]}}"]
+	opr34:o0 -> opr36:i0
+	opr35:o0 -> opr36:i1
+	opr37 [label="{{}|func\n|{<o0>Tensor[(1, 56, 64, 56), float32]}}"]
+	opr38 [label="{{<i0>Tensor[(1, 56, 64, 56), float32]}|layout_transform\nsrc_layout=\"NCHW\"\ndst_layout=\"NCHW4c\"|{<o0>Tensor[(1, 14, 64, 56, 4), float32]}}"]
+	opr37:o0 -> opr38:i0
+	opr39 [label="{{<i0>Tensor[(1, 14, 64, 56, 4), float32]}|nn.relu\n|{<o0>Tensor[(1, 14, 64, 56, 4), float32]}}"]
+	opr38:o0 -> opr39:i0
+	opr40 [label="{{<i0>Tensor[(1, 14, 64, 56, 4), float32]}|layout_transform\nsrc_layout=\"NCHW4c\"\ndst_layout=\"NCHW\"|{<o0>Tensor[(1, 56, 64, 56), float32]}}"]
+	opr39:o0 -> opr40:i0
+	opr41 [label="{{<i0>Tensor[(1, 56, 64, 56), float32]|<i1>Tensor[(1, 56, 64, 56), float32]}|def\n|{<o0>(Tensor[(1, 56, 64, 56), float32]) -\> Tensor[(1, 56, 64, 56), float32]}}"]
+	opr37:o0 -> opr41:i0
+	opr40:o0 -> opr41:i1
+	opr42 [label="{{}|func\n|{<o0>Tensor[(1, 64, 56, 56), float32]}}"]
+	opr43 [label="{{<i0>Tensor[(1, 64, 56, 56), float32]|<i1>Tensor[(1, 64, 56, 56), float32]}|add\n|{<o0>Tensor[(1, 64, 56, 56), float32]}}"]
+	opr42:o0 -> opr43:i0
+	opr42:o0 -> opr43:i1
+	opr44 [label="{{<i0>Tensor[(1, 64, 56, 56), float32]}|transpose\naxes=[0, 3, 1, 2]|{<o0>Tensor[(1, 56, 64, 56), float32]}}"]
+	opr43:o0 -> opr44:i0
+	opr45 [label="{{<i0>Tensor[(1, 64, 56, 56), float32]|<i1>Tensor[(1, 56, 64, 56), float32]}|def\n|{<o0>(Tensor[(1, 64, 56, 56), float32]) -\> Tensor[(1, 56, 64, 56), float32]}}"]
+	opr42:o0 -> opr45:i0
+	opr44:o0 -> opr45:i1
+	opr46 [label="{{<i0>(Tensor[(1, 64, 56, 56), float32]) -\> Tensor[(1, 56, 64, 56), float32]|<i1>Tensor[(1, 64, 56, 56), float32]}|call\n|{<o0>Tensor[(1, 56, 64, 56), float32]}}"]
+	opr45:o0 -> opr46:i0
+	opr20:o0 -> opr46:i1
+	opr47 [label="{{<i0>(Tensor[(1, 56, 64, 56), float32]) -\> Tensor[(1, 56, 64, 56), float32]|<i1>Tensor[(1, 56, 64, 56), float32]}|call\n|{<o0>Tensor[(1, 56, 64, 56), float32]}}"]
+	opr41:o0 -> opr47:i0
+	opr46:o0 -> opr47:i1
+	opr48 [label="{{<i0>(Tensor[(1, 56, 64, 56), float32]) -\> Tensor[(1, 64, 56, 56), float32]|<i1>Tensor[(1, 56, 64, 56), float32]}|call\n|{<o0>Tensor[(1, 64, 56, 56), float32]}}"]
+	opr36:o0 -> opr48:i0
+	opr47:o0 -> opr48:i1
+	opr49 [label="{{}|func\n|{<o0>Tensor[(1, 56, 64, 56), float32]}}"]
+	opr50 [label="{{<i0>Tensor[(1, 56, 64, 56), float32]}|layout_transform\nsrc_layout=\"NCHW\"\ndst_layout=\"NHWC\"|{<o0>Tensor[(1, 64, 56, 56), float32]}}"]
+	opr49:o0 -> opr50:i0
+	opr51 [label="{{<i0>Tensor[(1, 64, 56, 56), float32]}|layout_transform\nsrc_layout=\"NHWC\"\ndst_layout=\"CHWN\"|{<o0>Tensor[(56, 64, 56, 1), float32]}}"]
+	opr50:o0 -> opr51:i0
+	opr52 [label="{{<i0>Tensor[(56, 64, 56, 1), float32]}|nn.relu\n|{<o0>Tensor[(56, 64, 56, 1), float32]}}"]
+	opr51:o0 -> opr52:i0
+	opr53 [label="{{<i0>Tensor[(1, 56, 64, 56), float32]|<i1>Tensor[(56, 64, 56, 1), float32]}|def\n|{<o0>(Tensor[(1, 56, 64, 56), float32]) -\> Tensor[(56, 64, 56, 1), float32]}}"]
+	opr49:o0 -> opr53:i0
+	opr52:o0 -> opr53:i1
+	opr54 [label="{{<i0>(Tensor[(1, 56, 64, 56), float32]) -\> Tensor[(56, 64, 56, 1), float32]|<i1>Tensor[(1, 56, 64, 56), float32]}|call\n|{<o0>Tensor[(56, 64, 56, 1), float32]}}"]
+	opr53:o0 -> opr54:i0
+	opr47:o0 -> opr54:i1
+	opr55 [label="{{}|func\n|{<o0>Tensor[(1, 56, 64, 56), float32]}}"]
+	opr56 [label="{{<i0>Tensor[(1, 56, 64, 56), float32]}|transpose\naxes=[0, 2, 3, 1]|{<o0>Tensor[(1, 64, 56, 56), float32]}}"]
+	opr55:o0 -> opr56:i0
+	opr57 [label="{{<i0>Tensor[(1, 64, 56, 56), float32]}|layout_transform\nsrc_layout=\"NHWC\"\ndst_layout=\"HWCN\"|{<o0>Tensor[(64, 56, 56, 1), float32]}}"]
+	opr56:o0 -> opr57:i0
+	opr58 [label="{{<i0>Tensor[(64, 56, 56, 1), float32]}|transpose\naxes=[3, 0, 1, 2]|{<o0>Tensor[(1, 64, 56, 56), float32]}}"]
+	opr57:o0 -> opr58:i0
+	opr59 [label="{{<i0>Tensor[(1, 64, 56, 56), float32]}|transpose\naxes=[0, 3, 1, 2]|{<o0>Tensor[(1, 56, 64, 56), float32]}}"]
+	opr58:o0 -> opr59:i0
+	opr60 [label="{{<i0>Tensor[(1, 56, 64, 56), float32]}|layout_transform\nsrc_layout=\"NCHW\"\ndst_layout=\"NCHW4c\"|{<o0>Tensor[(1, 14, 64, 56, 4), float32]}}"]
+	opr59:o0 -> opr60:i0
+	opr61 [label="{{<i0>Tensor[(1, 14, 64, 56, 4), float32]}|nn.relu\n|{<o0>Tensor[(1, 14, 64, 56, 4), float32]}}"]
+	opr60:o0 -> opr61:i0
+	opr62 [label="{{<i0>Tensor[(1, 14, 64, 56, 4), float32]}|layout_transform\nsrc_layout=\"NCHW4c\"\ndst_layout=\"NCHW\"|{<o0>Tensor[(1, 56, 64, 56), float32]}}"]
+	opr61:o0 -> opr62:i0
+	opr63 [label="{{<i0>Tensor[(1, 56, 64, 56), float32]}|transpose\naxes=[0, 2, 3, 1]|{<o0>Tensor[(1, 64, 56, 56), float32]}}"]
+	opr62:o0 -> opr63:i0
+	opr64 [label="{{<i0>Tensor[(1, 56, 64, 56), float32]|<i1>Tensor[(1, 64, 56, 56), float32]}|def\n|{<o0>(Tensor[(1, 56, 64, 56), float32]) -\> Tensor[(1, 64, 56, 56), float32]}}"]
+	opr55:o0 -> opr64:i0
+	opr63:o0 -> opr64:i1
+	opr65 [label="{{<i0>(Tensor[(1, 56, 64, 56), float32]) -\> Tensor[(1, 64, 56, 56), float32]|<i1>Tensor[(1, 56, 64, 56), float32]}|call\n|{<o0>Tensor[(1, 64, 56, 56), float32]}}"]
+	opr64:o0 -> opr65:i0
+	opr46:o0 -> opr65:i1
+	opr66 [label="{{<i0>Tensor[(1, 128, 56, 56), float32]|<i1>Tensor[(1, 64, 56, 56), float32]|<i2>Tensor[(1, 32, 56, 56, 4), float32]|<i3>Tensor[(128, 56, 56), float32]|<i4>Tensor[(1, 64, 56, 56), float32]|<i5>Tensor[(56, 64, 56, 1), float32]|<i6>Tensor[(1, 64, 56, 56), float32]}|tuple\n|{<o0>(Tensor[(1, 128, 56, 56), float32], Tensor[(1, 64, 56, 56), float32], Tensor[(1, 32, 56, 56, 4), float32], Tensor[(128, 56, 56), float32], Tensor[(1, 64, 56, 56), float32], Tensor[(56, 64, 56, 1), float32], Tensor[(1, 64, 56, 56), float32])}}"]
+	opr4:o0 -> opr66:i0
+	opr21:o0 -> opr66:i1
+	opr27:o0 -> opr66:i2
+	opr33:o0 -> opr66:i3
+	opr48:o0 -> opr66:i4
+	opr54:o0 -> opr66:i5
+	opr65:o0 -> opr66:i6
+	out0 [label="out0: (Tensor[(1, 128, 56, 56), float32], Tensor[(1, 64, 56, 56), float32], Tensor[(1, 32, 56, 56, 4), float32], Tensor[(128, 56, 56), float32], Tensor[(1, 64, 56, 56), float32], Tensor[(56, 64, 56, 1), float32], Tensor[(1, 64, 56, 56), float32])"]
+	opr66:o0 -> out0
+}

@@ -1,0 +1,23 @@
+#[version = "0.0.5"]
+def @main(%x0: Tensor[(3, 3, 5), float32] /* ty=Tensor[(3, 3, 5), float32] span=from_string:9:18 */, %x1: Tensor[(3, 3, 3), int32] /* ty=Tensor[(3, 3, 3), int32] span=from_string:15:17 */, %x2: Tensor[(3, 3, 5), float32] /* ty=Tensor[(3, 3, 5), float32] span=from_string:6:22 */, %x3: Tensor[(5), float32] /* ty=Tensor[(5), float32] span=from_string:8:30 */, %x4: Tensor[(5), float32] /* ty=Tensor[(5), float32] span=from_string:12:26 */, %x5: Tensor[(5), float32] /* ty=Tensor[(5), float32] span=from_string:13:27 */, %x6: Tensor[(5), float32] /* ty=Tensor[(5), float32] */, %x7: Tensor[(10), int32] /* ty=Tensor[(10), int32] span=from_string:14:23 */, %x8: int32 /* ty=int32 span=from_string:15:22 */, %x9: int32 /* ty=int32 span=from_string:15:27 */) -> (Tensor[(3, 3, 5), int32], Tensor[(3, 3, 5), float32], Tensor[(3, 3, 5), float16], Tensor[(3, 3, 5), float16], Tensor[(3, 3, 5), float32], int32, Tensor[(5), int32], Tensor[(6, 3, 3, 3), float32]) {
+  %0 = cast(%x0, dtype="float16") /* ty=Tensor[(3, 3, 5), float16] */;
+  %1 = cast(%x2, dtype="float16") /* ty=Tensor[(3, 3, 5), float16] */;
+  %2 = subtract(%0, %1) /* ty=Tensor[(3, 3, 5), float16] span=from_string:6:18 */;
+  %3 = cast(1f /* ty=float32 span=from_string:4:18 */, dtype="float16") /* ty=float16 */;
+  %4 = add(%2, %3) /* ty=Tensor[(3, 3, 5), float16] span=from_string:8:26 */;
+  %5 = cast(%4, dtype="float32") /* ty=Tensor[(3, 3, 5), float32] */;
+  %6 = exp(%5) /* ty=Tensor[(3, 3, 5), float32] span=from_string:13:32 */;
+  %7 = multiply(%2, %1) /* ty=Tensor[(3, 3, 5), float16] span=from_string:11:12 */;
+  %8 = zeros_like(%7) /* ty=Tensor[(3, 3, 5), float16] span=from_string:12:31 */;
+  %9 = cast(%x4, dtype="float16") /* ty=Tensor[(5), float16] */;
+  %10 = cast(%x3, dtype="float16") /* ty=Tensor[(5), float16] */;
+  %11 = collapse_sum_like(%4, %10) /* ty=Tensor[(5), float16] span=from_string:14:19 */;
+  %12 = cast_like(%0, %x1) /* ty=Tensor[(3, 3, 5), int32] span=from_string:16:4 */;
+  %13 = squeeze(%6) /* ty=Tensor[(3, 3, 5), float32] span=from_string:16:8 */;
+  %14 = add(%7, %8) /* ty=Tensor[(3, 3, 5), float16] span=from_string:16:12 */;
+  %15 = broadcast_to_like(%9, %8) /* ty=Tensor[(3, 3, 5), float16] span=from_string:16:16 */;
+  %16 = broadcast_to_like(%x5, %6) /* ty=Tensor[(3, 3, 5), float32] span=from_string:16:20 */;
+  %17 = cast_like(%11, %x7) /* ty=Tensor[(5), int32] span=from_string:16:43 */;
+  %18 = one_hot(%x1, %x8, %x9, depth=6, axis=0, dtype="float32") /* ty=Tensor[(6, 3, 3, 3), float32] span=from_string:16:48 */;
+  (%12, %13, %14, %15, %16, 5 /* ty=int32 span=from_string:16:26 */, %17, %18) /* ty=(Tensor[(3, 3, 5), int32], Tensor[(3, 3, 5), float32], Tensor[(3, 3, 5), float16], Tensor[(3, 3, 5), float16], Tensor[(3, 3, 5), float32], int32, Tensor[(5), int32], Tensor[(6, 3, 3, 3), float32]) span=from_string:3:3 */
+}

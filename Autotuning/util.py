@@ -7,6 +7,7 @@ import tvm
 from tvm import relay, tir, runtime, ir
 # from .serenity import simu_mem_serenity
 from .serenity_eval import simu_mem_serenity
+#from .hmcos_test import simu_mem_hmcos
 
 # def viz2file(filePath:str):
 #     '''
@@ -322,6 +323,14 @@ def serenity_mem_from_relay(mod, time_limit = 15) -> float:
     from GenCoG_cl.gencog.graph.relay import build_graph
     gmod = build_graph(mod)
     return simu_mem_serenity(gmod['main'], time_limit)
+
+def hmcos_mem_from_relay(mod, time_limit = 15) -> float:
+    '''
+    Calculate the dynamic (hmcos) memory footprint of a relay mod object. 
+    '''
+    from GenCoG_cl.gencog.graph.relay import build_graph
+    gmod = build_graph(mod)
+    return simu_mem_hmcos(gmod['main'], time_limit)
 
 def cal_tvm_mem(mod):
     '''

@@ -8,17 +8,17 @@ from typing import Dict, List
 from tqdm import tqdm
 from subprocess import check_output
 from tvm.relay import parse
-from Autotuning.util import load_gmod_from_file, simu_mem_from_relay, cal_tvm_mem, serenity_mem_from_relay
+from Autotuning.util import load_gmod_from_file, simu_mem_from_relay, cal_tvm_mem, serenity_mem_from_relay, hmcos_mem_from_relay
 from Autotuning.sequence import RelayPassTable
 
 def _opt_pass_simu_mem(codePath: str, outPath: str, passName: str, seed: int, profiler):
     env = os.environ.copy()
-    env['PYTHONPATH'] = os.path.join('./', 'python')
+    #env['PYTHONPATH'] = os.path.join('./', 'python')
 
     if profiler == simu_mem_from_relay:
         profiler_name = 'static'
-    elif profiler == cal_tvm_mem:
-        profiler_name = 'tvm'
+    elif profiler == hmcos_mem_from_relay:
+        profiler_name = 'hmcos'
     elif profiler == serenity_mem_from_relay:
         profiler_name = 'serenity'
     else:
@@ -61,6 +61,8 @@ class Greedy:
         self._current = os.path.join(self.workspace_, "0.txt")
         self._best_mem = self._start_mem
         self._seq = []
+        #print('start')
+        
         for _ in tqdm(range(epochs)):
             new_code = self._one_iter()
             if new_code == self._current:
@@ -78,7 +80,7 @@ class Greedy:
         for pass_name in RelayPassTable.NameTable:
             tmp_path = os.path.join(os.path.dirname(self.code_path_), 'tmp.txt')
             mem = _opt_pass_simu_mem(self._current, tmp_path, pass_name, self._rng.integers(2 ** 63), self.profiler_)
-            # print(pass_name, mem)
+            #print(pass_name, mem)
             if mem is not None and mem < best_mem:
                 best_mem = mem
                 pick_pass = pass_name
@@ -87,6 +89,7 @@ class Greedy:
         
         # Optimize with the picked pass.
         new_code = os.path.join(self.workspace_, f'{self.code_num}.txt')
+        #print('new_code:',new_code)
         mem = _opt_pass_simu_mem(self._current, new_code, pick_pass, self._rng.integers(2 ** 63), self.profiler_)
         self._best_mem = mem
         self.code_num += 1

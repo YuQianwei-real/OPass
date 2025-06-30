@@ -19,6 +19,11 @@ class Vertex:
     """
     kind: VertexKind
 
+    def __init__(self):
+        self.preds: List[Vertex] = []
+        self.succs: List[Vertex] = []
+
+
 
 class Input(Vertex):
     """
@@ -27,6 +32,7 @@ class Input(Vertex):
     kind = VertexKind.IN
 
     def __init__(self, ty: TensorType, is_param: bool):
+        super().__init__()
         self.value_ = Value(ty, def_vert=self)
         self.is_param_ = is_param
 
@@ -44,6 +50,7 @@ class Constant(Vertex):
     kind = VertexKind.CON
 
     def __init__(self, ty: TensorType, data: ValueType):
+        super().__init__()
         self.value_ = Value(ty, def_vert=self)
         self.data_ = data
 
@@ -62,6 +69,7 @@ class Global(Vertex):
     kind = VertexKind.GV
 
     def __init__(self, ty: RelayType, name: str) -> None:
+        super().__init__()
         self.value_ = Value(ty, def_vert=self)
         self.name_ = name
 
@@ -72,6 +80,7 @@ class Output(Vertex):
     kind = VertexKind.OUT
 
     def __init__(self, value: 'Value'):
+        super().__init__()
         self.value_ = value
         value.uses_.append(self)
 
@@ -84,15 +93,16 @@ class Operation(Vertex):
 
     def __init__(self, op: Op, attrs: List[Tuple[str, ValueType]],
                  inputs: List['Value'], outputs: List['Value']):
+        super().__init__()
         self.op_ = op
         self.attrs_ = attrs
         self.inputs_ = inputs
+
         for i in self.inputs_:
             i.uses_.append(self)
         self.outputs_ = outputs
         for o in self.outputs_:
             o.def_ = self
-
 
 class Value:
     """
@@ -111,12 +121,15 @@ class Graph:
     """
 
     def __init__(self, ins: List[Input], outs: List[Output], oprs_: List[Operation], 
-                 outrefs: List[Value] = [], typevars: List[VarTensorType] = []):
+                 outrefs: List[Value] = [], typevars: List[VarTensorType] = [],
+                 constants: List[Constant] = [], globals: List[Global] = []):
         self.inputs_ = ins
         self.outputs_ = outs
         self.oprs_ = oprs_
         self.outrefs_ = outrefs
         self.typevars_ = typevars
+        self.constants_ = constants
+        self.globals_ = globals
 
 class GraphMod:
     """

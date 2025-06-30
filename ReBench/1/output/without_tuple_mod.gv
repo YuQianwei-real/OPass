@@ -1,0 +1,47 @@
+digraph without_tuple_mod {
+	node [fontname="Linux Biolinum O" shape=record]
+	in0 [label="in0: Tensor[(4, 7), float32]"]
+	opr0 [label="{{<i0>Tensor[(4, 7), float32]}|reshape\nnewshape=[2, 7, 2]\nallowzero=0|{<o0>Tensor[(2, 7, 2), float32]}}"]
+	in0 -> opr0:i0
+	opr1 [label="{{<i0>Tensor[(2, 7, 2), float32]}|reshape\nnewshape=[4, 7]\nallowzero=0|{<o0>Tensor[(4, 7), float32]}}"]
+	opr0:o0 -> opr1:i0
+	con0 [label="con0: Tensor[(2,), int32]"]
+	in1 [label="in1: Tensor[(2, 7, 2), float32]"]
+	opr2 [label="{{<i0>Tensor[(2, 7, 2), float32]}|erf\n|{<o0>Tensor[(2, 7, 2), float32]}}"]
+	in1 -> opr2:i0
+	con1 [label="con1: float32"]
+	opr3 [label="{{<i0>Tensor[(2, 7, 2), float32]|<i1>float32}|add\n|{<o0>Tensor[(2, 7, 2), float32]}}"]
+	opr2:o0 -> opr3:i0
+	con1 -> opr3:i1
+	opr4 [label="{{<i0>Tensor[(2, 7, 2), float32]}|reshape\nnewshape=[14, 2]\nallowzero=0|{<o0>Tensor[(14, 2), float32]}}"]
+	opr3:o0 -> opr4:i0
+	con2 [label="con2: int32"]
+	con3 [label="con3: int32"]
+	in2 [label="in2: Tensor[(52, 7, 2), float32]"]
+	opr5 [label="{{<i0>Tensor[(52, 7, 2), float32]}|concatenate\naxis=0|{<o0>Tensor[(54, 7, 2), float32]}}"]
+	in2 -> opr5:i0
+	opr6 [label="{{<i0>Tensor[(4, 7), float32]|<i1>Tensor[(2,), int32]|<i2>Tensor[(14, 2), float32]|<i3>int32|<i4>int32|<i5>Tensor[(54, 7, 2), float32]}|tuple\n|{<o0>(Tensor[(4, 7), float32], Tensor[(2,), int32], Tensor[(14, 2), float32], int32, int32, Tensor[(54, 7, 2), float32])}}"]
+	opr1:o0 -> opr6:i0
+	con0 -> opr6:i1
+	opr4:o0 -> opr6:i2
+	con2 -> opr6:i3
+	con3 -> opr6:i4
+	opr5:o0 -> opr6:i5
+	out0 [label="out0: (Tensor[(4, 7), float32], Tensor[(2,), int32], Tensor[(14, 2), float32], int32, int32, Tensor[(54, 7, 2), float32])"]
+	opr6:o0 -> out0
+	opr7 [label="{{<i0>Tensor[(2, 7, 2), float32]}|annotation.stop_fusion\n|{<o0>Tensor[(2, 7, 2), float32]}}"]
+	opr3:o0 -> opr7:i0
+	opr8 [label="{{<i0>Tensor[(2, 7, 2), float32]}|exp\n|{<o0>Tensor[(2, 7, 2), float32]}}"]
+	opr7:o0 -> opr8:i0
+	opr9 [label="{{<i0>Tensor[(2, 7, 2), float32]}|sqrt\n|{<o0>Tensor[(2, 7, 2), float32]}}"]
+	opr8:o0 -> opr9:i0
+	con4 [label="con4: float32"]
+	opr10 [label="{{<i0>float32|<i1>Tensor[(2, 7, 2), float32]}|divide\n|{<o0>Tensor[(2, 7, 2), float32]}}"]
+	con4 -> opr10:i0
+	opr9:o0 -> opr10:i1
+	con5 [label="con5: float32"]
+	opr11 [label="{{<i0>float32|<i1>Tensor[(2, 7, 2), float32]}|add\n|{<o0>Tensor[(2, 7, 2), float32]}}"]
+	con5 -> opr11:i0
+	opr10:o0 -> opr11:i1
+	in3 [label="in3: Tensor[(14, 2), float32]"]
+}

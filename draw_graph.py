@@ -18,7 +18,7 @@ def gen_tensor_value_dict(params: List[relay.Var], rng: Generator):
 
 argparser = ArgumentParser()
 # argparser.add_argument('-f', '--file', default='/home/nie/RelayOpt/out/run-20230518-001931/9/code.txt', type=str, help='File Path.')
-argparser.add_argument('-f', '--file', default='/home/nie/RelayOpt/out/run-20230525-001953/0-0/FuseOps.txt', type=str, help='File Path.')
+argparser.add_argument('-f', '--file', default='/home/yqw/OPass/test-output/test_result.txt', type=str, help='File Path.')
 args = argparser.parse_args()
 with open(args.file) as f:
     mod = relay.parse(f.read())

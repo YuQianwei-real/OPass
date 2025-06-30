@@ -8,7 +8,7 @@ import json
 import psutil
 
 args = Namespace()
-pass_dir = '/home/nie/RelayOpt/out/test/single_pass/'
+pass_dir = '/home/yqw/RelayOpt/out/test/single_pass/'
 
 def parse_args():
     global args
