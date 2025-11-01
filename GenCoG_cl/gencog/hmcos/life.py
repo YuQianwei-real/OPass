@@ -63,9 +63,9 @@ def compute_lifetime_hmcos(op_seq: List[Operation], graph :Graph):
 
         # Compute lifetime ending of its inputs
         ovl_idx = overlap_input(op)
-        for j, in_ in enumerate(op.inputs):
-            if in_.kind == ValueKind.PARAM:
-                continue
+        for j, in_ in enumerate(op.inputs_):
+            #if in_.kind == ValueKind.PARAM:
+            #    continue
             if in_ not in use_cnt:
                 raise ValueError(f"Value {in_.name} used without definition before.")
             cnt = use_cnt[in_]
@@ -79,8 +79,8 @@ def compute_lifetime_hmcos(op_seq: List[Operation], graph :Graph):
 
     # Finalize lifetime of outputs
     end_time = len(op_seq)
-    for out in graph.outputs:
-        val_life[out.value].kill = end_time
+    for out in graph.outputs_:
+        val_life[out.value_].kill = end_time
 
     # Sort lifetime
     blocks = sorted([lt for lt in val_life.values()], key=cmp_by_gen_kill)

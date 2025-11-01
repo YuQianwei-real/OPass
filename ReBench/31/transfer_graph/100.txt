@@ -1,0 +1,118 @@
+#[version = "0.0.5"]
+def @main(%x0: int32 /* ty=int32 span=from_string:3:61 */, %x1: int32 /* ty=int32 */) -> (bool, uint8, int32, int32, uint8, int32, int32, float32) {
+  let %x4: int32 /* ty=int32 span=from_string:44:320 */ = %x0;
+  %0 = fn (%p0: int32 /* ty=int32 span=from_string:5:10 */, Primitive=1) -> bool {
+    less(%p0, 10 /* ty=int32 span=from_string:5:17 */) /* ty=bool span=from_string:5:5 */
+  } /* ty=fn (int32) -> bool span=from_string:7:56 */;
+  let %x_1: bool /* ty=bool span=from_string:11:61 */ = %0(%x4) /* ty=bool span=from_string:7:56 */;
+  %1 = fn (%p01: bool /* ty=bool span=from_string:9:10 */, Primitive=1) -> bool {
+    min(%p01) /* ty=bool span=from_string:9:6 */
+  } /* ty=fn (bool) -> bool span=from_string:11:58 */;
+  let %x_2: bool /* ty=bool span=from_string:44:174 */ = %1(%x_1) /* ty=bool span=from_string:11:58 */;
+  %2 = fn (%p02: uint8 /* ty=uint8 span=from_string:13:20 */, Primitive=1) -> float32 {
+    qnn.dequantize(%p02, 2f /* ty=float32 span=from_string:13:28 */, 114 /* ty=int32 span=from_string:13:73 */) /* ty=float32 span=from_string:13:5 */
+  } /* ty=fn (uint8) -> float32 span=from_string:15:63 */;
+  let %x_6: float32 /* ty=float32 span=from_string:35:67 */ = %2(meta[relay.Constant][0] /* ty=uint8 span=from_string:15:71 */) /* ty=float32 span=from_string:15:63 */;
+  %3 = fn (%p03: float32 /* ty=float32 span=from_string:17:19 */, Primitive=1) -> float32 {
+    nn.leaky_relu(%p03, alpha=0.1f) /* ty=float32 span=from_string:17:5 */
+  } /* ty=fn (float32) -> float32 span=from_string:19:62 */;
+  let %x_7: float32 /* ty=float32 span=from_string:23:64 */ = %3(%x_6) /* ty=float32 span=from_string:19:62 */;
+  %4 = fn (%p04: float32 /* ty=float32 span=from_string:21:18 */, Primitive=1) -> uint8 {
+    qnn.quantize(%p04, 2f /* ty=float32 span=from_string:21:26 */, 114 /* ty=int32 span=from_string:21:70 */, out_dtype="uint8") /* ty=uint8 span=from_string:21:5 */
+  } /* ty=fn (float32) -> uint8 span=from_string:23:61 */;
+  let %x_10: uint8 /* ty=uint8 span=from_string:44:180 */ = %4(%x_7) /* ty=uint8 span=from_string:23:61 */;
+  %5 = fn (%p05: float32 /* ty=float32 span=from_string:25:10 */, Primitive=1) -> float32 {
+    clip(%p05, a_min=0f, a_max=6f) /* ty=float32 span=from_string:25:5 */
+  } /* ty=fn (float32) -> float32 span=from_string:27:64 */;
+  let %x_13: float32 /* ty=float32 span=from_string:31:64 */ = %5(%x_6) /* ty=float32 span=from_string:27:64 */;
+  %6 = fn (%p06: float32 /* ty=float32 span=from_string:29:18 */, Primitive=1) -> uint8 {
+    qnn.quantize(%p06, 2f /* ty=float32 span=from_string:29:26 */, 114 /* ty=int32 span=from_string:29:71 */, out_dtype="uint8") /* ty=uint8 span=from_string:29:5 */
+  } /* ty=fn (float32) -> uint8 span=from_string:31:61 */;
+  let %x_16: uint8 /* ty=uint8 span=from_string:44:271 */ = %6(%x_13) /* ty=uint8 span=from_string:31:61 */;
+  %7 = fn (%p07: float32 /* ty=float32 span=from_string:33:9 */, Primitive=1) -> float32 {
+    add(%p07, 1f /* ty=float32 span=from_string:33:17 */) /* ty=float32 span=from_string:33:5 */
+  } /* ty=fn (float32) -> float32 span=from_string:35:64 */;
+  let %x_19: float32 /* ty=float32 span=from_string:39:67 */ = %7(%x_6) /* ty=float32 span=from_string:35:64 */;
+  %8 = fn (%p08: float32 /* ty=float32 span=from_string:37:9 */, Primitive=1) -> float32 {
+    exp(%p08) /* ty=float32 span=from_string:37:5 */
+  } /* ty=fn (float32) -> float32 span=from_string:39:64 */;
+  let %x_20: float32 /* ty=float32 span=from_string:43:68 */ = %8(%x_19) /* ty=float32 span=from_string:39:64 */;
+  %9 = fn (%p09: float32 /* ty=float32 span=from_string:41:13 */, Primitive=1, relay.reshape_only=1) -> float32 {
+    squeeze(%p09) /* ty=float32 span=from_string:41:5 */
+  } /* ty=fn (float32) -> float32 span=from_string:43:65 */;
+  let %x_21: float32 /* ty=float32 span=from_string:44:325 */ = %9(%x_20) /* ty=float32 span=from_string:43:65 */;
+  let %x_22: (bool, uint8, int32, int32, uint8, int32, int32, float32) /* ty=(bool, uint8, int32, int32, uint8, int32, int32, float32) span=from_string:45:171 */ = (%x_2, %x_10, 0 /* ty=int32 span=from_string:44:188 */, 1 /* ty=int32 span=from_string:44:230 */, %x_16, 1 /* ty=int32 span=from_string:44:279 */, %x4, %x_21) /* ty=(bool, uint8, int32, int32, uint8, int32, int32, float32) span=from_string:44:173 */;
+  let %x_23: (bool, uint8, int32, int32, uint8, int32, int32, float32) /* ty=(bool, uint8, int32, int32, uint8, int32, int32, float32) span=from_string:46:3 */ = %x_22;
+  %x_23
+}
+
+#[metadata]
+{
+  "root": 1, 
+  "nodes": [
+    {
+      "type_key": ""
+    }, 
+    {
+      "type_key": "Map", 
+      "keys": [
+        "relay.Constant"
+      ], 
+      "data": [2]
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [3]
+    }, 
+    {
+      "type_key": "relay.Constant", 
+      "attrs": {
+        "_checked_type_": "8", 
+        "data": "0", 
+        "span": "6", 
+        "virtual_device_": "4"
+      }
+    }, 
+    {
+      "type_key": "VirtualDevice", 
+      "attrs": {
+        "device_type_int": "-1", 
+        "memory_scope": "5", 
+        "target": "0", 
+        "virtual_device_id": "-1"
+      }
+    }, 
+    {
+      "type_key": "runtime.String"
+    }, 
+    {
+      "type_key": "Span", 
+      "attrs": {
+        "column": "71", 
+        "end_column": "89", 
+        "end_line": "15", 
+        "line": "15", 
+        "source_name": "7"
+      }
+    }, 
+    {
+      "type_key": "SourceName", 
+      "repr_str": "from_string"
+    }, 
+    {
+      "type_key": "relay.TensorType", 
+      "attrs": {
+        "dtype": "uint8", 
+        "shape": "9", 
+        "span": "0"
+      }
+    }, 
+    {
+      "type_key": "Array"
+    }
+  ], 
+  "b64ndarrays": [
+    "P6G0lvBAXt0AAAAAAAAAAAEAAAAAAAAAAAAAAAEIAQABAAAAAAAAAAI="
+  ], 
+  "attrs": {"tvm_version": "0.13.0"}
+}

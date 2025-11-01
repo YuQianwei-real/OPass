@@ -1,0 +1,29 @@
+#[version = "0.0.5"]
+def @main(%x0: Tensor[(1, 64, 56, 56), float32] /* ty=Tensor[(1, 64, 56, 56), float32] span=from_string:3:13 */, %x1: Tensor[(64, 64, 3, 3), float32] /* ty=Tensor[(64, 64, 3, 3), float32] span=from_string:12:13 */) -> ((Tensor[(1, 64, 1, 1), float16], Tensor[(1, 64, 1, 1), float16]), float32, Tensor[(0, 127, 111, 56), float16], Tensor[(1, 64, 1, 1), float16], Tensor[(0, 111, 1, 1), float16], Tensor[(111, 56, 127, 0), float16]) {
+  let %x_0 = cast(%x0, dtype="float16");
+  let %x_1 = nn.global_max_pool2d(%x_0);
+  let %x_2 = 2f16 /* ty=float16 span=from_string:5:26 */;
+  let %x_3 = multiply(%x_1, %x_2);
+  let %x_4 = (%x_1, %x_3) /* ty=(Tensor[(1, 64, 1, 1), float16], Tensor[(1, 64, 1, 1), float16]) span=from_string:25:4 */;
+  let %x_5 = 7.38906f /* ty=float32 span=from_string:25:17 */;
+  let %x_6 = nn.batch_to_space_nd(%x_0, block_shape=[2, 2], crops=[[0, 1], [0, 1]]);
+  let %x_7 = nn.relu(%x_6);
+  let %x_8 = transpose(%x_7, axes=[0, 2, 3, 1]);
+  let %x_9 = transpose(%x_8, axes=[1, 2, 3, 0]);
+  let %x_10 = transpose(%x_9, axes=[3, 2, 0, 1]);
+  let %x_11 = ones(shape=[1], dtype="float16");
+  let %x_12 = add(%x_3, %x_11);
+  let %x_13 = cast(%x1, dtype="float16");
+  let %x_14 = nn.conv2d(%x_12, %x_13, padding=[1, 1, 1, 1], channels=64, kernel_size=[3, 3], out_dtype="float16");
+  let %x_15 = nn.relu(%x_14);
+  let %x_16 = nn.global_max_pool2d(%x_8);
+  let %x_17 = nn.relu(%x_16);
+  let %x_18 = transpose(%x_17, axes=[0, 2, 3, 1]);
+  let %x_19 = transpose(%x_18, axes=[1, 2, 3, 0]);
+  let %x_20 = transpose(%x_19, axes=[3, 2, 0, 1]);
+  let %x_21 = layout_transform(%x_9, src_layout="NCHW", dst_layout="NCHW4c");
+  let %x_22 = layout_transform(%x_21, src_layout="NCHW4c", dst_layout="NCHW");
+  let %x_23 = nn.relu(%x_22);
+  let %x_24 = (%x_4, %x_5, %x_10, %x_15, %x_20, %x_23) /* ty=((Tensor[(1, 64, 1, 1), float16], Tensor[(1, 64, 1, 1), float16]), float32, Tensor[(0, 127, 111, 56), float16], Tensor[(1, 64, 1, 1), float16], Tensor[(0, 111, 1, 1), float16], Tensor[(111, 56, 127, 0), float16]) span=from_string:3:3 */;
+  %x_24
+}

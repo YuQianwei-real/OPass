@@ -1,0 +1,151 @@
+#[version = "0.0.5"]
+def @main(%x0: Tensor[(5, 10), int8] /* ty=Tensor[(5, 10), int8] span=from_string:84:13 */, %x1: Tensor[(10), float32] /* ty=Tensor[(10), float32] span=from_string:40:13 */, %x2: Tensor[(96, 10), float32] /* ty=Tensor[(96, 10), float32] span=from_string:68:18 */, %x3: Tensor[(58, 10), float32] /* ty=Tensor[(58, 10), float32] span=from_string:75:18 */, %x4: Tensor[(10), float32] /* ty=Tensor[(10), float32] */) -> (float32, Tensor[(5, 10), float32], (Tensor[(5, 10), float32], Tensor[(10), float32]), Tensor[(5, 10), int8], (Tensor[(5, 96, 1), float32], Tensor[(5, 58, 1), float32]), int32, Tensor[(5, 10), int32], Tensor[(5, 96), float32], Tensor[(5, 174), float32]) {
+  %0 = fn (%p0: Tensor[(5, 10), int8] /* ty=Tensor[(5, 10), int8] span=from_string:4:20 */, %p1: float32 /* ty=float32 span=from_string:4:25 */, %p2: int32 /* ty=int32 span=from_string:4:30 */, Primitive=1) -> Tensor[(5, 10), float32] {
+    qnn.dequantize(%p0, %p1, %p2) /* ty=Tensor[(5, 10), float32] span=from_string:4:5 */
+  } /* ty=fn (Tensor[(5, 10), int8], float32, int32) -> Tensor[(5, 10), float32] span=from_string:6:8 */;
+  %1 = %0(%x0, 0.1f /* ty=float32 span=from_string:6:20 */, 0 /* ty=int32 span=from_string:6:62 */);
+  %2 = fn (%p01: Tensor[(5, 10), float32] /* ty=Tensor[(5, 10), float32] span=from_string:8:16 */, Primitive=1) -> Tensor[(5, 10), float32] {
+    nn.softmax(%p01) /* ty=Tensor[(5, 10), float32] span=from_string:8:5 */
+  } /* ty=fn (Tensor[(5, 10), float32]) -> Tensor[(5, 10), float32] span=from_string:13:8 */;
+  %3 = fn (Primitive=1) -> Tensor[(1), float32] {
+    zeros(shape=[1], dtype="float32") /* ty=Tensor[(1), float32] span=from_string:11:5 */
+  } /* ty=fn () -> Tensor[(1), float32] span=from_string:14:8 */;
+  %4 = %2(%1);
+  %5 = %3();
+  %6 = fn (%p02: Tensor[(5, 10), float32] /* ty=Tensor[(5, 10), float32] span=from_string:16:9 */, %p11: Tensor[(1), float32] /* ty=Tensor[(1), float32] span=from_string:16:15 */, Primitive=1) -> Tensor[(5, 10), float32] {
+    add(%p02, %p11) /* ty=Tensor[(5, 10), float32] span=from_string:16:5 */
+  } /* ty=fn (Tensor[(5, 10), float32], Tensor[(1), float32]) -> Tensor[(5, 10), float32] span=from_string:143:9 */;
+  %7 = fn (%p03: Tensor[(5, 10), float32] /* ty=Tensor[(5, 10), float32] span=from_string:19:16 */, Primitive=1) -> Tensor[(5, 10), float32] {
+    zeros_like(%p03) /* ty=Tensor[(5, 10), float32] span=from_string:19:5 */
+  } /* ty=fn (Tensor[(5, 10), float32]) -> Tensor[(5, 10), float32] span=from_string:29:9 */;
+  %8 = fn (%p04: Tensor[(5, 10), float32] /* ty=Tensor[(5, 10), float32] span=from_string:22:9 */, %p12: Tensor[(10), float32] /* ty=Tensor[(10), float32] span=from_string:22:15 */, Primitive=1) -> Tensor[(5, 10), float32] {
+    add(%p04, %p12) /* ty=Tensor[(5, 10), float32] span=from_string:22:5 */
+  } /* ty=fn (Tensor[(5, 10), float32], Tensor[(10), float32]) -> Tensor[(5, 10), float32] span=from_string:24:8 */;
+  %9 = %8(%1, %x1);
+  %10 = fn (%p05: Tensor[(5, 10), float32] /* ty=Tensor[(5, 10), float32] span=from_string:26:15 */, Primitive=1) -> Tensor[(5, 10), float32] {
+    ones_like(%p05) /* ty=Tensor[(5, 10), float32] span=from_string:26:5 */
+  } /* ty=fn (Tensor[(5, 10), float32]) -> Tensor[(5, 10), float32] span=from_string:28:9 */;
+  %11 = %10(%9);
+  %12 = %7(%1);
+  %13 = fn (%p06: Tensor[(5, 10), float32] /* ty=Tensor[(5, 10), float32] span=from_string:31:23 */, %p13: Tensor[(5, 10), float32] /* ty=Tensor[(5, 10), float32] span=from_string:31:29 */, Primitive=1) -> Tensor[(5, 10), float32] {
+    collapse_sum_like(%p06, %p13) /* ty=Tensor[(5, 10), float32] span=from_string:31:5 */
+  } /* ty=fn (Tensor[(5, 10), float32], Tensor[(5, 10), float32]) -> Tensor[(5, 10), float32] span=from_string:33:9 */;
+  %14 = %13(%11, %12);
+  %15 = fn (%p07: Tensor[(5, 10), float32] /* ty=Tensor[(5, 10), float32] span=from_string:35:9 */, %p14: Tensor[(5, 10), float32] /* ty=Tensor[(5, 10), float32] span=from_string:35:15 */, Primitive=1) -> Tensor[(5, 10), float32] {
+    add(%p07, %p14) /* ty=Tensor[(5, 10), float32] span=from_string:35:5 */
+  } /* ty=fn (Tensor[(5, 10), float32], Tensor[(5, 10), float32]) -> Tensor[(5, 10), float32] span=from_string:48:9 */;
+  %16 = fn (%p08: Tensor[(10), float32] /* ty=Tensor[(10), float32] span=from_string:38:16 */, Primitive=1) -> Tensor[(10), float32] {
+    zeros_like(%p08) /* ty=Tensor[(10), float32] span=from_string:38:5 */
+  } /* ty=fn (Tensor[(10), float32]) -> Tensor[(10), float32] span=from_string:40:9 */;
+  %17 = %16(%x1);
+  %18 = fn (%p09: Tensor[(5, 10), float32] /* ty=Tensor[(5, 10), float32] span=from_string:42:23 */, %p15: Tensor[(10), float32] /* ty=Tensor[(10), float32] span=from_string:42:29 */, Primitive=1) -> Tensor[(10), float32] {
+    collapse_sum_like(%p09, %p15) /* ty=Tensor[(10), float32] span=from_string:42:5 */
+  } /* ty=fn (Tensor[(5, 10), float32], Tensor[(10), float32]) -> Tensor[(10), float32] span=from_string:44:9 */;
+  %19 = %18(%11, %17);
+  %20 = fn (%p010: Tensor[(10), float32] /* ty=Tensor[(10), float32] span=from_string:46:9 */, %p16: Tensor[(10), float32] /* ty=Tensor[(10), float32] span=from_string:46:16 */, Primitive=1) -> Tensor[(10), float32] {
+    add(%p010, %p16) /* ty=Tensor[(10), float32] span=from_string:46:5 */
+  } /* ty=fn (Tensor[(10), float32], Tensor[(10), float32]) -> Tensor[(10), float32] span=from_string:49:9 */;
+  %21 = %15(%12, %14);
+  %22 = %20(%17, %19);
+  %23 = fn (%p011: Tensor[(5, 10), float32] /* ty=Tensor[(5, 10), float32] span=from_string:51:18 */, %p17: float32 /* ty=float32 span=from_string:51:25 */, %p21: int32 /* ty=int32 span=from_string:51:31 */, Primitive=1) -> Tensor[(5, 10), int8] {
+    qnn.quantize(%p011, %p17, %p21, out_dtype="int8") /* ty=Tensor[(5, 10), int8] span=from_string:51:5 */
+  } /* ty=fn (Tensor[(5, 10), float32], float32, int32) -> Tensor[(5, 10), int8] span=from_string:53:9 */;
+  %24 = %23(%4, 0.00390625f /* ty=float32 span=from_string:53:28 */, -128 /* ty=int32 span=from_string:53:74 */);
+  %25 = fn (%p012: Tensor[(5, 10), int8] /* ty=Tensor[(5, 10), int8] span=from_string:55:20 */, %p18: float32 /* ty=float32 span=from_string:55:27 */, %p22: int32 /* ty=int32 span=from_string:55:33 */, Primitive=1) -> Tensor[(5, 10), float32] {
+    qnn.dequantize(%p012, %p18, %p22) /* ty=Tensor[(5, 10), float32] span=from_string:55:5 */
+  } /* ty=fn (Tensor[(5, 10), int8], float32, int32) -> Tensor[(5, 10), float32] span=from_string:57:9 */;
+  %26 = %25(%24, 0.1f /* ty=float32 span=from_string:57:22 */, 10 /* ty=int32 span=from_string:57:66 */);
+  %27 = fn (%p013: Tensor[(5, 10), float32] /* ty=Tensor[(5, 10), float32] span=from_string:59:15 */, %p19: float32 /* ty=float32 span=from_string:59:22 */, Primitive=1) -> Tensor[(5, 10), float32] {
+    multiply(%p013, %p19) /* ty=Tensor[(5, 10), float32] span=from_string:59:6 */
+  } /* ty=fn (Tensor[(5, 10), float32], float32) -> Tensor[(5, 10), float32] span=from_string:61:9 */;
+  %28 = %27(%26, 1f /* ty=float32 span=from_string:61:20 */);
+  %29 = fn (%p014: Tensor[(5, 10), float32] /* ty=Tensor[(5, 10), float32] span=from_string:63:18 */, %p110: float32 /* ty=float32 span=from_string:63:25 */, %p23: int32 /* ty=int32 span=from_string:63:32 */, Primitive=1) -> Tensor[(5, 10), int8] {
+    qnn.quantize(%p014, %p110, %p23, out_dtype="int8") /* ty=Tensor[(5, 10), int8] span=from_string:63:5 */
+  } /* ty=fn (Tensor[(5, 10), float32], float32, int32) -> Tensor[(5, 10), int8] span=from_string:145:9 */;
+  %30 = fn (%p015: Tensor[(5, 10), float32] /* ty=Tensor[(5, 10), float32] span=from_string:66:14 */, %p111: Tensor[(96, 10), float32] /* ty=Tensor[(96, 10), float32] span=from_string:66:21 */, Primitive=1) -> Tensor[(5, 96), float32] {
+    nn.dense(%p015, %p111, units=None) /* ty=Tensor[(5, 96), float32] span=from_string:66:5 */
+  } /* ty=fn (Tensor[(5, 10), float32], Tensor[(96, 10), float32]) -> Tensor[(5, 96), float32] span=from_string:68:9 */;
+  %31 = %30(%21, %x2);
+  %32 = fn (%p016: Tensor[(5, 96), float32] /* ty=Tensor[(5, 96), float32] span=from_string:70:17 */, Primitive=1, relay.reshape_only=1) -> Tensor[(5, 96, 1), float32] {
+    expand_dims(%p016, axis=2) /* ty=Tensor[(5, 96, 1), float32] span=from_string:70:5 */
+  } /* ty=fn (Tensor[(5, 96), float32]) -> Tensor[(5, 96, 1), float32] span=from_string:79:9 */;
+  %33 = fn (%p017: Tensor[(5, 10), float32] /* ty=Tensor[(5, 10), float32] span=from_string:73:14 */, %p112: Tensor[(58, 10), float32] /* ty=Tensor[(58, 10), float32] span=from_string:73:21 */, Primitive=1) -> Tensor[(5, 58), float32] {
+    nn.dense(%p017, %p112, units=None) /* ty=Tensor[(5, 58), float32] span=from_string:73:5 */
+  } /* ty=fn (Tensor[(5, 10), float32], Tensor[(58, 10), float32]) -> Tensor[(5, 58), float32] span=from_string:75:9 */;
+  %34 = %33(%21, %x3);
+  %35 = fn (%p018: Tensor[(5, 58), float32] /* ty=Tensor[(5, 58), float32] span=from_string:77:17 */, Primitive=1, relay.reshape_only=1) -> Tensor[(5, 58, 1), float32] {
+    expand_dims(%p018, axis=2) /* ty=Tensor[(5, 58, 1), float32] span=from_string:77:5 */
+  } /* ty=fn (Tensor[(5, 58), float32]) -> Tensor[(5, 58, 1), float32] span=from_string:80:9 */;
+  %36 = %32(%31);
+  %37 = %35(%34);
+  %38 = fn (%p019: Tensor[(5, 10), int8] /* ty=Tensor[(5, 10), int8] span=from_string:82:20 */, %p113: float32 /* ty=float32 span=from_string:82:27 */, %p24: int32 /* ty=int32 span=from_string:82:34 */, Primitive=1) -> Tensor[(5, 10), float32] {
+    qnn.dequantize(%p019, %p113, %p24) /* ty=Tensor[(5, 10), float32] span=from_string:82:5 */
+  } /* ty=fn (Tensor[(5, 10), int8], float32, int32) -> Tensor[(5, 10), float32] span=from_string:84:9 */;
+  %39 = %38(%x0, 2f /* ty=float32 span=from_string:84:20 */, 0 /* ty=int32 span=from_string:84:63 */);
+  %40 = fn (%p020: Tensor[(5, 10), float32] /* ty=Tensor[(5, 10), float32] span=from_string:86:13 */, Primitive=1) -> Tensor[(5, 10), int32] {
+    argsort(%p020, axis=1, dtype="int32") /* ty=Tensor[(5, 10), int32] span=from_string:86:5 */
+  } /* ty=fn (Tensor[(5, 10), float32]) -> Tensor[(5, 10), int32] span=from_string:147:9 */;
+  %41 = fn (%p021: Tensor[(5, 96), float32] /* ty=Tensor[(5, 96), float32] span=from_string:89:13 */, Primitive=1) -> Tensor[(5, 96), float32] {
+    nn.relu(%p021) /* ty=Tensor[(5, 96), float32] span=from_string:89:5 */
+  } /* ty=fn (Tensor[(5, 96), float32]) -> Tensor[(5, 96), float32] span=from_string:91:9 */;
+  %42 = %41(%31);
+  %43 = fn (%p022: Tensor[(5, 96), float32] /* ty=Tensor[(5, 96), float32] span=from_string:93:9 */, %p114: float32 /* ty=float32 span=from_string:93:16 */, Primitive=1) -> Tensor[(5, 96), float32] {
+    add(%p022, %p114) /* ty=Tensor[(5, 96), float32] span=from_string:93:5 */
+  } /* ty=fn (Tensor[(5, 96), float32], float32) -> Tensor[(5, 96), float32] span=from_string:102:9 */;
+  %44 = fn (%p023: Tensor[(5, 96), float32] /* ty=Tensor[(5, 96), float32] span=from_string:96:13 */, Primitive=1) -> Tensor[(5, 96), float32] {
+    nn.relu(%p023) /* ty=Tensor[(5, 96), float32] span=from_string:96:5 */
+  } /* ty=fn (Tensor[(5, 96), float32]) -> Tensor[(5, 96), float32] span=from_string:98:9 */;
+  %45 = %44(%31);
+  %46 = fn (%p024: Tensor[(5, 96), float32] /* ty=Tensor[(5, 96), float32] span=from_string:100:9 */, %p115: float32 /* ty=float32 span=from_string:100:16 */, Primitive=1) -> Tensor[(5, 96), float32] {
+    add(%p024, %p115) /* ty=Tensor[(5, 96), float32] span=from_string:100:5 */
+  } /* ty=fn (Tensor[(5, 96), float32], float32) -> Tensor[(5, 96), float32] span=from_string:103:9 */;
+  %47 = %43(%42, 1f /* ty=float32 span=from_string:102:20 */);
+  %48 = %46(%45, 1f /* ty=float32 span=from_string:103:20 */);
+  %49 = fn (%p025: Tensor[(5, 96), float32] /* ty=Tensor[(5, 96), float32] span=from_string:105:9 */, %p116: Tensor[(5, 96), float32] /* ty=Tensor[(5, 96), float32] span=from_string:105:16 */, Primitive=1) -> Tensor[(5, 96), float32] {
+    add(%p025, %p116) /* ty=Tensor[(5, 96), float32] span=from_string:105:5 */
+  } /* ty=fn (Tensor[(5, 96), float32], Tensor[(5, 96), float32]) -> Tensor[(5, 96), float32] span=from_string:148:9 */;
+  %50 = fn (%p026: Tensor[(5, 58, 1), float32] /* ty=Tensor[(5, 58, 1), float32] span=from_string:108:13 */, Primitive=1, relay.reshape_only=1) -> Tensor[(5, 58), float32] {
+    squeeze(%p026) /* ty=Tensor[(5, 58), float32] span=from_string:108:5 */
+  } /* ty=fn (Tensor[(5, 58, 1), float32]) -> Tensor[(5, 58), float32] span=from_string:110:9 */;
+  %51 = %50(%37);
+  %52 = fn (%p027: Tensor[(5, 58), float32] /* ty=Tensor[(5, 58), float32] span=from_string:112:9 */, %p117: float32 /* ty=float32 span=from_string:112:16 */, Primitive=1) -> Tensor[(5, 58), float32] {
+    add(%p027, %p117) /* ty=Tensor[(5, 58), float32] span=from_string:112:5 */
+  } /* ty=fn (Tensor[(5, 58), float32], float32) -> Tensor[(5, 58), float32] span=from_string:128:9 */;
+  %53 = fn (%p028: Tensor[(5, 58), float32] /* ty=Tensor[(5, 58), float32] span=from_string:115:13 */, Primitive=1, relay.reshape_only=1) -> Tensor[(5, 58), float32] {
+    squeeze(%p028) /* ty=Tensor[(5, 58), float32] span=from_string:115:5 */
+  } /* ty=fn (Tensor[(5, 58), float32]) -> Tensor[(5, 58), float32] span=from_string:117:9 */;
+  %54 = %53(%51);
+  %55 = fn (%p029: Tensor[(5, 58), float32] /* ty=Tensor[(5, 58), float32] span=from_string:119:9 */, %p118: float32 /* ty=float32 span=from_string:119:16 */, Primitive=1) -> Tensor[(5, 58), float32] {
+    add(%p029, %p118) /* ty=Tensor[(5, 58), float32] span=from_string:119:5 */
+  } /* ty=fn (Tensor[(5, 58), float32], float32) -> Tensor[(5, 58), float32] span=from_string:121:9 */;
+  %56 = %55(%54, 1f /* ty=float32 span=from_string:121:20 */);
+  %57 = fn (%p030: Tensor[(5, 58), float32] /* ty=Tensor[(5, 58), float32] span=from_string:123:9 */, %p119: float32 /* ty=float32 span=from_string:123:16 */, Primitive=1) -> Tensor[(5, 58), float32] {
+    add(%p030, %p119) /* ty=Tensor[(5, 58), float32] span=from_string:123:5 */
+  } /* ty=fn (Tensor[(5, 58), float32], float32) -> Tensor[(5, 58), float32] span=from_string:129:9 */;
+  %58 = fn (%p031: Tensor[(5, 58), float32] /* ty=Tensor[(5, 58), float32] span=from_string:126:9 */, %p120: float32 /* ty=float32 span=from_string:126:16 */, Primitive=1) -> Tensor[(5, 58), float32] {
+    add(%p031, %p120) /* ty=Tensor[(5, 58), float32] span=from_string:126:5 */
+  } /* ty=fn (Tensor[(5, 58), float32], float32) -> Tensor[(5, 58), float32] span=from_string:130:9 */;
+  %59 = %52(%51, 1f /* ty=float32 span=from_string:128:20 */);
+  %60 = %57(%56, 1f /* ty=float32 span=from_string:129:20 */);
+  %61 = %58(%51, 1f /* ty=float32 span=from_string:130:20 */);
+  %62 = (%59, %60, %61) /* ty=(Tensor[(5, 58), float32], Tensor[(5, 58), float32], Tensor[(5, 58), float32]) span=from_string:135:13 */;
+  %63 = fn (%p032: (Tensor[(5, 58), float32], Tensor[(5, 58), float32], Tensor[(5, 58), float32]) /* ty=(Tensor[(5, 58), float32], Tensor[(5, 58), float32], Tensor[(5, 58), float32]) span=from_string:133:17 */, Primitive=1) -> Tensor[(5, 174), float32] {
+    concatenate(%p032, axis=1) /* ty=Tensor[(5, 174), float32] span=from_string:133:5 */
+  } /* ty=fn ((Tensor[(5, 58), float32], Tensor[(5, 58), float32], Tensor[(5, 58), float32])) -> Tensor[(5, 174), float32] span=from_string:135:9 */;
+  %64 = %63(%62);
+  %65 = fn (%p033: Tensor[(5, 174), float32] /* ty=Tensor[(5, 174), float32] span=from_string:137:13 */, Primitive=1, relay.reshape_only=1) -> Tensor[(5, 174), float32] {
+    squeeze(%p033) /* ty=Tensor[(5, 174), float32] span=from_string:137:5 */
+  } /* ty=fn (Tensor[(5, 174), float32]) -> Tensor[(5, 174), float32] span=from_string:139:9 */;
+  %66 = %65(%64);
+  %67 = fn (%p034: Tensor[(5, 174), float32] /* ty=Tensor[(5, 174), float32] span=from_string:141:9 */, %p121: float32 /* ty=float32 span=from_string:141:16 */, Primitive=1) -> Tensor[(5, 174), float32] {
+    add(%p034, %p121) /* ty=Tensor[(5, 174), float32] span=from_string:141:5 */
+  } /* ty=fn (Tensor[(5, 174), float32], float32) -> Tensor[(5, 174), float32] span=from_string:149:9 */;
+  %68 = %6(%4, %5);
+  %69 = (%21, %22) /* ty=(Tensor[(5, 10), float32], Tensor[(10), float32]) span=from_string:150:55 */;
+  %70 = %29(%28, 0.1f /* ty=float32 span=from_string:145:22 */, 10 /* ty=int32 span=from_string:145:67 */);
+  %71 = (%36, %37) /* ty=(Tensor[(5, 96, 1), float32], Tensor[(5, 58, 1), float32]) span=from_string:150:65 */;
+  %72 = %40(%39);
+  %73 = %49(%47, %48);
+  %74 = %67(%66, 1f /* ty=float32 span=from_string:149:20 */);
+  (0.2f /* ty=float32 span=from_string:150:8 */, %68, %69, %70, %71, 10 /* ty=int32 span=from_string:150:72 */, %72, %73, %74) /* ty=(float32, Tensor[(5, 10), float32], (Tensor[(5, 10), float32], Tensor[(10), float32]), Tensor[(5, 10), int8], (Tensor[(5, 96, 1), float32], Tensor[(5, 58, 1), float32]), int32, Tensor[(5, 10), int32], Tensor[(5, 96), float32], Tensor[(5, 174), float32]) span=from_string:3:3 */
+}

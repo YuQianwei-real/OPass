@@ -1,18 +1,29 @@
 #[version = "0.0.5"]
-def @main(%x0: Tensor[(4, 7), float32] /* ty=Tensor[(4, 7), float32] span=from_string:3:16 */, %x1: Tensor[(2, 7, 2), float32] /* ty=Tensor[(2, 7, 2), float32] span=from_string:4:12 */, %x2: Tensor[(14, 2), float32] /* ty=Tensor[(14, 2), float32] */, %x3: Tensor[(52, 7, 2), float32] /* ty=Tensor[(52, 7, 2), float32] span=from_string:11:13 */) -> (Tensor[(4, 7), float32], Tensor[(2), int32], Tensor[(14, 2), float32], int32, int32, Tensor[(54, 7, 2), float32]) {
-  %0 = reshape(%x0, newshape=[2, 7, 2]) /* ty=Tensor[(2, 7, 2), float32] span=from_string:12:16 */;
-  %1 = erf(%x1) /* ty=Tensor[(2, 7, 2), float32] span=from_string:5:12 */;
-  %2 = add(%1, 1f /* ty=float32 span=from_string:5:18 */) /* ty=Tensor[(2, 7, 2), float32] span=from_string:13:17 */;
-  %3 = annotation.stop_fusion(%2) /* ty=Tensor[(2, 7, 2), float32] span=from_string:7:12 */;
-  %4 = exp(%3) /* ty=Tensor[(2, 7, 2), float32] span=from_string:8:13 */;
-  %5 = sqrt(%4) /* ty=Tensor[(2, 7, 2), float32] span=from_string:9:59 */;
-  %6 = divide(2f /* ty=float32 span=from_string:9:17 */, %5) /* ty=Tensor[(2, 7, 2), float32] span=from_string:10:33 */;
-  %7 = add(2f /* ty=float32 span=from_string:10:14 */, %6) /* ty=Tensor[(2, 7, 2), float32] span=from_string:11:9 */;
-  %8 = (%7, %x3) /* ty=(Tensor[(2, 7, 2), float32], Tensor[(52, 7, 2), float32]) span=from_string:14:21 */;
-  %9 = reshape(%0, newshape=[4, 7]) /* ty=Tensor[(4, 7), float32] span=from_string:15:4 */;
-  %10 = reshape(%2, newshape=[14, 2]) /* ty=Tensor[(14, 2), float32] span=from_string:15:61 */;
-  %11 = concatenate(%8) /* ty=Tensor[(54, 7, 2), float32] span=from_string:15:102 */;
-  (%9, meta[relay.Constant][0] /* ty=Tensor[(2), int32] span=from_string:15:13 */, %10, 2 /* ty=int32 span=from_string:15:67 */, 1 /* ty=int32 span=from_string:15:85 */, %11) /* ty=(Tensor[(4, 7), float32], Tensor[(2), int32], Tensor[(14, 2), float32], int32, int32, Tensor[(54, 7, 2), float32]) span=from_string:3:3 */
+def @main(%x0: Tensor[(4, 7), float32] /* ty=Tensor[(4, 7), float32] span=from_string:23:12 */, %x1: Tensor[(2, 7, 2), float32] /* ty=Tensor[(2, 7, 2), float32] span=from_string:11:11 */, %x2: Tensor[(14, 2), float32] /* ty=Tensor[(14, 2), float32] */, %x3: Tensor[(52, 7, 2), float32] /* ty=Tensor[(52, 7, 2), float32] span=from_string:25:17 */) -> (Tensor[(4, 7), float32], Tensor[(2), int32], Tensor[(14, 2), float32], int32, int32, Tensor[(54, 7, 2), float32]) {
+  %1 = fn (%p0: Tensor[(4, 7), float32] /* ty=Tensor[(4, 7), float32] span=from_string:4:18 */, Primitive=1, relay.reshape_only=1) -> Tensor[(4, 7), float32] {
+    %0 = reshape(%p0, newshape=[2, 7, 2]) /* ty=Tensor[(2, 7, 2), float32] span=from_string:5:13 */;
+    reshape(%0, newshape=[4, 7]) /* ty=Tensor[(4, 7), float32] span=from_string:4:5 */
+  } /* ty=fn (Tensor[(4, 7), float32]) -> Tensor[(4, 7), float32] span=from_string:23:9 */;
+  %3 = fn (%p02: Tensor[(2, 7, 2), float32] /* ty=Tensor[(2, 7, 2), float32] span=from_string:8:14 */, Primitive=1) -> Tensor[(2, 7, 2), float32] {
+    %2 = erf(%p02) /* ty=Tensor[(2, 7, 2), float32] span=from_string:9:9 */;
+    add(%2, 1f /* ty=float32 span=from_string:9:15 */) /* ty=Tensor[(2, 7, 2), float32] span=from_string:8:5 */
+  } /* ty=fn (Tensor[(2, 7, 2), float32]) -> Tensor[(2, 7, 2), float32] span=from_string:11:8 */;
+  %4 = %3(%x1);
+  %5 = fn (%p01: Tensor[(2, 7, 2), float32] /* ty=Tensor[(2, 7, 2), float32] span=from_string:13:13 */, Primitive=1, relay.reshape_only=1) -> Tensor[(14, 2), float32] {
+    reshape(%p01, newshape=[14, 2]) /* ty=Tensor[(14, 2), float32] span=from_string:13:5 */
+  } /* ty=fn (Tensor[(2, 7, 2), float32]) -> Tensor[(14, 2), float32] span=from_string:24:9 */;
+  %11 = fn (%p03: Tensor[(2, 7, 2), float32] /* ty=Tensor[(2, 7, 2), float32] span=from_string:16:14 */, %p1: Tensor[(52, 7, 2), float32] /* ty=Tensor[(52, 7, 2), float32] span=from_string:20:16 */, Primitive=1) -> Tensor[(54, 7, 2), float32] {
+    %6 = exp(%p03) /* ty=Tensor[(2, 7, 2), float32] span=from_string:17:15 */;
+    %7 = sqrt(%6) /* ty=Tensor[(2, 7, 2), float32] span=from_string:18:61 */;
+    %8 = divide(2f /* ty=float32 span=from_string:18:19 */, %7) /* ty=Tensor[(2, 7, 2), float32] span=from_string:19:58 */;
+    %9 = add(2f /* ty=float32 span=from_string:19:16 */, %8) /* ty=Tensor[(2, 7, 2), float32] span=from_string:20:12 */;
+    %10 = (%9, %p1) /* ty=(Tensor[(2, 7, 2), float32], Tensor[(52, 7, 2), float32]) span=from_string:21:17 */;
+    concatenate(%10) /* ty=Tensor[(54, 7, 2), float32] span=from_string:16:5 */
+  } /* ty=fn (Tensor[(2, 7, 2), float32], Tensor[(52, 7, 2), float32]) -> Tensor[(54, 7, 2), float32] span=from_string:25:9 */;
+  %12 = %1(%x0);
+  %13 = %5(%4);
+  %14 = %11(%4, %x3);
+  (%12, meta[relay.Constant][0] /* ty=Tensor[(2), int32] span=from_string:26:14 */, %13, 2 /* ty=int32 span=from_string:26:91 */, 1 /* ty=int32 span=from_string:26:132 */, %14) /* ty=(Tensor[(4, 7), float32], Tensor[(2), int32], Tensor[(14, 2), float32], int32, int32, Tensor[(54, 7, 2), float32]) span=from_string:3:3 */
 }
 
 #[metadata]
@@ -57,10 +68,10 @@ def @main(%x0: Tensor[(4, 7), float32] /* ty=Tensor[(4, 7), float32] span=from_s
     {
       "type_key": "Span", 
       "attrs": {
-        "column": "13", 
-        "end_column": "31", 
-        "end_line": "15", 
-        "line": "15", 
+        "column": "14", 
+        "end_column": "32", 
+        "end_line": "26", 
+        "line": "26", 
         "source_name": "7"
       }
     }, 
@@ -91,8 +102,8 @@ def @main(%x0: Tensor[(4, 7), float32] /* ty=Tensor[(4, 7), float32] span=from_s
     {
       "type_key": "Span", 
       "attrs": {
-        "column": "398", 
-        "end_column": "418", 
+        "column": "378", 
+        "end_column": "398", 
         "end_line": "2", 
         "line": "2", 
         "source_name": "7"

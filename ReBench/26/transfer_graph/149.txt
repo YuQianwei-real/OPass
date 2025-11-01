@@ -1,0 +1,153 @@
+#[version = "0.0.5"]
+def @main(%x0: Tensor[(1, 128, 56, 56), float32] /* ty=Tensor[(1, 128, 56, 56), float32] span=from_string:3:13 */, %x1: Tensor[(1, 128, 56, 56), float32] /* ty=Tensor[(1, 128, 56, 56), float32] span=from_string:7:13 */, %x2: Tensor[(128, 128, 3, 3), float32] /* ty=Tensor[(128, 128, 3, 3), float32] span=from_string:11:13 */, %x3: Tensor[(128, 128, 1, 1), float32] /* ty=Tensor[(128, 128, 1, 1), float32] span=from_string:22:14 */, %x4: Tensor[(128, 128, 3, 3), float32] /* ty=Tensor[(128, 128, 3, 3), float32] span=from_string:16:14 */, %x5: Tensor[(128, 56, 56), float32] /* ty=Tensor[(128, 56, 56), float32] */, %x6: float32 /* ty=float32 span=from_string:20:14 */, %x7: Tensor[(80, 128, 56, 56), float32] /* ty=Tensor[(80, 128, 56, 56), float32] span=from_string:27:15 */) -> (Tensor[(1, 128, 56, 56), float16], Tensor[(1, 32, 56, 56, 4), float16], Tensor[(0, 255, 111, 56), float16], Tensor[(1, 128, 56, 56), float16], Tensor[(3), int32], Tensor[(4), int32], Tensor[(81, 128, 56, 56), float32], Tensor[(128, 384), float16]) {
+  let %x_0 = cast(%x0, dtype="float16");
+  let %x_1 = cast(%x_0, dtype="float16");
+  let %x_2 = layout_transform(%x_1, src_layout="NCHW", dst_layout="NCHW4c");
+  let %x_3 = layout_transform(%x_2, src_layout="NCHW4c", dst_layout="NCHW");
+  let %x_4 = nn.relu(%x_3);
+  let %x_5 = cast(%x1, dtype="float16");
+  let %x_6 = cast(%x_5, dtype="float16");
+  let %x_7 = subtract(%x_4, %x_6);
+  let %x_8 = multiply(%x_7, %x_6);
+  let %x_9 = nn.relu(%x_2);
+  let %x_10 = 1f16 /* ty=float16 span=from_string:12:20 */;
+  let %x_11 = add(%x_4, %x_10);
+  let %x_12 = cast(%x2, dtype="float16");
+  let %x_13 = cast(%x_12, dtype="float16");
+  let %x_14 = nn.conv2d(%x_11, %x_13, padding=[1, 1, 1, 1], channels=128, kernel_size=[3, 3], out_dtype="float16");
+  let %x_15 = 1f16 /* ty=float16 span=from_string:15:17 */;
+  let %x_16 = add(%x_15, %x_14);
+  let %x_17 = add(%x_14, %x_16);
+  let %x_18 = cast(%x4, dtype="float16");
+  let %x_19 = cast(%x_18, dtype="float16");
+  let %x_20 = nn.conv2d(%x_17, %x_19, padding=[1, 1, 1, 1], channels=128, kernel_size=[3, 3], out_dtype="float16");
+  let %x_21 = nn.batch_to_space_nd(%x_20, block_shape=[2, 2], crops=[[0, 1], [0, 1]]);
+  let %x_22 = reshape(%x_11, newshape=[1, 128, 56, 56]);
+  let %x_23 = cast(%x6, dtype="float16");
+  let %x_24 = cast(%x_23, dtype="float16");
+  let %x_25 = full(%x_24, shape=[3], dtype="int32");
+  let %x_26 = meta[relay.Constant][0] /* ty=Tensor[(4), int32] span=from_string:53:34 */;
+  let %x_27 = cast(%x3, dtype="float16");
+  let %x_28 = cast(%x_27, dtype="float16");
+  let %x_29 = nn.conv2d(%x_17, %x_28, padding=[0, 0, 0, 0], channels=128, kernel_size=[1, 1], out_dtype="float16");
+  let %x_30 = add(%x_29, %x_20);
+  let %x_31 = cast(%x_30, dtype="float32");
+  let %x_32 = (%x_31, %x7) /* ty=(Tensor[(1, 128, 56, 56), float32], Tensor[(80, 128, 56, 56), float32]) span=from_string:28:21 */;
+  let %x_33 = concatenate(%x_32);
+  let %x_34 = annotation.stop_fusion(%x_33);
+  let %x_35 = (%x_34,) /* ty=(Tensor[(81, 128, 56, 56), float32],) span=from_string:51:21 */;
+  let %x_36 = concatenate(%x_35);
+  let %x_37 = squeeze(%x_28);
+  let %x_38 = 1f16 /* ty=float16 span=from_string:34:22 */;
+  let %x_39 = add(%x_37, %x_38);
+  let %x_40 = squeeze(%x_37);
+  let %x_41 = 1f16 /* ty=float16 span=from_string:33:22 */;
+  let %x_42 = add(%x_40, %x_41);
+  let %x_43 = 1f16 /* ty=float16 span=from_string:35:22 */;
+  let %x_44 = add(%x_42, %x_43);
+  let %x_45 = (%x_39, %x_44) /* ty=(Tensor[(128, 128), float16], Tensor[(128, 128), float16]) span=from_string:37:21 */;
+  let %x_46 = concatenate(%x_45, axis=1);
+  let %x_47 = annotation.stop_fusion(%x_46);
+  let %x_48 = 1f16 /* ty=float16 span=from_string:38:22 */;
+  let %x_49 = add(%x_37, %x_48);
+  let %x_50 = (%x_49,) /* ty=(Tensor[(128, 128), float16],) span=from_string:40:21 */;
+  let %x_51 = concatenate(%x_50, axis=1);
+  let %x_52 = annotation.stop_fusion(%x_51);
+  let %x_53 = (%x_47, %x_52) /* ty=(Tensor[(128, 256), float16], Tensor[(128, 128), float16]) span=from_string:44:21 */;
+  let %x_54 = concatenate(%x_53, axis=1);
+  let %x_55 = squeeze(%x_54);
+  let %x_56 = 1f16 /* ty=float16 span=from_string:52:22 */;
+  let %x_57 = add(%x_55, %x_56);
+  let %x_58 = (%x_8, %x_9, %x_21, %x_22, %x_25, %x_26, %x_36, %x_57) /* ty=(Tensor[(1, 128, 56, 56), float16], Tensor[(1, 32, 56, 56, 4), float16], Tensor[(0, 255, 111, 56), float16], Tensor[(1, 128, 56, 56), float16], Tensor[(3), int32], Tensor[(4), int32], Tensor[(81, 128, 56, 56), float32], Tensor[(128, 384), float16]) span=from_string:3:3 */;
+  %x_58
+}
+
+#[metadata]
+{
+  "root": 1, 
+  "nodes": [
+    {
+      "type_key": ""
+    }, 
+    {
+      "type_key": "Map", 
+      "keys": [
+        "relay.Constant"
+      ], 
+      "data": [2]
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [3]
+    }, 
+    {
+      "type_key": "relay.Constant", 
+      "attrs": {
+        "_checked_type_": "8", 
+        "data": "0", 
+        "span": "6", 
+        "virtual_device_": "4"
+      }
+    }, 
+    {
+      "type_key": "VirtualDevice", 
+      "attrs": {
+        "device_type_int": "-1", 
+        "memory_scope": "5", 
+        "target": "0", 
+        "virtual_device_id": "-1"
+      }
+    }, 
+    {
+      "type_key": "runtime.String"
+    }, 
+    {
+      "type_key": "Span", 
+      "attrs": {
+        "column": "34", 
+        "end_column": "52", 
+        "end_line": "53", 
+        "line": "53", 
+        "source_name": "7"
+      }
+    }, 
+    {
+      "type_key": "SourceName", 
+      "repr_str": "from_string"
+    }, 
+    {
+      "type_key": "relay.TensorType", 
+      "attrs": {
+        "dtype": "int32", 
+        "shape": "9", 
+        "span": "11"
+      }
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [10]
+    }, 
+    {
+      "type_key": "IntImm", 
+      "attrs": {
+        "dtype": "int32", 
+        "span": "0", 
+        "value": "4"
+      }
+    }, 
+    {
+      "type_key": "Span", 
+      "attrs": {
+        "column": "948", 
+        "end_column": "968", 
+        "end_line": "2", 
+        "line": "2", 
+        "source_name": "7"
+      }
+    }
+  ], 
+  "b64ndarrays": [
+    "P6G0lvBAXt0AAAAAAAAAAAEAAAAAAAAAAQAAAAAgAQAEAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
+  ], 
+  "attrs": {"tvm_version": "0.13.0"}
+}

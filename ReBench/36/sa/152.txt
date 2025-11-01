@@ -1,0 +1,82 @@
+#[version = "0.0.5"]
+def @main(%x0: Tensor[(1, 3, 10, 10), int8] /* ty=Tensor[(1, 3, 10, 10), int8] */, %x1: Tensor[(1, 6, 10, 10), float32] /* ty=Tensor[(1, 6, 10, 10), float32] */, %x2: Tensor[(92), int64] /* ty=Tensor[(92), int64] */, %x3: Tensor[(1, 6, 10, 41), float32] /* ty=Tensor[(1, 6, 10, 41), float32] */, %x4: Tensor[(1, 6, 10, 72), float32] /* ty=Tensor[(1, 6, 10, 72), float32] */) -> (int8, Tensor[(1, 6, 10, 10), float32], Tensor[(1, 3, 5, 5), float32], Tensor[(1, 10, 5), int32], int32, float32, Tensor[(92, 10, 5), float32], Tensor[(1, 6, 10, 123), float32], Tensor[(0, 40, 40, 1), float32]) {
+  let %x_0 = nn.depth_to_space(%x0, block_size=4);
+  let %x_1 = max(%x_0);
+  let %x_2 = 2f /* ty=float32 span=from_string:5:16 */;
+  let %x_3 = 0 /* ty=int32 span=from_string:6:15 */;
+  let %x_4 = qnn.dequantize(%x0, %x_2, %x_3);
+  let %x_5 = nn.max_pool2d(%x_4, pool_size=[2, 2], strides=[2, 2], padding=[0, 0, 0, 0]);
+  let %x_6 = nn.upsampling(%x_5, scale_h=2f, scale_w=2f);
+  let %x_7 = (%x_6, %x_4);
+  let %x_8 = concatenate(%x_7, axis=1);
+  let %x_9 = 1f /* ty=float32 span=from_string:12:16 */;
+  let %x_10 = add(%x_8, %x_9);
+  let %x_13 = meta[relay.Constant][0];
+  let %x_14 = add(%x_5, %x_13);
+  let %x_15 = split(%x0, indices_or_sections=2, axis=3);
+  let %x_16 = %x_15.0;
+  let %x_17 = 2f /* ty=float32 span=from_string:18:17 */;
+  let %x_18 = 0 /* ty=int32 span=from_string:19:16 */;
+  let %x_19 = qnn.dequantize(%x_16, %x_17, %x_18);
+  let %x_20 = argmin(%x_19, axis=[1]);
+  let %x_21 = 600 /* ty=int32 span=from_string:22:18 */;
+  let %x_22 = 20.0855f /* ty=float32 span=from_string:23:23 */;
+  let %x_23 = squeeze(%x_19);
+  let %x_24 = strided_slice(%x_23, begin=[0, 0, 0], end=[3, 10, 5], strides=[1, 1, 1], axes=None);
+  let %x_25 = take(%x_24, %x2, axis=0);
+  let %x_26 = add(%x_8, %x1);
+  let %x_27 = (%x_26, %x3, %x4);
+  let %x_28 = concatenate(%x_27, axis=3);
+  let %x_29 = nn.depth_to_space(%x_4, block_size=4);
+  let %x_30 = layout_transform(%x_29, src_layout="NCHW", dst_layout="NHWC");
+  let %x_31 = layout_transform(%x_30, src_layout="NHWC", dst_layout="CHWN");
+  let %x_32 = nn.relu(%x_31);
+  let %x_33 = (%x_1, %x_10, %x_14, %x_20, %x_21, %x_22, %x_25, %x_28, %x_32);
+  %x_33
+}
+
+#[metadata]
+{
+  "root": 1, 
+  "nodes": [
+    {
+      "type_key": ""
+    }, 
+    {
+      "type_key": "Map", 
+      "keys": [
+        "relay.Constant"
+      ], 
+      "data": [2]
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [3]
+    }, 
+    {
+      "type_key": "relay.Constant", 
+      "attrs": {
+        "_checked_type_": "0", 
+        "data": "0", 
+        "span": "0", 
+        "virtual_device_": "4"
+      }
+    }, 
+    {
+      "type_key": "VirtualDevice", 
+      "attrs": {
+        "device_type_int": "-1", 
+        "memory_scope": "5", 
+        "target": "0", 
+        "virtual_device_id": "-1"
+      }
+    }, 
+    {
+      "type_key": "runtime.String"
+    }
+  ], 
+  "b64ndarrays": [
+    "P6G0lvBAXt0AAAAAAAAAAAEAAAAAAAAAAQAAAAIgAQABAAAAAAAAAAQAAAAAAAAAAAAAAA=="
+  ], 
+  "attrs": {"tvm_version": "0.13.0"}
+}

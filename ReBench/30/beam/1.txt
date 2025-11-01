@@ -1,0 +1,46 @@
+#[version = "0.0.5"]
+def @main(%x0: Tensor[(1, 3, 224, 224), uint8] /* ty=Tensor[(1, 3, 224, 224), uint8] span=from_string:15:24 */, %x1: Tensor[(3, 224, 224), float32] /* ty=Tensor[(3, 224, 224), float32] span=from_string:30:27 */, %x2: Tensor[(224), float32] /* ty=Tensor[(224), float32] span=from_string:30:32 */) -> (Tensor[(1, 3, 224, 224), uint8], Tensor[(3, 224, 224), float32], (Tensor[(1, 3, 224, 224), float32], (Tensor[(1, 3, 224, 224), float32],)), Tensor[(1, 3, 224, 224), uint8], Tensor[(1, 3, 224, 224), float32], Tensor[(0, 5, 447, 224), float32], float32, Tensor[(1, 3, 224, 224), float32], Tensor[(224), float32], Tensor[(3, 224, 224), float32]) {
+  let %x_0 = 2f /* ty=float32 span=from_string:3:30 */;
+  let %x_1 = 114 /* ty=int32 span=from_string:3:74 */;
+  let %x_2 = qnn.dequantize(%x0, %x_0, %x_1);
+  let %x3: Tensor[(1, 3, 224, 224), float32] /* ty=Tensor[(1, 3, 224, 224), float32] span=from_string:25:10 */ = multiply(%x_2, %x_2);
+  let %x4: Tensor[(1, 3, 224, 224), float32] /* ty=Tensor[(1, 3, 224, 224), float32] span=from_string:10:18 */ = ones_like(%x3);
+  let %x_3 = clip(%x_2, a_min=0f, a_max=6f);
+  let %x_4 = 2f /* ty=float32 span=from_string:23:28 */;
+  let %x_5 = 114 /* ty=int32 span=from_string:23:72 */;
+  let %x_6 = qnn.quantize(%x_3, %x_4, %x_5, out_dtype="uint8");
+  let %x_7 = reshape(%x_3, newshape=[3, 224, 224]);
+  let %x_8 = zeros_like(%x_2);
+  let %x_9 = multiply(%x4, %x_2);
+  let %x_10 = collapse_sum_like(%x_9, %x_2);
+  let %x_11 = add(%x_8, %x_10);
+  let %x_12 = multiply(%x4, %x_2);
+  let %x_13 = collapse_sum_like(%x_12, %x_2);
+  let %x_14 = add(%x_11, %x_13);
+  let %x_15 = (%x_14,) /* ty=(Tensor[(1, 3, 224, 224), float32],) span=from_string:25:15 */;
+  let %x_16 = (%x3, %x_15) /* ty=(Tensor[(1, 3, 224, 224), float32], (Tensor[(1, 3, 224, 224), float32],)) span=from_string:32:14 */;
+  let %x_17 = 2f /* ty=float32 span=from_string:15:31 */;
+  let %x_18 = 114 /* ty=int32 span=from_string:15:76 */;
+  let %x_19 = qnn.dequantize(%x0, %x_17, %x_18);
+  let %x_20 = clip(%x_19, a_min=0f, a_max=6f);
+  let %x_21 = 2f /* ty=float32 span=from_string:26:29 */;
+  let %x_22 = 114 /* ty=int32 span=from_string:26:74 */;
+  let %x_23 = qnn.quantize(%x_20, %x_21, %x_22, out_dtype="uint8");
+  let %x_24 = ones_like(%x_8);
+  let %x_25 = add(%x_8, %x_24);
+  let %x_26 = nn.batch_to_space_nd(%x_11, block_shape=[2, 2], crops=[[0, 1], [0, 1]]);
+  let %x_27 = 4f /* ty=float32 span=from_string:32:36 */;
+  let %x_28 = nn.relu(%x_10);
+  let %x_29 = transpose(%x_28, axes=[0, 2, 3, 1]);
+  let %x_30 = transpose(%x_29, axes=[1, 2, 3, 0]);
+  let %x_31 = transpose(%x_30, axes=[3, 2, 0, 1]);
+  let %x_32 = collapse_sum_like(%x1, %x2);
+  let %x_33 = 1f /* ty=float32 span=from_string:21:20 */;
+  let %x_34 = add(%x_24, %x_33);
+  let %x_35 = exp(%x_34);
+  let %x_36 = squeeze(%x_35);
+  let %x_37 = (%x_6, %x_7, %x_16, %x_23, %x_25, %x_26, %x_27, %x_31, %x_32, %x_36) /* ty=(Tensor[(1, 3, 224, 224), uint8], Tensor[(3, 224, 224), float32], (Tensor[(1, 3, 224, 224), float32], (Tensor[(1, 3, 224, 224), float32],)), Tensor[(1, 3, 224, 224), uint8], Tensor[(1, 3, 224, 224), float32], Tensor[(0, 5, 447, 224), float32], float32, Tensor[(1, 3, 224, 224), float32], Tensor[(224), float32], Tensor[(3, 224, 224), float32]) span=from_string:32:3 */;
+  let %x_38 = %x_37;
+  let %x_39 = %x_38;
+  %x_39
+}

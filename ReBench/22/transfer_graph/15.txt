@@ -1,0 +1,281 @@
+#[version = "0.0.5"]
+def @main(%x0: Tensor[(1, 5, 5, 4), float32] /* ty=Tensor[(1, 5, 5, 4), float32] */, %x1: Tensor[(0, 9, 4), float32], %x2: Tensor[(1, 5, 5, 4), float32] /* ty=Tensor[(1, 5, 5, 4), float32] */) -> (Tensor[(0, 9, 9, 4), float32], Tensor[(1, 5, 5, 4), float16], Tensor[(3), int32], Tensor[(1, 5, 5, 4), float32], Tensor[(1, 5, 5, 4), float32], (Tensor[(5, 5, 4, 1), float32], (Tensor[(5, 5, 4, 1), float32],)), int32) {
+  let %x_0 = nn.batch_to_space_nd(%x0, block_shape=[2, 2], crops=[[0, 1], [0, 1]]);
+  let %x_1 = reshape(%x_0, newshape=[0, 9, 9, 4]);
+  let %x_2 = erf(%x0);
+  let %x_3 = nn.softmax(%x_2);
+  let %x_4 = cast(%x_3, dtype="float16");
+  let %x_5 = meta[relay.Constant][0] /* ty=Tensor[(3), int32] span=from_string:8:19 */;
+  let %x_6 = tanh(%x_3);
+  let %x_7 = subtract(%x_2, %x2);
+  let %x_8 = multiply(%x_7, %x2);
+  let %x_9 = transpose(%x_7, axes=[1, 2, 3, 0]);
+  let %x_10 = nn.relu(%x_9);
+  let %x_11 = multiply(%x_10, %x_10);
+  let %x_14 = meta[relay.Constant][1];
+  let %x_15 = multiply(%x_14, %x_10);
+  let %x_16 = meta[relay.Constant][2] /* ty=Tensor[(4), int32] span=from_string:17:20 */;
+  let %x_17 = collapse_sum_to(%x_15, %x_16, meta[relay.attrs.InitOpAttrs][0]);
+  let %x_18 = multiply(%x_14, %x_10);
+  let %x_19 = meta[relay.Constant][3] /* ty=Tensor[(4), int32] span=from_string:20:20 */;
+  let %x_20 = collapse_sum_to(%x_18, %x_19, meta[relay.attrs.InitOpAttrs][1]);
+  let %x_21 = add(%x_17, %x_20);
+  let %x_22 = (%x_21,);
+  let %x_23 = (%x_11, %x_22);
+  let %x_24 = 2 /* ty=int32 span=from_string:25:16 */;
+  let %x_25 = (%x_1, %x_4, %x_5, %x_6, %x_8, %x_23, %x_24);
+  %x_25
+}
+
+#[metadata]
+{
+  "root": 1, 
+  "nodes": [
+    {
+      "type_key": ""
+    }, 
+    {
+      "type_key": "Map", 
+      "keys": [
+        "relay.attrs.InitOpAttrs", 
+        "relay.Constant"
+      ], 
+      "data": [2, 11]
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [3, 9]
+    }, 
+    {
+      "type_key": "relay.attrs.InitOpAttrs", 
+      "attrs": {
+        "dtype": "", 
+        "shape": "4"
+      }
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [5, 6, 7, 8]
+    }, 
+    {
+      "type_key": "IntImm", 
+      "attrs": {
+        "dtype": "int32", 
+        "span": "0", 
+        "value": "5"
+      }
+    }, 
+    {
+      "type_key": "IntImm", 
+      "attrs": {
+        "dtype": "int32", 
+        "span": "0", 
+        "value": "5"
+      }
+    }, 
+    {
+      "type_key": "IntImm", 
+      "attrs": {
+        "dtype": "int32", 
+        "span": "0", 
+        "value": "4"
+      }
+    }, 
+    {
+      "type_key": "IntImm", 
+      "attrs": {
+        "dtype": "int32", 
+        "span": "0", 
+        "value": "1"
+      }
+    }, 
+    {
+      "type_key": "relay.attrs.InitOpAttrs", 
+      "attrs": {
+        "dtype": "", 
+        "shape": "10"
+      }
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [5, 6, 7, 8]
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [12, 20, 23, 30]
+    }, 
+    {
+      "type_key": "relay.Constant", 
+      "attrs": {
+        "_checked_type_": "17", 
+        "data": "0", 
+        "span": "15", 
+        "virtual_device_": "13"
+      }
+    }, 
+    {
+      "type_key": "VirtualDevice", 
+      "attrs": {
+        "device_type_int": "-1", 
+        "memory_scope": "14", 
+        "target": "0", 
+        "virtual_device_id": "-1"
+      }
+    }, 
+    {
+      "type_key": "runtime.String"
+    }, 
+    {
+      "type_key": "Span", 
+      "attrs": {
+        "column": "19", 
+        "end_column": "37", 
+        "end_line": "8", 
+        "line": "8", 
+        "source_name": "16"
+      }
+    }, 
+    {
+      "type_key": "SourceName", 
+      "repr_str": "from_string"
+    }, 
+    {
+      "type_key": "relay.TensorType", 
+      "attrs": {
+        "dtype": "int32", 
+        "shape": "18", 
+        "span": "0"
+      }
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [19]
+    }, 
+    {
+      "type_key": "IntImm", 
+      "attrs": {
+        "dtype": "int32", 
+        "span": "0", 
+        "value": "3"
+      }
+    }, 
+    {
+      "type_key": "relay.Constant", 
+      "attrs": {
+        "_checked_type_": "0", 
+        "data": "1", 
+        "span": "0", 
+        "virtual_device_": "21"
+      }
+    }, 
+    {
+      "type_key": "VirtualDevice", 
+      "attrs": {
+        "device_type_int": "-1", 
+        "memory_scope": "22", 
+        "target": "0", 
+        "virtual_device_id": "-1"
+      }
+    }, 
+    {
+      "type_key": "runtime.String"
+    }, 
+    {
+      "type_key": "relay.Constant", 
+      "attrs": {
+        "_checked_type_": "27", 
+        "data": "2", 
+        "span": "26", 
+        "virtual_device_": "24"
+      }
+    }, 
+    {
+      "type_key": "VirtualDevice", 
+      "attrs": {
+        "device_type_int": "-1", 
+        "memory_scope": "25", 
+        "target": "0", 
+        "virtual_device_id": "-1"
+      }
+    }, 
+    {
+      "type_key": "runtime.String"
+    }, 
+    {
+      "type_key": "Span", 
+      "attrs": {
+        "column": "20", 
+        "end_column": "38", 
+        "end_line": "17", 
+        "line": "17", 
+        "source_name": "16"
+      }
+    }, 
+    {
+      "type_key": "relay.TensorType", 
+      "attrs": {
+        "dtype": "int32", 
+        "shape": "28", 
+        "span": "0"
+      }
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [29]
+    }, 
+    {
+      "type_key": "IntImm", 
+      "attrs": {
+        "dtype": "int32", 
+        "span": "0", 
+        "value": "4"
+      }
+    }, 
+    {
+      "type_key": "relay.Constant", 
+      "attrs": {
+        "_checked_type_": "32", 
+        "data": "3", 
+        "span": "31", 
+        "virtual_device_": "24"
+      }
+    }, 
+    {
+      "type_key": "Span", 
+      "attrs": {
+        "column": "20", 
+        "end_column": "38", 
+        "end_line": "20", 
+        "line": "20", 
+        "source_name": "16"
+      }
+    }, 
+    {
+      "type_key": "relay.TensorType", 
+      "attrs": {
+        "dtype": "int32", 
+        "shape": "33", 
+        "span": "0"
+      }
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [34]
+    }, 
+    {
+      "type_key": "IntImm", 
+      "attrs": {
+        "dtype": "int32", 
+        "span": "0", 
+        "value": "4"
+      }
+    }
+  ], 
+  "b64ndarrays": [
+    "P6G0lvBAXt0AAAAAAAAAAAEAAAAAAAAAAQAAAAAgAQADAAAAAAAAAAwAAAAAAAAAAQAAAAEAAAABAAAA", 
+    "P6G0lvBAXt0AAAAAAAAAAAEAAAAAAAAABAAAAAIgAQAFAAAAAAAAAAUAAAAAAAAABAAAAAAAAAABAAAAAAAAAJABAAAAAAAAAACAPwAAgD8AAIA/AACAPwAAgD8AAIA/AACAPwAAgD8AAIA/AACAPwAAgD8AAIA/AACAPwAAgD8AAIA/AACAPwAAgD8AAIA/AACAPwAAgD8AAIA/AACAPwAAgD8AAIA/AACAPwAAgD8AAIA/AACAPwAAgD8AAIA/AACAPwAAgD8AAIA/AACAPwAAgD8AAIA/AACAPwAAgD8AAIA/AACAPwAAgD8AAIA/AACAPwAAgD8AAIA/AACAPwAAgD8AAIA/AACAPwAAgD8AAIA/AACAPwAAgD8AAIA/AACAPwAAgD8AAIA/AACAPwAAgD8AAIA/AACAPwAAgD8AAIA/AACAPwAAgD8AAIA/AACAPwAAgD8AAIA/AACAPwAAgD8AAIA/AACAPwAAgD8AAIA/AACAPwAAgD8AAIA/AACAPwAAgD8AAIA/AACAPwAAgD8AAIA/AACAPwAAgD8AAIA/AACAPwAAgD8AAIA/AACAPwAAgD8AAIA/AACAPwAAgD8AAIA/AACAPwAAgD8AAIA/AACAPw==", 
+    "P6G0lvBAXt0AAAAAAAAAAAEAAAAAAAAAAQAAAAAgAQAEAAAAAAAAABAAAAAAAAAABQAAAAUAAAAEAAAAAQAAAA==", 
+    "P6G0lvBAXt0AAAAAAAAAAAEAAAAAAAAAAQAAAAAgAQAEAAAAAAAAABAAAAAAAAAABQAAAAUAAAAEAAAAAQAAAA=="
+  ], 
+  "attrs": {"tvm_version": "0.13.0"}
+}

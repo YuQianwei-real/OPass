@@ -1,0 +1,201 @@
+#[version = "0.0.5"]
+def @main(%x0: Tensor[(2, 32), float32] /* ty=Tensor[(2, 32), float32] span=from_string:4:17 */, %x1: Tensor[(16, 32), float32] /* ty=Tensor[(16, 32), float32] span=from_string:21:13 */, %x2: Tensor[(8, 32), float32] /* ty=Tensor[(8, 32), float32] span=from_string:14:24 */, %x3: Tensor[(2, 11, 1), float32] /* ty=Tensor[(2, 11, 1), float32] span=from_string:20:25 */, %x4: Tensor[(2, 16, 1), float32] /* ty=Tensor[(2, 16, 1), float32] span=from_string:19:30 */, %x5: Tensor[(2, 16, 1), float32] /* ty=Tensor[(2, 16, 1), float32] span=from_string:20:30 */, %x6: Tensor[(5, 32), float32] /* ty=Tensor[(5, 32), float32] span=from_string:23:18 */, %x7: float32 /* ty=float32 span=from_string:24:18 */, %x8: Tensor[(32, 32), float32] /* ty=Tensor[(32, 32), float32] span=from_string:23:23 */, %x9: float32 /* ty=float32 span=from_string:25:18 */, %x10: Tensor[(72, 26), int32] /* ty=Tensor[(72, 26), int32] */) -> ((Tensor[(2, 16, 1), float32], Tensor[(2, 8, 1), float32]), Tensor[(2, 16), float32], (Tensor[(8, 32), float32], (Tensor[(8, 32), float32],)), (Tensor[(2, 11, 16), float32], Tensor[(2, 11, 16), float32], Tensor[(2, 11, 16), float32]), (Tensor[(5, 16), float32], Tensor[(5, 32), float32]), Tensor[(2, 8), float32], Tensor[(8, 32), int32], Tensor[(16, 32), float32]) {
+  %0 = nn.dense(%x0, %x1, units=None) /* ty=Tensor[(2, 16), float32] span=from_string:27:20 */;
+  %1 = nn.dense(%x0, %x2, units=None) /* ty=Tensor[(2, 8), float32] span=from_string:31:20 */;
+  %2 = expand_dims(%0, axis=2) /* ty=Tensor[(2, 16, 1), float32] span=from_string:26:10 */;
+  %3 = expand_dims(%1, axis=2) /* ty=Tensor[(2, 8, 1), float32] span=from_string:26:14 */;
+  %4 = ones(shape=[8, 32], dtype="float32") /* ty=Tensor[(8, 32), float32] span=from_string:32:14 */;
+  %5 = multiply(%4, %x2) /* ty=Tensor[(8, 32), float32] span=from_string:12:24 */;
+  %6 = zeros(shape=[8, 32], dtype="float32") /* ty=Tensor[(8, 32), float32] span=from_string:11:12 */;
+  %7 = collapse_sum_to(%5, meta[relay.Constant][0] /* ty=Tensor[(2), int32] span=from_string:10:33 */, meta[relay.attrs.InitOpAttrs][0]) /* ty=Tensor[(8, 32), float32] span=from_string:11:16 */;
+  %8 = add(%6, %7) /* ty=Tensor[(8, 32), float32] span=from_string:13:13 */;
+  %9 = collapse_sum_to(%5, meta[relay.Constant][1] /* ty=Tensor[(2), int32] span=from_string:12:33 */, meta[relay.attrs.InitOpAttrs][1]) /* ty=Tensor[(8, 32), float32] span=from_string:13:17 */;
+  %10 = add(%8, %9) /* ty=Tensor[(8, 32), float32] span=from_string:15:10 */;
+  %11 = multiply(%x2, %x2) /* ty=Tensor[(8, 32), float32] span=from_string:28:10 */;
+  %12 = (%10,) /* ty=(Tensor[(8, 32), float32],) span=from_string:28:15 */;
+  %13 = sqrt(%2) /* ty=Tensor[(2, 16, 1), float32] span=from_string:17:60 */;
+  %14 = divide(2f /* ty=float32 span=from_string:17:18 */, %13) /* ty=Tensor[(2, 16, 1), float32] span=from_string:18:30 */;
+  %15 = (%14, %x4, %x5) /* ty=(Tensor[(2, 16, 1), float32], Tensor[(2, 16, 1), float32], Tensor[(2, 16, 1), float32]) */;
+  %16 = concatenate(%15, axis=1) /* ty=Tensor[(2, 48, 1), float32] */;
+  %17 = nn.batch_matmul(%x3, %16, transpose_b=True) /* ty=Tensor[(2, 11, 48), float32] */;
+  %18 = strided_slice(%17, begin=[0, 0, 0], end=[-1, -1, 16], strides=[1, 1, 1], slice_mode="size", axes=None) /* ty=Tensor[(2, 11, 16), float32] */;
+  %19 = strided_slice(%17, begin=[0, 0, 16], end=[-1, -1, 16], strides=[1, 1, 1], slice_mode="size", axes=None) /* ty=Tensor[(2, 11, 16), float32] */;
+  %20 = strided_slice(%17, begin=[0, 0, 32], end=[-1, -1, 16], strides=[1, 1, 1], slice_mode="size", axes=None) /* ty=Tensor[(2, 11, 16), float32] */;
+  %21 = add(%x1, 1f /* ty=float32 span=from_string:21:20 */) /* ty=Tensor[(16, 32), float32] span=from_string:22:23 */;
+  %22 = nn.dense(%x6, %21, units=None) /* ty=Tensor[(5, 16), float32] span=from_string:24:13 */;
+  %23 = nn.dense(%x6, %x8, units=None) /* ty=Tensor[(5, 32), float32] span=from_string:25:13 */;
+  %24 = add(%22, %x7) /* ty=Tensor[(5, 16), float32] span=from_string:30:10 */;
+  %25 = add(%23, %x9) /* ty=Tensor[(5, 32), float32] span=from_string:30:15 */;
+  %26 = (%2, %3) /* ty=(Tensor[(2, 16, 1), float32], Tensor[(2, 8, 1), float32]) span=from_string:34:4 */;
+  %27 = nn.softmax(%0) /* ty=Tensor[(2, 16), float32] span=from_string:34:9 */;
+  %28 = (%11, %12) /* ty=(Tensor[(8, 32), float32], (Tensor[(8, 32), float32],)) span=from_string:34:14 */;
+  %29 = (%18, %19, %20) /* ty=(Tensor[(2, 11, 16), float32], Tensor[(2, 11, 16), float32], Tensor[(2, 11, 16), float32]) span=from_string:34:19 */;
+  %30 = (%24, %25) /* ty=(Tensor[(5, 16), float32], Tensor[(5, 32), float32]) span=from_string:34:24 */;
+  %31 = nn.softmax(%1) /* ty=Tensor[(2, 8), float32] span=from_string:34:29 */;
+  %32 = cast(%4, dtype="int32") /* ty=Tensor[(8, 32), int32] span=from_string:34:34 */;
+  %33 = ones(shape=[16, 32], dtype="float32") /* ty=Tensor[(16, 32), float32] span=from_string:34:39 */;
+  (%26, %27, %28, %29, %30, %31, %32, %33) /* ty=((Tensor[(2, 16, 1), float32], Tensor[(2, 8, 1), float32]), Tensor[(2, 16), float32], (Tensor[(8, 32), float32], (Tensor[(8, 32), float32],)), (Tensor[(2, 11, 16), float32], Tensor[(2, 11, 16), float32], Tensor[(2, 11, 16), float32]), (Tensor[(5, 16), float32], Tensor[(5, 32), float32]), Tensor[(2, 8), float32], Tensor[(8, 32), int32], Tensor[(16, 32), float32]) span=from_string:3:3 */
+}
+
+#[metadata]
+{
+  "root": 1, 
+  "nodes": [
+    {
+      "type_key": ""
+    }, 
+    {
+      "type_key": "Map", 
+      "keys": [
+        "relay.attrs.InitOpAttrs", 
+        "relay.Constant"
+      ], 
+      "data": [2, 9]
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [3, 7]
+    }, 
+    {
+      "type_key": "relay.attrs.InitOpAttrs", 
+      "attrs": {
+        "dtype": "", 
+        "shape": "4"
+      }
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [5, 6]
+    }, 
+    {
+      "type_key": "IntImm", 
+      "attrs": {
+        "dtype": "int32", 
+        "span": "0", 
+        "value": "8"
+      }
+    }, 
+    {
+      "type_key": "IntImm", 
+      "attrs": {
+        "dtype": "int32", 
+        "span": "0", 
+        "value": "32"
+      }
+    }, 
+    {
+      "type_key": "relay.attrs.InitOpAttrs", 
+      "attrs": {
+        "dtype": "", 
+        "shape": "8"
+      }
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [5, 6]
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [10, 18]
+    }, 
+    {
+      "type_key": "relay.Constant", 
+      "attrs": {
+        "_checked_type_": "15", 
+        "data": "0", 
+        "span": "13", 
+        "virtual_device_": "11"
+      }
+    }, 
+    {
+      "type_key": "VirtualDevice", 
+      "attrs": {
+        "device_type_int": "-1", 
+        "memory_scope": "12", 
+        "target": "0", 
+        "virtual_device_id": "-1"
+      }
+    }, 
+    {
+      "type_key": "runtime.String"
+    }, 
+    {
+      "type_key": "Span", 
+      "attrs": {
+        "column": "33", 
+        "end_column": "51", 
+        "end_line": "10", 
+        "line": "10", 
+        "source_name": "14"
+      }
+    }, 
+    {
+      "type_key": "SourceName", 
+      "repr_str": "from_string"
+    }, 
+    {
+      "type_key": "relay.TensorType", 
+      "attrs": {
+        "dtype": "int32", 
+        "shape": "16", 
+        "span": "0"
+      }
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [17]
+    }, 
+    {
+      "type_key": "IntImm", 
+      "attrs": {
+        "dtype": "int32", 
+        "span": "0", 
+        "value": "2"
+      }
+    }, 
+    {
+      "type_key": "relay.Constant", 
+      "attrs": {
+        "_checked_type_": "20", 
+        "data": "1", 
+        "span": "19", 
+        "virtual_device_": "11"
+      }
+    }, 
+    {
+      "type_key": "Span", 
+      "attrs": {
+        "column": "33", 
+        "end_column": "51", 
+        "end_line": "12", 
+        "line": "12", 
+        "source_name": "14"
+      }
+    }, 
+    {
+      "type_key": "relay.TensorType", 
+      "attrs": {
+        "dtype": "int32", 
+        "shape": "21", 
+        "span": "0"
+      }
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [22]
+    }, 
+    {
+      "type_key": "IntImm", 
+      "attrs": {
+        "dtype": "int32", 
+        "span": "0", 
+        "value": "2"
+      }
+    }
+  ], 
+  "b64ndarrays": [
+    "P6G0lvBAXt0AAAAAAAAAAAEAAAAAAAAAAQAAAAAgAQACAAAAAAAAAAgAAAAAAAAACAAAACAAAAA=", 
+    "P6G0lvBAXt0AAAAAAAAAAAEAAAAAAAAAAQAAAAAgAQACAAAAAAAAAAgAAAAAAAAACAAAACAAAAA="
+  ], 
+  "attrs": {"tvm_version": "0.13.0"}
+}

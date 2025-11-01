@@ -1,0 +1,24 @@
+#[version = "0.0.5"]
+def @main(%x0: Tensor[(1, 64, 56, 56), float32] /* ty=Tensor[(1, 64, 56, 56), float32] span=GeneratedSource:5:29 */, %x1: Tensor[(64, 64, 3, 3), float32] /* ty=Tensor[(64, 64, 3, 3), float32] span=GeneratedSource:11:22 */) -> ((Tensor[(1, 64, 1, 1), float32], Tensor[(1, 64, 1, 1), float32]), float32, Tensor[(0, 127, 111, 56), float32], Tensor[(1, 64, 1, 1), float32], Tensor[(0, 111, 1, 1), float32], Tensor[(111, 56, 127, 0), float32]) {
+  %0 = nn.global_max_pool2d(%x0) /* ty=Tensor[(1, 64, 1, 1), float32] span=GeneratedSource:18:10 */;
+  %1 = multiply(%0, 2f /* ty=float32 span=GeneratedSource:4:24 */) /* ty=Tensor[(1, 64, 1, 1), float32] span=GeneratedSource:18:14 */;
+  %2 = nn.batch_to_space_nd(%x0, block_shape=[2, 2], crops=[[0, 1], [0, 1]]) /* ty=Tensor[(0, 127, 111, 56), float32] span=GeneratedSource:6:16 */;
+  %3 = nn.relu(%2) /* ty=Tensor[(0, 127, 111, 56), float32] span=GeneratedSource:7:18 */;
+  %4 = transpose(%3, axes=[0, 2, 3, 1]) /* ty=Tensor[(0, 111, 56, 127), float32] span=GeneratedSource:12:29 */;
+  %5 = transpose(%4, axes=[1, 2, 3, 0]) /* ty=Tensor[(111, 56, 127, 0), float32] span=GeneratedSource:19:19 */;
+  %6 = ones(shape=[1], dtype="float32") /* ty=Tensor[(1), float32] span=GeneratedSource:10:16 */;
+  %7 = add(%1, %6) /* ty=Tensor[(1, 64, 1, 1), float32] span=GeneratedSource:11:18 */;
+  %8 = nn.conv2d(%7, %x1, padding=[1, 1, 1, 1], channels=64, kernel_size=[3, 3]) /* ty=Tensor[(1, 64, 1, 1), float32] span=GeneratedSource:20:17 */;
+  %9 = nn.global_max_pool2d(%4) /* ty=Tensor[(0, 111, 1, 1), float32] span=GeneratedSource:13:17 */;
+  %10 = nn.relu(%9) /* ty=Tensor[(0, 111, 1, 1), float32] span=GeneratedSource:14:19 */;
+  %11 = transpose(%10, axes=[0, 2, 3, 1]) /* ty=Tensor[(0, 1, 1, 111), float32] span=GeneratedSource:15:19 */;
+  %12 = transpose(%11, axes=[1, 2, 3, 0]) /* ty=Tensor[(1, 1, 111, 0), float32] span=GeneratedSource:21:19 */;
+  %13 = layout_transform(%5, src_layout="NCHW", dst_layout="NCHW4c") /* ty=Tensor[(111, 14, 127, 0, 4), float32] span=GeneratedSource:17:26 */;
+  %14 = layout_transform(%13, src_layout="NCHW4c", dst_layout="NCHW") /* ty=Tensor[(111, 56, 127, 0), float32] span=GeneratedSource:22:17 */;
+  %15 = (%0, %1) /* ty=(Tensor[(1, 64, 1, 1), float32], Tensor[(1, 64, 1, 1), float32]) span=GeneratedSource:23:4 */;
+  %16 = transpose(%5, axes=[3, 2, 0, 1]) /* ty=Tensor[(0, 127, 111, 56), float32] span=GeneratedSource:23:59 */;
+  %17 = nn.relu(%8) /* ty=Tensor[(1, 64, 1, 1), float32] span=GeneratedSource:23:64 */;
+  %18 = transpose(%12, axes=[3, 2, 0, 1]) /* ty=Tensor[(0, 111, 1, 1), float32] span=GeneratedSource:23:69 */;
+  %19 = nn.relu(%14) /* ty=Tensor[(111, 56, 127, 0), float32] span=GeneratedSource:23:74 */;
+  (%15, 7.38906f /* ty=float32 span=GeneratedSource:23:17 */, %16, %17, %18, %19) /* ty=((Tensor[(1, 64, 1, 1), float32], Tensor[(1, 64, 1, 1), float32]), float32, Tensor[(0, 127, 111, 56), float32], Tensor[(1, 64, 1, 1), float32], Tensor[(0, 111, 1, 1), float32], Tensor[(111, 56, 127, 0), float32]) span=GeneratedSource:3:3 */
+}

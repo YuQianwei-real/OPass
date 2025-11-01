@@ -1,0 +1,103 @@
+#[version = "0.0.5"]
+def @main(%x0: Tensor[(10, 10), float32] /* ty=Tensor[(10, 10), float32] */, %x1: Tensor[(65, 10), float32] /* ty=Tensor[(65, 10), float32] */, %x2: Tensor[(10, 10), float32] /* ty=Tensor[(10, 10), float32] */, %x3: Tensor[(10), float32] /* ty=Tensor[(10), float32] */, %x4: Tensor[(10), float32] /* ty=Tensor[(10), float32] */, %x5: Tensor[(12, 10), float32] /* ty=Tensor[(12, 10), float32] */, %x6: Tensor[(12), float32] /* ty=Tensor[(12), float32] */, %x7: Tensor[(1), float32] /* ty=Tensor[(1), float32] */, %x8: Tensor[(24, 10), float32] /* ty=Tensor[(24, 10), float32] */, %x9: Tensor[(24), float32] /* ty=Tensor[(24), float32] */, %x10: Tensor[(1), float32] /* ty=Tensor[(1), float32] */, %x11: Tensor[(14, 30), float32] /* ty=Tensor[(14, 30), float32] */, %x12: Tensor[(42, 24), float32] /* ty=Tensor[(42, 24), float32] */, %x13: Tensor[(10, 24), float32] /* ty=Tensor[(10, 24), float32] */, %x14: Tensor[(10), float32] /* ty=Tensor[(10), float32] */, %x15: Tensor[(10), float32] /* ty=Tensor[(10), float32] */, %x16: Tensor[(1), float32] /* ty=Tensor[(1), float32] */, %x17: Tensor[(1), float32] /* ty=Tensor[(1), float32] */) -> ((Tensor[(65, 10), float32], Tensor[(65, 10), float32]), (Tensor[(1, 1, 120), float32], Tensor[(1, 1, 240), float32]), (Tensor[(10, 24), float32], (Tensor[(10, 24), float32],)), Tensor[(1), float32], Tensor[(14, 65), float32], Tensor[(65, 10), bfloat16], (Tensor[(1, 1, 420), float32], Tensor[(1, 1, 420), float32])) {
+  let %x_0 = zeros_like(%x0);
+  let %x_1 = add(%x0, %x_0);
+  let %x_2 = nn.dense(%x1, %x_1, units=None);
+  let %x_3 = add(%x_2, %x3);
+  let %x_4 = nn.dense(%x1, %x2, units=None);
+  let %x_5 = add(%x_4, %x4);
+  let %x_6 = (%x_3, %x_5);
+  let %x_7 = nn.relu(%x_1);
+  let %x_8 = 1f /* ty=float32 span=from_string:11:112 */;
+  let %x_9 = add(%x_7, %x_8);
+  let %x_10 = nn.relu(%x_1);
+  let %x_11 = 1f /* ty=float32 span=from_string:13:114 */;
+  let %x_12 = add(%x_10, %x_11);
+  let %x_13 = add(%x_9, %x_12);
+  let %x_14 = nn.dense(%x_13, %x5, units=None);
+  let %x_15 = add(%x_14, %x6);
+  let %x_16 = multiply(%x_15, %x7);
+  let %x_17 = reshape(%x_16, newshape=[1, 1, 120]);
+  let %x_18 = nn.dense(%x_13, %x8, units=None);
+  let %x_19 = add(%x_18, %x9);
+  let %x_20 = multiply(%x_19, %x10);
+  let %x_21 = reshape(%x_20, newshape=[1, 1, 240]);
+  let %x_22 = (%x_17, %x_21);
+  let %x_23 = multiply(%x_20, %x_20);
+  let %x_24 = zeros_like(%x_20);
+  let %x_25 = ones_like(%x_23);
+  let %x_26 = multiply(%x_25, %x_20);
+  let %x_27 = collapse_sum_like(%x_26, %x_20);
+  let %x_28 = add(%x_24, %x_27);
+  let %x_29 = multiply(%x_25, %x_20);
+  let %x_30 = collapse_sum_like(%x_29, %x_20);
+  let %x_31 = add(%x_28, %x_30);
+  let %x_32 = (%x_31,);
+  let %x_33 = (%x_23, %x_32);
+  let %x_36 = meta[relay.Constant][0];
+  let %x_37 = add(%x10, %x_36);
+  let %x_38 = split(%x11, indices_or_sections=3, axis=1);
+  let %x_39 = %x_38.0;
+  let %x_40 = ones_like(%x_4);
+  let %x_41 = add(%x_4, %x_40);
+  let %x_42 = nn.dense(%x_39, %x_41, units=None);
+  let %x_43 = cast(%x_41, dtype="bfloat16");
+  let %x_44 = clip(%x_43, a_min=-0.2f, a_max=0.4f);
+  let %x_45 = nn.dense(%x12, %x_26, units=None);
+  let %x_46 = add(%x_45, %x14);
+  let %x_47 = multiply(%x_46, %x16);
+  let %x_48 = reshape(%x_47, newshape=[1, 1, -1]);
+  let %x_49 = nn.dense(%x12, %x13, units=None);
+  let %x_50 = add(%x_49, %x15);
+  let %x_51 = multiply(%x_50, %x17);
+  let %x_52 = reshape(%x_51, newshape=[1, 1, -1]);
+  let %x_53 = (%x_48, %x_52);
+  let %x_54 = (%x_6, %x_22, %x_33, %x_37, %x_42, %x_44, %x_53);
+  %x_54
+}
+
+#[metadata]
+{
+  "root": 1, 
+  "nodes": [
+    {
+      "type_key": ""
+    }, 
+    {
+      "type_key": "Map", 
+      "keys": [
+        "relay.Constant"
+      ], 
+      "data": [2]
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [3]
+    }, 
+    {
+      "type_key": "relay.Constant", 
+      "attrs": {
+        "_checked_type_": "0", 
+        "data": "0", 
+        "span": "0", 
+        "virtual_device_": "4"
+      }
+    }, 
+    {
+      "type_key": "VirtualDevice", 
+      "attrs": {
+        "device_type_int": "-1", 
+        "memory_scope": "5", 
+        "target": "0", 
+        "virtual_device_id": "-1"
+      }
+    }, 
+    {
+      "type_key": "runtime.String"
+    }
+  ], 
+  "b64ndarrays": [
+    "P6G0lvBAXt0AAAAAAAAAAAEAAAAAAAAAAQAAAAIgAQABAAAAAAAAAAQAAAAAAAAAAACAPw=="
+  ], 
+  "attrs": {"tvm_version": "0.13.0"}
+}

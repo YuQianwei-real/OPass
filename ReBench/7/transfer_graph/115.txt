@@ -1,80 +1,79 @@
 #[version = "0.0.5"]
-def @main(%x0: Tensor[(4, 7), float32] /* ty=Tensor[(4, 7), float32] span=from_string:3:13 */, %x1: Tensor[(2, 7, 2), float32] /* ty=Tensor[(2, 7, 2), float32] span=from_string:17:14 */, %x2: Tensor[(14, 2), float32] /* ty=Tensor[(14, 2), float32] span=from_string:50:14 */, %x3: int32 /* ty=int32 span=from_string:65:94 */, %x4: int32 /* ty=int32 span=from_string:65:99 */, %x5: Tensor[(74, 7, 2), float32] /* ty=Tensor[(74, 7, 2), float32] span=from_string:37:15 */, %x6: Tensor[(16, 2), float32] /* ty=Tensor[(16, 2), float32] span=from_string:41:14 */, %x7: Tensor[(16), float32] /* ty=Tensor[(16), float32] span=from_string:42:14 */, %x8: Tensor[(1), float32] /* ty=Tensor[(1), float32] span=from_string:46:14 */, %x9: Tensor[(32, 2), float32] /* ty=Tensor[(32, 2), float32] span=from_string:51:14 */, %x10: Tensor[(32), float32] /* ty=Tensor[(32), float32] span=from_string:52:14 */, %x11: Tensor[(1), float32] /* ty=Tensor[(1), float32] span=from_string:56:14 */) -> (Tensor[(4, 7), float16], (Tensor[(2, 7, 2), float16], (Tensor[(2, 7, 2), float16],)), Tensor[(2, 7, 2), float16], Tensor[(6, 2), float32], Tensor[(2, 7, 2), float32], Tensor[(2, 7, 2), float32], Tensor[(76, 7, 2), float32], (Tensor[(1, 1, 224), float16], Tensor[(1, 1, 448), float16])) {
-  let %x_0 = cast(%x0, dtype="float16");
-  let %x_1 = reshape(%x_0, newshape=[4, 7]);
-  let %x_2 = cast(%x1, dtype="float16");
-  let %x_3 = multiply(%x_2, %x_2);
-  let %x_4 = ones(shape=[2, 7, 2], dtype="float16");
-  let %x_5 = cast(%x_4, dtype="float32");
-  let %x_6 = cast(%x_5, dtype="float16");
-  let %x_7 = cast(%x1, dtype="float16");
-  let %x_8 = multiply(%x_6, %x_7);
-  let %x_9 = cast(%x_8, dtype="float32");
-  let %x_10 = cast(%x_9, dtype="float16");
-  let %x_11 = meta[relay.Constant][0] /* ty=Tensor[(3), int32] span=from_string:12:33 */;
-  let %x_12 = collapse_sum_to(%x_10, %x_11, meta[relay.attrs.InitOpAttrs][0]);
-  let %x_13 = cast(%x_12, dtype="float32");
-  let %x_14 = cast(%x_13, dtype="float16");
-  let %x_15 = cast(%x_14, dtype="float32");
-  let %x_16 = cast(%x_15, dtype="float16");
-  let %x_17 = cast(%x_5, dtype="float16");
-  let %x_18 = cast(%x1, dtype="float16");
-  let %x_19 = multiply(%x_17, %x_18);
-  let %x_20 = meta[relay.Constant][1] /* ty=Tensor[(3), int32] span=from_string:19:35 */;
-  let %x_21 = collapse_sum_to(%x_19, %x_20, meta[relay.attrs.InitOpAttrs][1]);
-  let %x_22 = cast(%x_21, dtype="float32");
-  let %x_23 = cast(%x_22, dtype="float16");
-  let %x_24 = add(%x_16, %x_23);
-  let %x_25 = (%x_24,) /* ty=(Tensor[(2, 7, 2), float16],) span=from_string:63:15 */;
-  let %x_26 = (%x_3, %x_25) /* ty=(Tensor[(2, 7, 2), float16], (Tensor[(2, 7, 2), float16],)) span=from_string:70:9 */;
-  let %x_27 = cast(%x_13, dtype="float16");
-  let %x_28 = reshape(%x_27, newshape=[2, 7, 2]);
-  let %x_29 = meta[relay.Constant][2] /* ty=Tensor[(2), int32] span=from_string:65:22 */;
-  let %x_30 = one_hot(%x_29, %x3, %x4, depth=6, axis=0, dtype="float32");
-  let %x_31 = cast(%x_15, dtype="float16");
-  let %x_32 = 1f /* ty=float32 span=from_string:28:16 */;
-  let %x_33 = cast(%x_32, dtype="float16");
-  let %x_34 = add(%x_31, %x_33);
-  let %x_35 = cast(%x_34, dtype="float32");
-  let %x_36 = exp(%x_35);
-  let %x_37 = multiply(%x_36, %x_36);
-  let %x_38 = cast(%x_9, dtype="float16");
-  let %x_39 = 1f /* ty=float32 span=from_string:33:16 */;
-  let %x_40 = cast(%x_39, dtype="float16");
-  let %x_41 = add(%x_38, %x_40);
-  let %x_42 = cast(%x_41, dtype="float32");
-  let %x_43 = exp(%x_42);
-  let %x_44 = squeeze(%x_43);
-  let %x_45 = 2f /* ty=float32 span=from_string:68:21 */;
-  let %x_46 = (%x_35, %x5) /* ty=(Tensor[(2, 7, 2), float32], Tensor[(74, 7, 2), float32]) span=from_string:38:21 */;
-  let %x_47 = concatenate(%x_46);
-  let %x_48 = rsqrt(%x_47);
-  let %x_49 = multiply(%x_45, %x_48);
-  let %x_50 = cast(%x2, dtype="float16");
-  let %x_51 = cast(%x6, dtype="float16");
-  let %x_52 = nn.dense(%x_50, %x_51, units=None, out_dtype="float16");
-  let %x_53 = cast(%x7, dtype="float16");
-  let %x_54 = expand_dims(%x_53, axis=0);
-  let %x_55 = add(%x_52, %x_54);
-  let %x_56 = cast(%x8, dtype="float16");
-  let %x_57 = multiply(%x_55, %x_56);
-  let %x_58 = cast(%x_57, dtype="float32");
-  let %x_59 = cast(%x_58, dtype="float16");
-  let %x_60 = reshape(%x_59, newshape=[1, 1, 224]);
-  let %x_61 = cast(%x2, dtype="float16");
-  let %x_62 = cast(%x9, dtype="float16");
-  let %x_63 = nn.dense(%x_61, %x_62, units=None, out_dtype="float16");
-  let %x_64 = cast(%x10, dtype="float16");
-  let %x_65 = expand_dims(%x_64, axis=0);
-  let %x_66 = add(%x_63, %x_65);
-  let %x_67 = cast(%x11, dtype="float16");
-  let %x_68 = multiply(%x_66, %x_67);
-  let %x_69 = cast(%x_68, dtype="float32");
-  let %x_70 = cast(%x_69, dtype="float16");
-  let %x_71 = reshape(%x_70, newshape=[1, 1, 448]);
-  let %x_72 = (%x_60, %x_71) /* ty=(Tensor[(1, 1, 224), float16], Tensor[(1, 1, 448), float16]) span=from_string:70:39 */;
-  let %x_73 = (%x_1, %x_26, %x_28, %x_30, %x_37, %x_44, %x_49, %x_72) /* ty=(Tensor[(4, 7), float16], (Tensor[(2, 7, 2), float16], (Tensor[(2, 7, 2), float16],)), Tensor[(2, 7, 2), float16], Tensor[(6, 2), float32], Tensor[(2, 7, 2), float32], Tensor[(2, 7, 2), float32], Tensor[(76, 7, 2), float32], (Tensor[(1, 1, 224), float16], Tensor[(1, 1, 448), float16])) span=from_string:3:3 */;
-  %x_73
+def @main(%x0: Tensor[(4, 7), float32] /* ty=Tensor[(4, 7), float32] span=from_string:119:12 */, %x1: Tensor[(2, 7, 2), float32] /* ty=Tensor[(2, 7, 2), float32] span=from_string:42:13 */, %x2: Tensor[(14, 2), float32] /* ty=Tensor[(14, 2), float32] span=from_string:111:13 */, %x3: int32 /* ty=int32 span=from_string:122:89 */, %x4: int32 /* ty=int32 span=from_string:122:94 */, %x5: Tensor[(74, 7, 2), float32] /* ty=Tensor[(74, 7, 2), float32] span=from_string:125:18 */, %x6: Tensor[(16, 2), float32] /* ty=Tensor[(16, 2), float32] span=from_string:96:18 */, %x7: Tensor[(16), float32] /* ty=Tensor[(16), float32] span=from_string:96:23 */, %x8: Tensor[(1), float32] /* ty=Tensor[(1), float32] span=from_string:96:28 */, %x9: Tensor[(32, 2), float32] /* ty=Tensor[(32, 2), float32] span=from_string:111:18 */, %x10: Tensor[(32), float32] /* ty=Tensor[(32), float32] span=from_string:111:23 */, %x11: Tensor[(1), float32] /* ty=Tensor[(1), float32] span=from_string:111:29 */) -> (Tensor[(4, 7), float16], (Tensor[(2, 7, 2), float16], (Tensor[(2, 7, 2), float16],)), Tensor[(2, 7, 2), float16], Tensor[(6, 2), float32], Tensor[(2, 7, 2), float16], Tensor[(2, 7, 2), float16], Tensor[(76, 7, 2), float32], (Tensor[(1, 1, 224), float16], Tensor[(1, 1, 448), float16])) {
+  %0 = cast(%x1, dtype="float16") /* ty=Tensor[(2, 7, 2), float16] span=from_string:5:19 */;
+  let %x12: Tensor[(2, 7, 2), float16] /* ty=Tensor[(2, 7, 2), float16] span=from_string:120:10 */ = multiply(%0, %0) /* ty=Tensor[(2, 7, 2), float16] span=from_string:4:5 */;
+  %1 = cast(%x12, dtype="float32") /* ty=Tensor[(2, 7, 2), float32] span=from_string:13:104 */;
+  %2 = cast(%1, dtype="float16") /* ty=Tensor[(2, 7, 2), float16] span=from_string:11:15 */;
+  let %x13: Tensor[(2, 7, 2), float16] /* ty=Tensor[(2, 7, 2), float16] span=from_string:21:14 */ = ones_like(%2) /* ty=Tensor[(2, 7, 2), float16] span=from_string:10:5 */;
+  %3 = cast(%x0, dtype="float16") /* ty=Tensor[(4, 7), float16] span=from_string:16:18 */;
+  %4 = reshape(%3, newshape=[2, 7, 2]) /* ty=Tensor[(2, 7, 2), float16] span=from_string:17:18 */;
+  %5 = reshape(%4, newshape=[4, 7]) /* ty=Tensor[(4, 7), float16] span=from_string:18:18 */;
+  %6 = reshape(%5, newshape=[2, 7, 2]) /* ty=Tensor[(2, 7, 2), float16] span=from_string:19:13 */;
+  %7 = cast(%x1, dtype="float16") /* ty=Tensor[(2, 7, 2), float16] span=from_string:38:22 */;
+  %8 = cast(%x13, dtype="float32") /* ty=Tensor[(2, 7, 2), float32] span=from_string:27:13 */;
+  %9 = cast(%8, dtype="float16") /* ty=Tensor[(2, 7, 2), float16] span=from_string:25:15 */;
+  %10 = cast(%x1, dtype="float16") /* ty=Tensor[(2, 7, 2), float16] span=from_string:25:20 */;
+  %11 = multiply(%9, %10) /* ty=Tensor[(2, 7, 2), float16] span=from_string:23:5 */;
+  %12 = cast(%11, dtype="float32") /* ty=Tensor[(2, 7, 2), float32] span=from_string:124:13 */;
+  %13 = cast(%12, dtype="float16") /* ty=Tensor[(2, 7, 2), float16] span=from_string:32:23 */;
+  %14 = cast(%x1, dtype="float16") /* ty=Tensor[(2, 7, 2), float16] span=from_string:32:28 */;
+  %15 = collapse_sum_like(%13, %14) /* ty=Tensor[(2, 7, 2), float16] span=from_string:30:5 */;
+  %16 = cast(%15, dtype="float32") /* ty=Tensor[(2, 7, 2), float32] span=from_string:121:13 */;
+  %17 = zeros_like(%7) /* ty=Tensor[(2, 7, 2), float16] span=from_string:40:9 */;
+  %18 = cast(%16, dtype="float16") /* ty=Tensor[(2, 7, 2), float16] span=from_string:40:14 */;
+  %19 = add(%17, %18) /* ty=Tensor[(2, 7, 2), float16] span=from_string:37:5 */;
+  %20 = cast(%19, dtype="float32") /* ty=Tensor[(2, 7, 2), float32] span=from_string:64:13 */;
+  %21 = cast(%20, dtype="float16") /* ty=Tensor[(2, 7, 2), float16] span=from_string:47:9 */;
+  %22 = cast(%16, dtype="float16") /* ty=Tensor[(2, 7, 2), float16] span=from_string:47:14 */;
+  %23 = add(%21, %22) /* ty=Tensor[(2, 7, 2), float16] span=from_string:45:5 */;
+  %24 = (%23,) /* ty=(Tensor[(2, 7, 2), float16],) span=from_string:120:16 */;
+  %25 = cast(%16, dtype="float16") /* ty=Tensor[(2, 7, 2), float16] span=from_string:53:19 */;
+  %26 = reshape(%25, newshape=[14, 2]) /* ty=Tensor[(14, 2), float16] span=from_string:54:13 */;
+  %27 = cast(%20, dtype="float16") /* ty=Tensor[(2, 7, 2), float16] span=from_string:62:9 */;
+  %28 = cast(1f /* ty=float32 span=from_string:61:18 */, dtype="float16") /* ty=float16 span=from_string:62:14 */;
+  %29 = add(%27, %28) /* ty=Tensor[(2, 7, 2), float16] span=from_string:60:5 */;
+  %30 = cast(%29, dtype="float32") /* ty=Tensor[(2, 7, 2), float32] span=from_string:125:13 */;
+  %31 = cast(%30, dtype="float16") /* ty=Tensor[(2, 7, 2), float16] span=from_string:68:20 */;
+  %32 = fast_exp(%31) /* ty=Tensor[(2, 7, 2), float16] span=from_string:69:20 */;
+  %33 = cast(%12, dtype="float16") /* ty=Tensor[(2, 7, 2), float16] span=from_string:74:15 */;
+  %34 = cast(1f /* ty=float32 span=from_string:73:18 */, dtype="float16") /* ty=float16 span=from_string:74:20 */;
+  %35 = add(%33, %34) /* ty=Tensor[(2, 7, 2), float16] span=from_string:75:20 */;
+  %36 = fast_exp(%35) /* ty=Tensor[(2, 7, 2), float16] span=from_string:76:13 */;
+  %37 = (%30, %x5) /* ty=(Tensor[(2, 7, 2), float32], Tensor[(74, 7, 2), float32]) span=from_string:80:23 */;
+  %38 = concatenate(%37) /* ty=Tensor[(76, 7, 2), float32] span=from_string:81:34 */;
+  %39 = annotation.stop_fusion(%38) /* ty=Tensor[(76, 7, 2), float32] span=from_string:82:12 */;
+  %40 = (%39,) /* ty=(Tensor[(76, 7, 2), float32],) span=from_string:83:23 */;
+  %41 = concatenate(%40) /* ty=Tensor[(76, 7, 2), float32] span=from_string:84:16 */;
+  %42 = sqrt(%41) /* ty=Tensor[(76, 7, 2), float32] span=from_string:85:56 */;
+  %43 = cast(%x2, dtype="float16") /* ty=Tensor[(14, 2), float16] span=from_string:90:20 */;
+  %44 = cast(%x6, dtype="float16") /* ty=Tensor[(16, 2), float16] span=from_string:90:25 */;
+  %45 = nn.dense(%43, %44, units=None, out_dtype="float16") /* ty=Tensor[(14, 16), float16] span=from_string:92:15 */;
+  %46 = cast(%x7, dtype="float16") /* ty=Tensor[(16), float16] span=from_string:92:20 */;
+  %47 = add(%45, %46) /* ty=Tensor[(14, 16), float16] span=from_string:94:15 */;
+  %48 = cast(%x8, dtype="float16") /* ty=Tensor[(1), float16] span=from_string:94:20 */;
+  %49 = multiply(%47, %48) /* ty=Tensor[(14, 16), float16] span=from_string:88:5 */;
+  %50 = cast(%49, dtype="float32") /* ty=Tensor[(14, 16), float32] span=from_string:117:13 */;
+  %51 = cast(%50, dtype="float16") /* ty=Tensor[(14, 16), float16] span=from_string:100:13 */;
+  %52 = cast(%x2, dtype="float16") /* ty=Tensor[(14, 2), float16] span=from_string:105:20 */;
+  %53 = cast(%x9, dtype="float16") /* ty=Tensor[(32, 2), float16] span=from_string:105:25 */;
+  %54 = nn.dense(%52, %53, units=None, out_dtype="float16") /* ty=Tensor[(14, 32), float16] span=from_string:107:15 */;
+  %55 = cast(%x10, dtype="float16") /* ty=Tensor[(32), float16] span=from_string:107:20 */;
+  %56 = add(%54, %55) /* ty=Tensor[(14, 32), float16] span=from_string:109:15 */;
+  %57 = cast(%x11, dtype="float16") /* ty=Tensor[(1), float16] span=from_string:109:20 */;
+  %58 = multiply(%56, %57) /* ty=Tensor[(14, 32), float16] span=from_string:103:5 */;
+  %59 = cast(%58, dtype="float32") /* ty=Tensor[(14, 32), float32] span=from_string:118:13 */;
+  %60 = cast(%59, dtype="float16") /* ty=Tensor[(14, 32), float16] span=from_string:115:13 */;
+  %61 = reshape(%51, newshape=[1, 1, 224]) /* ty=Tensor[(1, 1, 224), float16] span=from_string:99:5 */;
+  %62 = reshape(%60, newshape=[1, 1, 448]) /* ty=Tensor[(1, 1, 448), float16] span=from_string:114:5 */;
+  %63 = reshape(%6, newshape=[4, 7]) /* ty=Tensor[(4, 7), float16] span=from_string:15:5 */;
+  %64 = (%x12, %24) /* ty=(Tensor[(2, 7, 2), float16], (Tensor[(2, 7, 2), float16],)) span=from_string:127:9 */;
+  %65 = reshape(%26, newshape=[2, 7, 2]) /* ty=Tensor[(2, 7, 2), float16] span=from_string:52:5 */;
+  %66 = one_hot(meta[relay.Constant][0] /* ty=Tensor[(2), int32] span=from_string:122:18 */, %x3, %x4, depth=6, axis=0, dtype="float32") /* ty=Tensor[(6, 2), float32] span=from_string:57:5 */;
+  %67 = multiply(%32, %32) /* ty=Tensor[(2, 7, 2), float16] span=from_string:67:5 */;
+  %68 = squeeze(%36) /* ty=Tensor[(2, 7, 2), float16] span=from_string:72:5 */;
+  %69 = divide(2f /* ty=float32 span=from_string:85:14 */, %42) /* ty=Tensor[(76, 7, 2), float32] span=from_string:79:5 */;
+  %70 = (%61, %62) /* ty=(Tensor[(1, 1, 224), float16], Tensor[(1, 1, 448), float16]) span=from_string:127:39 */;
+  (%63, %64, %65, %66, %67, %68, %69, %70) /* ty=(Tensor[(4, 7), float16], (Tensor[(2, 7, 2), float16], (Tensor[(2, 7, 2), float16],)), Tensor[(2, 7, 2), float16], Tensor[(6, 2), float32], Tensor[(2, 7, 2), float16], Tensor[(2, 7, 2), float16], Tensor[(76, 7, 2), float32], (Tensor[(1, 1, 224), float16], Tensor[(1, 1, 448), float16])) span=from_string:127:3 */
 }
 
 #[metadata]
@@ -87,79 +86,28 @@ def @main(%x0: Tensor[(4, 7), float32] /* ty=Tensor[(4, 7), float32] span=from_s
     {
       "type_key": "Map", 
       "keys": [
-        "relay.attrs.InitOpAttrs", 
         "relay.Constant"
       ], 
-      "data": [2, 10]
+      "data": [2]
     }, 
     {
       "type_key": "Array", 
-      "data": [3, 8]
-    }, 
-    {
-      "type_key": "relay.attrs.InitOpAttrs", 
-      "attrs": {
-        "dtype": "", 
-        "shape": "4"
-      }
-    }, 
-    {
-      "type_key": "Array", 
-      "data": [5, 6, 7]
-    }, 
-    {
-      "type_key": "IntImm", 
-      "attrs": {
-        "dtype": "int32", 
-        "span": "0", 
-        "value": "2"
-      }
-    }, 
-    {
-      "type_key": "IntImm", 
-      "attrs": {
-        "dtype": "int32", 
-        "span": "0", 
-        "value": "7"
-      }
-    }, 
-    {
-      "type_key": "IntImm", 
-      "attrs": {
-        "dtype": "int32", 
-        "span": "0", 
-        "value": "2"
-      }
-    }, 
-    {
-      "type_key": "relay.attrs.InitOpAttrs", 
-      "attrs": {
-        "dtype": "", 
-        "shape": "9"
-      }
-    }, 
-    {
-      "type_key": "Array", 
-      "data": [5, 6, 7]
-    }, 
-    {
-      "type_key": "Array", 
-      "data": [11, 19, 24]
+      "data": [3]
     }, 
     {
       "type_key": "relay.Constant", 
       "attrs": {
-        "_checked_type_": "16", 
+        "_checked_type_": "8", 
         "data": "0", 
-        "span": "14", 
-        "virtual_device_": "12"
+        "span": "6", 
+        "virtual_device_": "4"
       }
     }, 
     {
       "type_key": "VirtualDevice", 
       "attrs": {
         "device_type_int": "-1", 
-        "memory_scope": "13", 
+        "memory_scope": "5", 
         "target": "0", 
         "virtual_device_id": "-1"
       }
@@ -170,11 +118,11 @@ def @main(%x0: Tensor[(4, 7), float32] /* ty=Tensor[(4, 7), float32] span=from_s
     {
       "type_key": "Span", 
       "attrs": {
-        "column": "33", 
-        "end_column": "51", 
-        "end_line": "12", 
-        "line": "12", 
-        "source_name": "15"
+        "column": "18", 
+        "end_column": "36", 
+        "end_line": "122", 
+        "line": "122", 
+        "source_name": "7"
       }
     }, 
     {
@@ -185,103 +133,13 @@ def @main(%x0: Tensor[(4, 7), float32] /* ty=Tensor[(4, 7), float32] span=from_s
       "type_key": "relay.TensorType", 
       "attrs": {
         "dtype": "int32", 
-        "shape": "17", 
+        "shape": "9", 
         "span": "0"
       }
     }, 
     {
       "type_key": "Array", 
-      "data": [18]
-    }, 
-    {
-      "type_key": "IntImm", 
-      "attrs": {
-        "dtype": "int32", 
-        "span": "0", 
-        "value": "3"
-      }
-    }, 
-    {
-      "type_key": "relay.Constant", 
-      "attrs": {
-        "_checked_type_": "21", 
-        "data": "1", 
-        "span": "20", 
-        "virtual_device_": "12"
-      }
-    }, 
-    {
-      "type_key": "Span", 
-      "attrs": {
-        "column": "35", 
-        "end_column": "53", 
-        "end_line": "19", 
-        "line": "19", 
-        "source_name": "15"
-      }
-    }, 
-    {
-      "type_key": "relay.TensorType", 
-      "attrs": {
-        "dtype": "int32", 
-        "shape": "22", 
-        "span": "0"
-      }
-    }, 
-    {
-      "type_key": "Array", 
-      "data": [23]
-    }, 
-    {
-      "type_key": "IntImm", 
-      "attrs": {
-        "dtype": "int32", 
-        "span": "0", 
-        "value": "3"
-      }
-    }, 
-    {
-      "type_key": "relay.Constant", 
-      "attrs": {
-        "_checked_type_": "28", 
-        "data": "2", 
-        "span": "27", 
-        "virtual_device_": "25"
-      }
-    }, 
-    {
-      "type_key": "VirtualDevice", 
-      "attrs": {
-        "device_type_int": "-1", 
-        "memory_scope": "26", 
-        "target": "0", 
-        "virtual_device_id": "-1"
-      }
-    }, 
-    {
-      "type_key": "runtime.String"
-    }, 
-    {
-      "type_key": "Span", 
-      "attrs": {
-        "column": "22", 
-        "end_column": "40", 
-        "end_line": "65", 
-        "line": "65", 
-        "source_name": "15"
-      }
-    }, 
-    {
-      "type_key": "relay.TensorType", 
-      "attrs": {
-        "dtype": "int32", 
-        "shape": "29", 
-        "span": "0"
-      }
-    }, 
-    {
-      "type_key": "Array", 
-      "data": [30]
+      "data": [10]
     }, 
     {
       "type_key": "IntImm", 
@@ -293,8 +151,6 @@ def @main(%x0: Tensor[(4, 7), float32] /* ty=Tensor[(4, 7), float32] span=from_s
     }
   ], 
   "b64ndarrays": [
-    "P6G0lvBAXt0AAAAAAAAAAAEAAAAAAAAAAQAAAAAgAQADAAAAAAAAAAwAAAAAAAAAAgAAAAcAAAACAAAA", 
-    "P6G0lvBAXt0AAAAAAAAAAAEAAAAAAAAAAQAAAAAgAQADAAAAAAAAAAwAAAAAAAAAAgAAAAcAAAACAAAA", 
     "P6G0lvBAXt0AAAAAAAAAAAEAAAAAAAAAAQAAAAAgAQACAAAAAAAAAAgAAAAAAAAABAAAAAcAAAA="
   ], 
   "attrs": {"tvm_version": "0.13.0"}

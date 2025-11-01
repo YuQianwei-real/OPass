@@ -2,32 +2,17 @@ from typing import List, Dict, Set, Optional, Tuple, Any, Callable, Union
 from dataclasses import dataclass
 from weakref import ref, WeakSet
 import logging
-import math
+import math, bisect
 
-from ..graph.base import Graph, Operation, Value, Input, Output
-from .hier import HierGraph, Sequence, Group, MemStateVec, HierVertex
+from ..graph.base import Graph, Operation, Value, Input, Output, Vertex, Constant, Global
+from .hier import HierGraph, Sequence, Group, MemStateVec, HierVertex, HierInput, HierOutput
 from .mem import compute_inc_dec
+from .dom import DomBuilder 
+from .util import replace_pred_of_all_succs, AddUnique, replace_pred_of_succ, replace_succ_of_pred
+
 
 # 假设的基础类型定义（需根据实际业务逻辑补充）
-
-def AddUnique(lst: List[Any], item: Any) -> bool:
-    """添加唯一元素"""
-    if item not in lst:
-        lst.append(item)
-        return True
-    return False
-
-def Remove(lst: List[Any], item: Any) -> bool:
-    """移除指定元素"""
-    try:
-        lst.remove(item)
-        return True
-    except ValueError:
-        return False
-
-def Contains(container, item) -> bool:
-    """检查容器是否包含元素"""
-    return item in container
+makeCell = True
 
 class JoinVisitor:
     def __init__(self, hier: HierGraph):
@@ -35,29 +20,31 @@ class JoinVisitor:
     
     def Join(self):
         """合并序列的主函数"""
-        for vert in self.hier.inputs_:  # 需实现逆拓扑序遍历
+        for vert in self.hier.hierIns_:  # 需实现逆拓扑序遍历
             self.Visit(vert)
     
     def Visit(self, vert: HierVertex):
         """通用访问方法"""
-        if isinstance(vert, Input):
+        if isinstance(vert, HierInput):
             self.VisitInput(vert)
-        elif isinstance(vert, Output):
+        elif isinstance(vert, HierOutput):
             self.VisitOutput(vert)
         elif isinstance(vert, Sequence):
             self.VisitSequence(vert)
+        elif isinstance(vert, Group):
+            pass
         else:
             raise ValueError(f"Unsupported vertex type: {type(vert)}")
     
-    def VisitInput(self, input_vert: Input):
+    def VisitInput(self, input_vert: HierInput):
         """处理输入节点"""
         for succ in input_vert.succs:
             self.Visit(succ)
     
-    def VisitOutput(self, output_vert: Output):
+    def VisitOutput(self, output_vert: HierOutput):
         """处理输出节点"""
-        pass
-    
+        return 
+
     def VisitSequence(self, seq: Sequence):
         """处理序列节点"""
         # 初始化内存状态
@@ -65,37 +52,39 @@ class JoinVisitor:
         inc, dec = self.computeIncDec(seq.oprs_[0])
         states.Append(inc, dec)
         
+
         # 迭代合并后续节点
         cur = seq
         while True:
             # 检查是否满足合并条件
-            if len(cur.Succs) != 1 or not isinstance(cur.Succs[0], Sequence):
+            if len(cur.succs) != 1 or not isinstance(cur.succs[0], Sequence):
                 break
             
-            next_seq = cur.Succs[0]
-            if len(next_seq.Preds) != 1:
+            next_seq = cur.succs[0]
+            if len(next_seq.preds) != 1:
                 break
             
             # 尝试合并
             inc, dec = self.computeIncDec(next_seq.oprs_[0])
             s, t = states.Compute_state(inc, dec)
             
-            if s > states.Latest or t > states.Latest:
+            if s > states.Latest() or t > states.Latest():
                 break  # 内存占用增加，停止合并
             
             # 执行合并
             states.Append(inc, dec)
             self.join(cur, next_seq)
-            cur = next_seq
+            #cur = next_seq
+            
         
         # 继续处理后续节点
-        for succ in seq.Succs:
+        for succ in seq.succs:
             self.Visit(succ)
     
     @staticmethod
     def computeIncDec(op: Operation) -> Tuple[int, int]:
         """计算内存增量/减量"""
-        killed = []
+        killed: List[Value] = []
         for inp in op.inputs_:
             if all(use == op for use in inp.uses_):
                 AddUnique(killed, inp)
@@ -111,28 +100,26 @@ class JoinVisitor:
         prev.outputs_ = next.outputs_
         
         # 重新连接节点
-        prev.Succs = next.Succs
-        for succ in prev.Succs:
-            for i, pred_ref in enumerate(succ.Preds):
-                if pred_ref() == next:
-                    succ.Preds[i] = prev
+        prev.succs = next.succs
+        replace_pred_of_all_succs(next, prev)
+        """
+        for succ in prev.succs:
+            for i, pred_ref in enumerate(succ.preds):
+                if pred_ref == next:
+                    succ.preds[i] = prev
+        """            
+        self.hier.sequences_.remove(next)
  
 
 def JoinSequencePass(hier: HierGraph):
     """C++ Run方法的Python封装"""
     return  JoinVisitor(hier).Join()
 
-class SeqPred:
-    def __init__(self, func: Callable[[Sequence], bool]):
-        self.func = func
-    
-    def __call__(self, seq: Sequence) -> bool:
-        return self.func(seq)
 
 class SequenceDetector:
     def __init__(
         self, 
-        in_set: SeqPred,
+        in_set: Callable[[HierVertex], List[HierVertex]],
         get_succs: Callable[[HierVertex], List[HierVertex]],
         set_: Set[Sequence],
         frontier: List[Sequence],
@@ -171,15 +158,14 @@ class SequenceDetector:
             return self.VisitSequence(vert)
         return False
 
-def countConsumed(
-    set_: Set[Sequence], in_front: List[Sequence]) -> List[Tuple[Value, int]]:
+def countConsumed(set_: Set[Sequence], in_front: List[Sequence]) -> List[Tuple[Value, int]]:
     """计算输入前沿消耗的值"""
     consumed = {}
     
     for seq in in_front:
         for inp in seq.inputs_:
-            def_ = inp.def_.lock()
-            if any(def_ in s.ops for s in set_):
+            def_ = inp.def_
+            if any(def_ in s.oprs_ for s in set_):
                 continue
             if inp in consumed:
                 consumed[inp] += 1
@@ -193,12 +179,12 @@ def countProduced(set_: Set[Sequence], out_front: List[Sequence]) -> List[Tuple[
     produced = {}
     
     for seq in out_front:
-        for out in seq.outputs:
-            produced[out] = len(out.uses)
+        for out in seq.outputs_:
+            produced[out] = len(out.uses_)
     
     # 移除组内消耗的值
     for seq in set_:
-        for inp in seq.inputs:
+        for inp in seq.inputs_:
             if inp in produced:
                 produced[inp] -= 1
     
@@ -217,12 +203,12 @@ def createGroup(
     
     # 设置序列的组属性
     for seq in set_:
-        seq.group = ref(group)
+        seq.group_ = group
     
     # 初始化组属性
     group.seqs = list(set_)
-    group.in_front = in_front
-    group.out_front = out_front
+    group.inFront = in_front
+    group.outFront = out_front
     group.consumed = countConsumed(set_, in_front)
     group.produced = countProduced(set_, out_front)
     group.entrs = entrs
@@ -230,26 +216,35 @@ def createGroup(
     
     # 重新连接节点
     for front in in_front:
-        front.preds = [p for p in front.preds if group.Contains(Sequence, p.lock())]
+        new_preds: List[Sequence] = []
         
-        for pred_ref in front.preds:
-            pred = pred_ref()
-            if not group.Contains(Sequence, pred):
+        for pred in front.preds:
+            if group.Contains(pred):
+                new_preds.append(pred) #keep this predecessor as it is in the group
+            else:
                 # 替换前驱
-                HierVertex.ReplaceSuccOfPred(pred, front, group)
-                AddUnique(group.preds, pred_ref)
+                replace_succ_of_pred(pred, front, group)
+                AddUnique(group.preds, pred)
+
+        front.preds = new_preds
+           
     
     for front in out_front:
-        front.succs = [s for s in front.succs if group.Contains(Sequence, s)]
+        new_succs: List[Sequence] = []
         
         for succ in front.succs:
-            if not group.Contains(Sequence, succ):
+            if group.Contains(succ):
+                new_succs.append(succ)
+            else:
                 # 替换后继
-                HierVertex.ReplacePredOfSucc(succ, front, group)
+                replace_pred_of_succ(succ, front, group)
                 AddUnique(group.succs, succ)
+        
+        front.succs = new_succs
     
     return group
 
+#Use DP to find a subset of intruded sequences which minimize size of its outputs.
 class OutputSizeOptimizer:
     def __init__(self, all_seqs: Set[Sequence], root: Sequence):
         self.all_seqs = all_seqs
@@ -265,8 +260,8 @@ class OutputSizeOptimizer:
         pred_count[self.root] = 0
         
         # 开始搜索
-        chosen = []
-        succ_count = {}
+        chosen: List[Sequence]= []
+        succ_count: Dict[Sequence, int] = {}
         self.search(chosen, pred_count, succ_count)
         return self.best_set
     
@@ -285,7 +280,7 @@ class OutputSizeOptimizer:
         for seq in chosen:
             if succ_count.get(seq, 0) == 0:
                 continue
-            size += sum(out.type.Size() for out in seq.outputs)
+            size += sum(out.type_.memo_bytes for out in seq.outputs_)
         
         if size != 0:
             self.memo[tuple(chosen)] = size
@@ -299,9 +294,9 @@ class OutputSizeOptimizer:
         
         # 尝试扩展解集
         for seq in cand:
-            idx = len(chosen)
-            chosen.append(seq)
-            
+            idx = bisect.bisect_left(chosen, seq)
+            chosen.insert(idx, seq)
+            #chosen.append(seq)
             # 更新计数
             pred_count.pop(seq)
             for succ in seq.succs:
@@ -309,7 +304,7 @@ class OutputSizeOptimizer:
                     pred_count[succ] -= 1
             
             succ_count[seq] = len(seq.succs)
-            for pred in seq.Preds():
+            for pred in seq.preds:
                 if pred in succ_count:
                     succ_count[pred] -= 1
             
@@ -317,89 +312,96 @@ class OutputSizeOptimizer:
             self.search(chosen, pred_count, succ_count)
             
             # 回溯
-            chosen.pop()
+            chosen.pop(idx)
+            #chosen.remove(seq)
             pred_count[seq] = 0
             for succ in seq.succs:
                 if succ in pred_count:
                     pred_count[succ] += 1
             
             succ_count.pop(seq)
-            for pred in seq.Preds():
+            for pred in seq.preds:
                 if pred in succ_count:
                     succ_count[pred] += 1
+    
 
 def MakeGroupPass(hier: HierGraph):
     """MakeGroupPass的主函数"""
     # 构建支配树
-    if not hier.inputs_:
+    if len(hier.hierIns_) == 0:
         logging.error("Input list of the hierarchical graph is empty.")
         return
     
     # 构建支配树（需具体实现）
-    dom_nodes = DomBuilder(HierVertex).Build(hier.inputs_[0])  # 需要DomBuilder实现
+    dom_nodes = DomBuilder(hier).Build(hier.root)  # 需要DomBuilder实现
     for node in dom_nodes:
-        if vertex := node.vertex.lock():
-            vertex.dom = node
+        node.hierVertex_.dom = node
     
     # 构建后支配树
-    if not hier.outputs:
+    if not hier.hierOuts_:
         logging.error("Output list of the hierarchical graph is empty.")
         return
-    
-    post_dom_nodes = DomBuilder(HierVertex).Build(hier.outputs[0])  # 同上
+    elif len(hier.hierOuts_) > 1:
+        logging.warning("Post-dominator tree will only be built for the first output vertex.")
+
+    post_dom_nodes = DomBuilder(hier).Build(hier.hierOuts_[0])  # 同上
     for node in post_dom_nodes:
-        if vertex := node.vertex.lock():
-            vertex.postDom = node
+        node.hierVertex_.postDom = node
     
-    # 查找所有cell输出
+    # 查找所有cell输出.以逆后序方式查找所有单元格输出，同时备份前驱和后继
     cell_outs = []
-    for vert in RpoHierRange(hier):  # 需要逆拓扑序遍历
-        vert.BackupEdges()
+    for vert in hier.RpoHierRange():  # 需要逆拓扑序遍历
+
         if isinstance(vert, Sequence) and isCellOut(vert):
             cell_outs.append(vert)
     
     # 从cells构建组
     for out in cell_outs:
-        if out.group and out.group.lock():
-            continue
-        makeGroupFromCell(out)
+        if isinstance(out, Sequence) and out.group_ == None:
+            makeGroupFromCell(out)
 
 def isCellOut(seq: Sequence) -> bool:
     """判断是否为cell输出(示例实现)"""
-    return seq.oprs_ and seq.oprs_[0].op_.name_ == "concat"
+    return seq.oprs_ and seq.oprs_[0].op_.name_ == "concatenate" #concatenate
 
 def makeGroupFromCell(cell_out: Sequence):
     """基于cell创建组"""
     # 检测输入前沿
     seqs = set()
-    cell_in_front = []
-    cell_entrances = []
+    cell_in_front: List[Sequence] = []
+    cell_entrances: List[Sequence] = []
     
     detector = SequenceDetector(
         lambda seq: cell_out.PostDominates(seq),
-        lambda v: v.Preds(),
+        lambda v: v.preds,
         seqs,
         cell_in_front,
         cell_entrances
     )
     detector.Visit(cell_out)
+    seqs = detector.set
+    cell_in_front = detector.frontier
+    cell_entrances = detector.sink
     
     # 检测输出前沿
-    intruded = set()
-    intr_out_front = []
-    intr_exits = []
+    intruded: Set[Sequence] = set()
+    intr_out_front: List[Sequence] = []
+    intr_exits: List[Sequence] = []
     
     detector = SequenceDetector(
         lambda seq: cell_out.Dominates(seq),
-        lambda v: v.Succs(),
+        lambda v: v.succs,
         intruded,
         intr_out_front,
         intr_exits
     )
     detector.Visit(cell_out)
+    introded = detector.set
+    intr_out_front = detector.frontier
+    intr_exits = detector.sink
     
     # 直接创建组（条件判断）
-    if not MakeGroupPass.makeCell or cell_out in intr_out_front:
+    if not makeCell or cell_out in intr_out_front:
         createGroup(seqs, cell_in_front, [cell_out], cell_entrances, [cell_out])
         return
     
@@ -418,24 +420,27 @@ def makeGroupFromCell(cell_out: Sequence):
     
     detector = SequenceDetector(
         lambda seq: seq in min_size_set,
-        lambda v: v.Succs(),
+        lambda v: v.succs,
         intruded,
         intr_out_front,
         intr_exits
     )
     detector.Visit(cell_out)
+    intruded = detector.set
+    intr_out_front = detector.frontier
+    intr_exits = detector.sink
+
     intruded.discard(cell_out)
     
     # 查找输入前沿
-    intr_in_front = []
-    intr_entrances = []
+    intr_in_front: List[Sequence] = []
+    intr_entrances: List[Sequence] = []
     
     for succ in cell_out.succs:
         if isinstance(succ, Sequence):
             intr_in_front.append(succ)
-            if not any(
-                Contains(intruded, Cast(Sequence, pred.lock())) 
-                for pred in succ.preds
+            if not any(isinstance(pred, Sequence)
+                and pred in intruded for pred in succ.preds
             ):
                 intr_entrances.append(succ)
     

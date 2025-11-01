@@ -1,0 +1,116 @@
+#[version = "0.0.5"]
+def @main(%x0: Tensor[(5, 10), int8] /* ty=Tensor[(5, 10), int8] */, %x1: Tensor[(10), float32] /* ty=Tensor[(10), float32] */, %x2: Tensor[(96, 10), float32] /* ty=Tensor[(96, 10), float32] */, %x3: Tensor[(58, 10), float32] /* ty=Tensor[(58, 10), float32] */, %x4: Tensor[(10), float32]) -> (float32, Tensor[(5, 10), float32], (Tensor[(5, 10), float32], Tensor[(10), float32]), Tensor[(5, 10), int8], (Tensor[(5, 96, 1), float32], Tensor[(5, 58, 1), float32]), int32, Tensor[(5, 10), int32], Tensor[(5, 96), float32], Tensor[(5, 174), float32]) {
+  let %x_0 = 0.2f /* ty=float32 span=from_string:3:18 */;
+  let %x_1 = 0.1f /* ty=float32 span=from_string:4:18 */;
+  let %x_2 = 0 /* ty=int32 span=from_string:5:15 */;
+  let %x_3 = qnn.dequantize(%x0, %x_1, %x_2);
+  let %x_4 = nn.softmax(%x_3);
+  let %x_7 = meta[relay.Constant][0];
+  let %x_8 = add(%x_4, %x_7);
+  let %x_9 = zeros_like(%x_3);
+  let %x_10 = add(%x_3, %x1);
+  let %x_11 = ones_like(%x_10);
+  let %x_12 = collapse_sum_like(%x_11, %x_9);
+  let %x_13 = add(%x_9, %x_12);
+  let %x_14 = zeros_like(%x1);
+  let %x_15 = collapse_sum_like(%x_11, %x_14);
+  let %x_16 = add(%x_14, %x_15);
+  let %x_17 = (%x_13, %x_16);
+  let %x_18 = 0.00390625f /* ty=float32 span=from_string:19:26 */;
+  let %x_19 = -128 /* ty=int32 span=from_string:20:19 */;
+  let %x_20 = qnn.quantize(%x_4, %x_18, %x_19, out_dtype="int8");
+  let %x_21 = 0.1f /* ty=float32 span=from_string:22:19 */;
+  let %x_22 = 10 /* ty=int32 span=from_string:23:17 */;
+  let %x_23 = qnn.dequantize(%x_20, %x_21, %x_22);
+  let %x_24 = 1f /* ty=float32 span=from_string:25:17 */;
+  let %x_25 = multiply(%x_23, %x_24);
+  let %x_26 = 0.1f /* ty=float32 span=from_string:27:19 */;
+  let %x_27 = 10 /* ty=int32 span=from_string:28:17 */;
+  let %x_28 = qnn.quantize(%x_25, %x_26, %x_27, out_dtype="int8");
+  let %x_29 = nn.dense(%x_13, %x2, units=None);
+  let %x_30 = expand_dims(%x_29, axis=2);
+  let %x_31 = nn.dense(%x_13, %x3, units=None);
+  let %x_32 = expand_dims(%x_31, axis=2);
+  let %x_33 = (%x_30, %x_32);
+  let %x_34 = 10 /* ty=int32 span=from_string:35:17 */;
+  let %x_35 = 2f /* ty=float32 span=from_string:36:17 */;
+  let %x_36 = 0 /* ty=int32 span=from_string:37:16 */;
+  let %x_37 = qnn.dequantize(%x0, %x_35, %x_36);
+  let %x_38 = argsort(%x_37, axis=1, dtype="int32");
+  let %x_39 = nn.relu(%x_29);
+  let %x_40 = 1f /* ty=float32 span=from_string:41:17 */;
+  let %x_41 = add(%x_39, %x_40);
+  let %x_42 = nn.relu(%x_29);
+  let %x_43 = 1f /* ty=float32 span=from_string:44:17 */;
+  let %x_44 = add(%x_42, %x_43);
+  let %x_45 = add(%x_41, %x_44);
+  let %x_46 = squeeze(%x_32);
+  let %x_47 = 1f /* ty=float32 span=from_string:48:17 */;
+  let %x_48 = add(%x_46, %x_47);
+  let %x_49 = squeeze(%x_46);
+  let %x_50 = 1f /* ty=float32 span=from_string:51:17 */;
+  let %x_51 = add(%x_49, %x_50);
+  let %x_52 = 1f /* ty=float32 span=from_string:53:17 */;
+  let %x_53 = add(%x_51, %x_52);
+  let %x_54 = (%x_48, %x_53);
+  let %x_55 = concatenate(%x_54, axis=1);
+  let %x_56 = annotation.stop_fusion(%x_55);
+  let %x_57 = 1f /* ty=float32 span=from_string:58:17 */;
+  let %x_58 = add(%x_46, %x_57);
+  let %x_59 = (%x_58,);
+  let %x_60 = concatenate(%x_59, axis=1);
+  let %x_61 = annotation.stop_fusion(%x_60);
+  let %x_62 = (%x_56, %x_61);
+  let %x_63 = concatenate(%x_62, axis=1);
+  let %x_64 = squeeze(%x_63);
+  let %x_65 = 1f /* ty=float32 span=from_string:66:17 */;
+  let %x_66 = add(%x_64, %x_65);
+  let %x_67 = (%x_0, %x_8, %x_17, %x_28, %x_33, %x_34, %x_38, %x_45, %x_66);
+  %x_67
+}
+
+#[metadata]
+{
+  "root": 1, 
+  "nodes": [
+    {
+      "type_key": ""
+    }, 
+    {
+      "type_key": "Map", 
+      "keys": [
+        "relay.Constant"
+      ], 
+      "data": [2]
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [3]
+    }, 
+    {
+      "type_key": "relay.Constant", 
+      "attrs": {
+        "_checked_type_": "0", 
+        "data": "0", 
+        "span": "0", 
+        "virtual_device_": "4"
+      }
+    }, 
+    {
+      "type_key": "VirtualDevice", 
+      "attrs": {
+        "device_type_int": "-1", 
+        "memory_scope": "5", 
+        "target": "0", 
+        "virtual_device_id": "-1"
+      }
+    }, 
+    {
+      "type_key": "runtime.String"
+    }
+  ], 
+  "b64ndarrays": [
+    "P6G0lvBAXt0AAAAAAAAAAAEAAAAAAAAAAQAAAAIgAQABAAAAAAAAAAQAAAAAAAAAAAAAAA=="
+  ], 
+  "attrs": {"tvm_version": "0.13.0"}
+}

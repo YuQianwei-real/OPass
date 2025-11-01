@@ -1,0 +1,33 @@
+#[version = "0.0.5"]
+def @main(%x0: Tensor[(1, 3, 224, 224), uint8] /* ty=Tensor[(1, 3, 224, 224), uint8] span=GeneratedSource:15:24 */, %x1: Tensor[(3, 224, 224), float32] /* ty=Tensor[(3, 224, 224), float32] span=GeneratedSource:30:27 */, %x2: Tensor[(224), float32] /* ty=Tensor[(224), float32] span=GeneratedSource:30:32 */) -> (Tensor[(1, 3, 224, 224), uint8], Tensor[(3, 224, 224), float32], (Tensor[(1, 3, 224, 224), float32], (Tensor[(1, 3, 224, 224), float32],)), Tensor[(1, 3, 224, 224), uint8], Tensor[(1, 3, 224, 224), float32], Tensor[(0, 5, 447, 224), float32], float32, Tensor[(1, 3, 224, 224), float32], Tensor[(224), float32], Tensor[(3, 224, 224), float32]) {
+  %0 = qnn.dequantize(%x0, 2f /* ty=float32 span=GeneratedSource:3:30 */, 114 /* ty=int32 span=GeneratedSource:3:74 */) /* ty=Tensor[(1, 3, 224, 224), float32] span=GeneratedSource:12:30 */;
+  let %x3: Tensor[(1, 3, 224, 224), float32] /* ty=Tensor[(1, 3, 224, 224), float32] span=GeneratedSource:25:10 */ = multiply(%0, %0) /* ty=Tensor[(1, 3, 224, 224), float32] span=GeneratedSource:4:115 */;
+  let %x4: Tensor[(1, 3, 224, 224), float32] /* ty=Tensor[(1, 3, 224, 224), float32] span=GeneratedSource:10:18 */ = ones_like(%x3) /* ty=Tensor[(1, 3, 224, 224), float32] span=GeneratedSource:5:114 */;
+  %1 = clip(%0, a_min=0f, a_max=6f) /* ty=Tensor[(1, 3, 224, 224), float32] span=GeneratedSource:24:17 */;
+  %2 = multiply(%x4, %0) /* ty=Tensor[(1, 3, 224, 224), float32] span=GeneratedSource:9:26 */;
+  %3 = zeros_like(%0) /* ty=Tensor[(1, 3, 224, 224), float32] span=GeneratedSource:27:13 */;
+  %4 = collapse_sum_like(%2, %0) /* ty=Tensor[(1, 3, 224, 224), float32] span=GeneratedSource:18:17 */;
+  %5 = multiply(%x4, %0) /* ty=Tensor[(1, 3, 224, 224), float32] span=GeneratedSource:12:26 */;
+  %6 = add(%3, %4) /* ty=Tensor[(1, 3, 224, 224), float32] span=GeneratedSource:28:30 */;
+  %7 = collapse_sum_like(%5, %0) /* ty=Tensor[(1, 3, 224, 224), float32] span=GeneratedSource:13:16 */;
+  %8 = add(%6, %7) /* ty=Tensor[(1, 3, 224, 224), float32] span=GeneratedSource:14:9 */;
+  %9 = (%8,) /* ty=(Tensor[(1, 3, 224, 224), float32],) span=GeneratedSource:25:15 */;
+  %10 = qnn.dequantize(%x0, 2f /* ty=float32 span=GeneratedSource:15:31 */, 114 /* ty=int32 span=GeneratedSource:15:76 */) /* ty=Tensor[(1, 3, 224, 224), float32] span=GeneratedSource:16:14 */;
+  %11 = clip(%10, a_min=0f, a_max=6f) /* ty=Tensor[(1, 3, 224, 224), float32] span=GeneratedSource:26:22 */;
+  %12 = ones_like(%3) /* ty=Tensor[(1, 3, 224, 224), float32] span=GeneratedSource:27:17 */;
+  %13 = nn.relu(%4) /* ty=Tensor[(1, 3, 224, 224), float32] span=GeneratedSource:19:19 */;
+  %14 = transpose(%13, axes=[0, 2, 3, 1]) /* ty=Tensor[(1, 224, 224, 3), float32] span=GeneratedSource:20:19 */;
+  %15 = transpose(%14, axes=[1, 2, 3, 0]) /* ty=Tensor[(224, 224, 3, 1), float32] span=GeneratedSource:29:19 */;
+  %16 = add(%12, 1f /* ty=float32 span=GeneratedSource:21:20 */) /* ty=Tensor[(1, 3, 224, 224), float32] span=GeneratedSource:22:13 */;
+  %17 = exp(%16) /* ty=Tensor[(1, 3, 224, 224), float32] span=GeneratedSource:31:17 */;
+  %18 = qnn.quantize(%1, 2f /* ty=float32 span=GeneratedSource:23:28 */, 114 /* ty=int32 span=GeneratedSource:23:73 */, out_dtype="uint8") /* ty=Tensor[(1, 3, 224, 224), uint8] span=GeneratedSource:32:4 */;
+  %19 = reshape(%1, newshape=[3, 224, 224]) /* ty=Tensor[(3, 224, 224), float32] span=GeneratedSource:32:9 */;
+  %20 = (%x3, %9) /* ty=(Tensor[(1, 3, 224, 224), float32], (Tensor[(1, 3, 224, 224), float32],)) span=GeneratedSource:32:14 */;
+  %21 = qnn.quantize(%11, 2f /* ty=float32 span=GeneratedSource:26:29 */, 114 /* ty=int32 span=GeneratedSource:26:74 */, out_dtype="uint8") /* ty=Tensor[(1, 3, 224, 224), uint8] span=GeneratedSource:32:19 */;
+  %22 = add(%3, %12) /* ty=Tensor[(1, 3, 224, 224), float32] span=GeneratedSource:32:24 */;
+  %23 = nn.batch_to_space_nd(%6, block_shape=[2, 2], crops=[[0, 1], [0, 1]]) /* ty=Tensor[(0, 5, 447, 224), float32] span=GeneratedSource:32:29 */;
+  %24 = transpose(%15, axes=[3, 2, 0, 1]) /* ty=Tensor[(1, 3, 224, 224), float32] span=GeneratedSource:32:78 */;
+  %25 = collapse_sum_like(%x1, %x2) /* ty=Tensor[(224), float32] span=GeneratedSource:32:83 */;
+  %26 = squeeze(%17) /* ty=Tensor[(3, 224, 224), float32] span=GeneratedSource:32:88 */;
+  (%18, %19, %20, %21, %22, %23, 4f /* ty=float32 span=GeneratedSource:32:36 */, %24, %25, %26) /* ty=(Tensor[(1, 3, 224, 224), uint8], Tensor[(3, 224, 224), float32], (Tensor[(1, 3, 224, 224), float32], (Tensor[(1, 3, 224, 224), float32],)), Tensor[(1, 3, 224, 224), uint8], Tensor[(1, 3, 224, 224), float32], Tensor[(0, 5, 447, 224), float32], float32, Tensor[(1, 3, 224, 224), float32], Tensor[(224), float32], Tensor[(3, 224, 224), float32]) span=GeneratedSource:32:3 */
+}

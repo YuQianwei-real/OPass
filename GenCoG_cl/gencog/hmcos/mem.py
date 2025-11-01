@@ -30,6 +30,7 @@ def estimate_peak_hmcos0(op_seq: List[Operation], G: Graph) -> float:
     input_vals = []  #input nodes
     ignore_vals = [] 
     graph_vals = [] # all value nodes
+    peakVals = [] #peak values
     
     for in_ in G.inputs_:
         input_vals.append(in_.value_)
@@ -79,21 +80,25 @@ def estimate_peak_hmcos0(op_seq: List[Operation], G: Graph) -> float:
     peak = 0.0
     for t in range(1, len(op_seq)+1):
         current = 0.0
+        currentVals: List[Value] = [] 
         for v in graph_vals:
             if isinstance(v, Value) and v not in ignore_vals:
                 a = alloc.get(v, float('inf'))
                 f = free.get(v, 0)
                 if a <= t <= f:
                     current += v.type_.memo_bytes / (1024 * 1024)
+                    currentVals.append(v)
                     if isinstance(v.def_, Operation):
                         idx = overlap_input(v.def_) 
                         for j, input in enumerate(v.def_.inputs_):
                             if idx == j:  # 可重叠，立即释放
                                 current -= v.type_.memo_bytes/ (1024 * 1024)
-        peak = max(peak, current)
-        print(current)
+        if current > peak:
+            peak = current
+            peakVals = currentVals
+        #print(current)
     
-    return peak
+    return peak, peakVals
 
 def estimate_peak_networkx(seq: List[str], G: DiGraph) -> float:
     
@@ -232,14 +237,6 @@ def estimate_peak_hmcos(op_seq: List[Operation], G: Graph):
 
     peak = total  # 初始峰值内存
 
-    use_op_cnt = []
-    for in_, num in use_cnt.items():
-        if isinstance(in_.def_, Operation):
-            use_op_cnt.append([in_.def_.op_.name_, [num, in_.type_]])
-        else:
-            use_op_cnt.append([in_.def_, num])
-    #print('\tuse_op_cnt = ',use_op_cnt)
-    #print('total = ',total)
     # 遍历操作序列
     for i, op in enumerate(op_seq):
         if op.op_.name_ in ('let', 'tuple', 'getitem'):
@@ -265,6 +262,8 @@ def estimate_peak_hmcos(op_seq: List[Operation], G: Graph):
         # 处理输入：更新使用计数并可能释放内存
         ovl_idx = overlap_input(op)  # 需实现 overlap_input 函数
         for j, in_ in enumerate(op.inputs_):
+            if in_.type_.memo_bytes <5:
+                continue
             if isinstance(in_.def_, Operation) and in_.def_.op_.name_ in ('let', 'tuple', 'getitem'):
                 ignore_op = in_.def_
                 for in_before in ignore_op.inputs_:
@@ -274,8 +273,9 @@ def estimate_peak_hmcos(op_seq: List[Operation], G: Graph):
                     if use_cnt[in_before] == 0:
                         next_kill.append(in_before)
                         del use_cnt[in_before]
-            elif in_ not in use_cnt:
-                raise ValueError(f"Value {in_.type_} used without definition before.")  # [[2]]
+            elif in_ not in use_cnt:    
+                use_cnt[in_] = 1
+            #    raise ValueError(f"Value {in_.type_} used without definition by Operation {op.op_.name_} before.") 
             else:
                 use_cnt[in_] -= 1
 
@@ -346,7 +346,7 @@ def compute_inc_dec(op: Operation, killed):
     """
     # 检查输出值是否可以覆盖输入值
     ovl_idx = overlap_input(op)
-    if ovl_idx != None and op.inputs[ovl_idx] not in killed:
+    if ovl_idx != None and op.inputs_[ovl_idx] not in killed:
         ovl_idx = None
 
     # 计算过渡到临时状态时的内存增量

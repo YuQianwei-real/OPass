@@ -22,7 +22,7 @@ def parse_args():
     global args
     p = ArgumentParser()
     p.add_argument('-r', '--root', type=str, default='./', help='Root directory of TVM source code.')
-    p.add_argument('-p', '--path', type=str, default='/home/yqw/OPass/ReBench/36ShipNet/code.txt', help='Code path.')
+    p.add_argument('-p', '--path', type=str, default='/home/yqw/OPass/ReBench/36/code.txt', help='Code path.')
     p.add_argument('-s', '--seed', type=int, default=55, help='Random seed of graph generator.')
     p.add_argument('-e', '--epochs', type=int, default=200, help='Total iteration number.')
     p.add_argument('-m', '--profiler', type=str, default='static', help='Memory profiler name.')
@@ -47,6 +47,7 @@ def main():
 
     if args.profiler == 'static':
         profiler = simu_mem_from_relay
+        #profiler = simu_mem_from_relay
     elif args.profiler == 'serenity':
         profiler = serenity_mem_from_relay
     elif args.profiler == 'hmcos':
@@ -69,28 +70,48 @@ def main():
     tune_results['Origin'] = (profiler(mod), 'None')
     print('Origin:', tune_results['Origin'][0], 'mb')
 
-    # s_time = time.time()
-    
+    time_list = {}
+
+    s_time = time.time()
     default = DefaultTVM(args.path+'.txt', rng, profiler=profiler)
     mem, seq = default.run()
-    tune_results['Default'] = (mem, str(seq))
+    d_time = time.time()
+    tune_results['Default'] = (mem, str(seq), d_time -s_time)
 
+    time_list['default'] = d_time -s_time
+
+    s_time = time.time()
     greedy = Greedy(args.path+'.txt', rng, profiler=profiler)
     mem, seq = greedy.run(args.epochs)
-    tune_results['Greedy'] = (mem, str(seq))
+    d_time = time.time()
+    tune_results['Greedy'] = (mem, str(seq), d_time -s_time)
+
+    time_list['greedy'] = d_time -s_time
     
+    s_time = time.time()
     beam = Beam(args.path+'.txt', 3, rng, profiler=profiler)
     mem, seq = beam.run(args.epochs, True)
-    tune_results['Beam'] = (mem, str(seq))
-    
+    d_time = time.time()
+    tune_results['Beam'] = (mem, str(seq), d_time -s_time)
+
+    time_list['beam'] = d_time -s_time
+
+    s_time = time.time()
     sa = SimulatedAnnealing(args.path+'.txt', rng, profiler=profiler)
     mem, seq = sa.run(int(args.epochs/20), 20)
-    tune_results['SA'] = (mem, str(seq))
-    
+    d_time = time.time()
+    tune_results['SA'] = (mem, str(seq), d_time -s_time)
+
+    time_list['sa'] = d_time -s_time
+
+    s_time = time.time()
     transferG = TranferGraph(args.path+'.txt', rng, profiler=profiler) # , profiler=cal_tvm_mem
     mem, seq = transferG.run(args.epochs)
-    tune_results['Transfer'] = (mem, str(seq))
-    
+    d_time = time.time()
+    tune_results['Transfer'] = (mem, str(seq), d_time -s_time)
+
+    time_list['transfer'] = d_time -s_time
+    print(time_list)
     # d_time = time.time()
     # cost = d_time - s_time
     # print('Time:', cost, 's') 

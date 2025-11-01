@@ -1,0 +1,27 @@
+#[version = "0.0.5"]
+def @main(%x0: Tensor[(1, 64, 56, 56), float32] /* ty=Tensor[(1, 64, 56, 56), float32] span=from_string:15:30 */, %x1: Tensor[(29, 64, 56, 56), float32] /* ty=Tensor[(29, 64, 56, 56), float32] span=from_string:3:14 */, %x2: Tensor[(30, 64, 56, 92), float32] /* ty=Tensor[(30, 64, 56, 92), float32] span=from_string:6:13 */, %x3: Tensor[(30, 64, 56, 20), float32] /* ty=Tensor[(30, 64, 56, 20), float32] span=from_string:13:13 */, %x4: Tensor[(64, 64, 3, 3), float32] /* ty=Tensor[(64, 64, 3, 3), float32] span=from_string:10:18 */) -> (Tensor[(1, 64, 1, 1), float32], Tensor[(30, 64, 56, 168), float32], Tensor[(30, 64, 56, 92), bfloat16], Tensor[(30, 64, 1, 1), float32], Tensor[(30, 64, 56, 56), float32], Tensor[(30, 64, 56, 20), float32], float32) {
+  let %x_0 = nn.global_max_pool2d(%x0);
+  let %x_1 = (%x0, %x1) /* ty=(Tensor[(1, 64, 56, 56), float32], Tensor[(29, 64, 56, 56), float32]) span=from_string:4:20 */;
+  let %x_2 = concatenate(%x_1);
+  let %x_3 = (%x_2, %x2, %x3) /* ty=(Tensor[(30, 64, 56, 56), float32], Tensor[(30, 64, 56, 92), float32], Tensor[(30, 64, 56, 20), float32]) span=from_string:16:21 */;
+  let %x_4 = concatenate(%x_3, axis=3);
+  let %x_5 = cast(%x2, dtype="bfloat16");
+  let %x_6 = clip(%x_5, a_min=-0.2f, a_max=0.4f);
+  let %x_7 = 0f /* ty=float32 span=from_string:12:14 */;
+  let %x_8 = ones_like(%x_2);
+  let %x_9 = add(%x_2, %x_8);
+  let %x_10 = nn.global_max_pool2d(%x_9);
+  let %x_11 = 2f /* ty=float32 span=from_string:10:25 */;
+  let %x_12 = multiply(%x4, %x_11);
+  let %x_13 = nn.conv2d(%x_10, %x_12, padding=[1, 1, 1, 1], channels=64, kernel_size=[3, 3]);
+  let %x_14 = add(%x_7, %x_13);
+  let %x_15 = nn.relu(%x_14);
+  let %x_16 = erf(%x_9);
+  let %x_17 = 1f /* ty=float32 span=from_string:13:20 */;
+  let %x_18 = add(%x3, %x_17);
+  let %x_19 = exp(%x_18);
+  let %x_20 = squeeze(%x_19);
+  let %x_21 = 2.71828f /* ty=float32 span=from_string:21:42 */;
+  let %x_22 = (%x_0, %x_4, %x_6, %x_15, %x_16, %x_20, %x_21) /* ty=(Tensor[(1, 64, 1, 1), float32], Tensor[(30, 64, 56, 168), float32], Tensor[(30, 64, 56, 92), bfloat16], Tensor[(30, 64, 1, 1), float32], Tensor[(30, 64, 56, 56), float32], Tensor[(30, 64, 56, 20), float32], float32) span=from_string:3:3 */;
+  %x_22
+}

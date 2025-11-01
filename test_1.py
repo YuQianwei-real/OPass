@@ -1,5 +1,5 @@
-import sys
-import itertools
+import sys, os
+import subprocess
 from argparse import Namespace, ArgumentParser
 from numpy.random import Generator, PCG64
 from networkx import DiGraph
@@ -8,10 +8,13 @@ from typing import List, cast, Tuple, Optional, Dict
 import tvm
 from tvm import relay
 
-from GenCoG_cl.gencog.graph.base import Operation, Vertex
+from GenCoG_cl.gencog.graph.base import Operation, Vertex, Input, Output,Constant
 from GenCoG_cl.gencog.graph.viz import visualize
 from GenCoG_cl.gencog.graph.relay import build_graph, print_relay, build_func_graph, GraphBuilder
 from GenCoG_cl.gencog.hmcos.mem import estimate_peak_hmcos, estimate_peak_hmcos0, estimate_peak_networkx
+from GenCoG_cl.gencog.hmcos.hier import HierGraph, Sequence, HierInput, Group
+from GenCoG_cl.gencog.hmcos.join import JoinSequencePass, MakeGroupPass
+from GenCoG_cl.gencog.hmcos.sched import SerenitySchedule, HierarchicalSchedule
 
 from Autotuning.sequence import RelaySeq, RelayPassSelector
 from Autotuning.util import simu_mem_from_relay, cal_tvm_mem, serenity_mem_from_relay, hmcos_mem_from_relay, simu_mem_footprint
@@ -123,29 +126,89 @@ def main():
         except:
             exit(1)
     """
+
+def process_all_folders_with_output():
+    """处理ReBench下所有36个文件夹并实时显示输出"""
     
+    # 遍历1到36的所有文件夹
+    for i in range(18, 37):
+        folder_path = f"./ReBench/{i}"
+        file_path = f"{folder_path}/code.txt"
+        result_path = f"{folder_path}/tune_results_serenity.json"
+        
+        # 检查文件是否存在
+        if os.path.exists(file_path):
+            #if os.path.exists(result_path):
+            #    print('serenity result exits')
+            #    continue
+            
+            print(f"\n{'='*50}")
+            print(f"正在处理文件夹 {i}: {file_path}")
+            print(f"{'='*50}")
+            
+            try:
+                # 使用Popen实时显示输出
+                process = subprocess.Popen([
+                    sys.executable,
+                    "run_transfer_graph.py",
+                    "-p", file_path,
+                    "-m", "serenity"
+                ])
+                
+                # 等待进程完成
+                return_code = process.wait()
+                
+                if return_code == 0:
+                    print(f"\n✓ 文件夹 {i} 处理完成\n")
+                else:
+                    print(f"\n✗ 文件夹 {i} 处理失败，返回码: {return_code}\n")
+                    
+            except Exception as e:
+                print(f"✗ 文件夹 {i} 处理时发生异常: {e}")
+                
+        else:
+            print(f"⚠ 警告: 文件 {file_path} 不存在，跳过文件夹 {i}")   
 
 if __name__ == '__main__':
     #parse_args()
     #main()
+    process_all_folders_with_output()
+
     networkx_total, hmcos0_total, hmcos_total = 0, 0, 0
     
-
-    with open('./test/resnet18_train.txt', 'r') as f:
+    with open('./ReBench/6/code.txt', 'r') as f:
         mod = relay.parse(f.read())
-    static_mod = relay.transform.DynamicToStatic()(relay.transform.InferType()(mod))
-    graph = build_graph(static_mod)['main']
 
-    abs = GraphAbsForMem('graph').abstract(graph)
-    op_seq = []
-    for n in abs.nodes:
-        if abs.nodes[n]['type'] == 'op':
-            op_seq.append(n)
     
-    #networkx_mem = estimate_peak_networkx(op_seq, abs)
-    #hmcos0_mem = estimate_peak_hmcos0(graph.oprs_, graph)
-    hmcos_mem = estimate_peak_hmcos(graph.oprs_, graph)
-    #print('networkx_mem = ', networkx_mem )
-    #print('hmcos0_mem = ', hmcos0_mem)
-    print('hmcos_mem = ', hmcos_mem)
-        
+    static_mod = relay.transform.DynamicToStatic()(relay.transform.InferType()(mod))
+    print(cal_tvm_mem(static_mod))
+    print(simu_mem_from_relay(static_mod))
+    """
+    graph = build_graph(static_mod)['main']
+    
+    opr_num = len(graph.oprs_)
+    print('opr_num = ',opr_num)
+    op_list = []
+    for op in graph.oprs_:
+        op_list.append(op.op_.name_)
+    print(op_list)
+    hier = HierGraph(graph)
+    
+    sched = SerenitySchedule(graph, joinOps=True, trySimple=False, nSamples=100)
+    #sched = HierarchicalSchedule(graph)
+    op_list = []
+    for op in sched:
+        op_list.append(op.op_.name_)
+    print(len(op_list), op_list)
+    print([op.op_.name_ for op in graph.oprs_ if op not in sched])
+    print(estimate_peak_hmcos0(sched, graph))  
+  
+
+    """
+    
+    
+    
+    
+
+
+    

@@ -1,0 +1,21 @@
+#[version = "0.0.5"]
+def @main(%x0: Tensor[(1, 64, 56, 56), float32] /* ty=Tensor[(1, 64, 56, 56), float32] span=from_string:13:23 */, %x1: Tensor[(54, 64, 1, 1), float32] /* ty=Tensor[(54, 64, 1, 1), float32] span=from_string:16:17 */, %x2: Tensor[(28, 60, 95, 44), int32] /* ty=Tensor[(28, 60, 95, 44), int32] */, %x3: Tensor[(3456, 1, 1), float32] /* ty=Tensor[(3456, 1, 1), float32] */, %x4: Tensor[(55, 64, 1, 1), float32] /* ty=Tensor[(55, 64, 1, 1), float32] */) -> (Tensor[(1, 64, 56, 56), float32], Tensor[(1, 64, 1, 1), float32], Tensor[(55, 64, 1, 1), int32], Tensor[(54, 64, 1, 1), float32], Tensor[(1), float32], int32) {
+  let %x_0 = ones(shape=[1], dtype="float32");
+  let %x_1 = multiply(%x_0, %x0);
+  let %x_2 = nn.global_max_pool2d(%x0);
+  let %x_3 = multiply(%x_2, %x_2);
+  let %x_4 = (%x_2, %x1) /* ty=(Tensor[(1, 64, 1, 1), float32], Tensor[(54, 64, 1, 1), float32]) span=from_string:6:20 */;
+  let %x_5 = concatenate(%x_4);
+  let %x_6 = annotation.stop_fusion(%x_5);
+  let %x_7 = (%x_6,) /* ty=(Tensor[(55, 64, 1, 1), float32],) span=from_string:9:20 */;
+  let %x_8 = concatenate(%x_7);
+  let %x_9 = annotation.stop_fusion(%x_8);
+  let %x_10 = (%x_9,) /* ty=(Tensor[(55, 64, 1, 1), float32],) span=from_string:12:20 */;
+  let %x_11 = concatenate(%x_10);
+  let %x_12 = cast(%x_11, dtype="int32");
+  let %x_13 = reshape(%x1, newshape=[54, 64, 1, 1]);
+  let %x_14 = nn.softmax(%x_0);
+  let %x_15 = 3520 /* ty=int32 span=from_string:18:33 */;
+  let %x_16 = (%x_1, %x_3, %x_12, %x_13, %x_14, %x_15) /* ty=(Tensor[(1, 64, 56, 56), float32], Tensor[(1, 64, 1, 1), float32], Tensor[(55, 64, 1, 1), int32], Tensor[(54, 64, 1, 1), float32], Tensor[(1), float32], int32) span=from_string:3:3 */;
+  %x_16
+}

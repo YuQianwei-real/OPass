@@ -1,0 +1,37 @@
+#[version = "0.0.5"]
+def @main(%x0: Tensor[(2, 32), float32] /* ty=Tensor[(2, 32), float32] span=GeneratedSource:7:17 */, %x1: Tensor[(16, 32), float32] /* ty=Tensor[(16, 32), float32] span=GeneratedSource:23:13 */, %x2: Tensor[(8, 32), float32] /* ty=Tensor[(8, 32), float32] span=GeneratedSource:15:31 */, %x3: Tensor[(2, 11, 1), float32] /* ty=Tensor[(2, 11, 1), float32] span=GeneratedSource:22:25 */, %x4: Tensor[(2, 16, 1), float32] /* ty=Tensor[(2, 16, 1), float32] span=GeneratedSource:21:30 */, %x5: Tensor[(2, 16, 1), float32] /* ty=Tensor[(2, 16, 1), float32] span=GeneratedSource:22:30 */, %x6: Tensor[(5, 32), float32] /* ty=Tensor[(5, 32), float32] span=GeneratedSource:25:18 */, %x7: float32 /* ty=float32 span=GeneratedSource:26:18 */, %x8: Tensor[(32, 32), float32] /* ty=Tensor[(32, 32), float32] span=GeneratedSource:25:23 */, %x9: float32 /* ty=float32 span=GeneratedSource:27:18 */, %x10: Tensor[(72, 26), int32] /* ty=Tensor[(72, 26), int32] span=GeneratedSource:34:23 */) -> ((Tensor[(2, 16, 1), float32], Tensor[(2, 8, 1), float32]), Tensor[(2, 16), float32], (Tensor[(8, 32), float32], (Tensor[(8, 32), float32],)), (Tensor[(2, 11, 16), float32], Tensor[(2, 11, 16), float32], Tensor[(2, 11, 16), float32]), (Tensor[(5, 16), float32], Tensor[(5, 32), float32]), Tensor[(2, 8), float32], Tensor[(8, 32), int32], Tensor[(16, 32), float32]) {
+  let %x11: Tensor[(8, 32), float32] /* ty=Tensor[(8, 32), float32] span=GeneratedSource:30:10 */ = multiply(%x2, %x2) /* ty=Tensor[(8, 32), float32] span=GeneratedSource:3:98 */;
+  %0 = ones_like(%x11) /* ty=Tensor[(8, 32), float32] span=GeneratedSource:34:19 */;
+  let %x12: Tensor[(8, 32), float32] /* ty=Tensor[(8, 32), float32] span=GeneratedSource:13:18 */ = %0;
+  %1 = nn.dense(%x0, %x1, units=None) /* ty=Tensor[(2, 16), float32] span=GeneratedSource:29:20 */;
+  %2 = nn.dense(%x0, %x2, units=None) /* ty=Tensor[(2, 8), float32] span=GeneratedSource:33:20 */;
+  %3 = expand_dims(%1, axis=2) /* ty=Tensor[(2, 16, 1), float32] span=GeneratedSource:28:10 */;
+  %4 = expand_dims(%2, axis=2) /* ty=Tensor[(2, 8, 1), float32] span=GeneratedSource:28:14 */;
+  %5 = multiply(%x12, %x2) /* ty=Tensor[(8, 32), float32] span=GeneratedSource:12:26 */;
+  %6 = zeros_like(%x2) /* ty=Tensor[(8, 32), float32] span=GeneratedSource:14:12 */;
+  %7 = collapse_sum_like(%5, %x2) /* ty=Tensor[(8, 32), float32] span=GeneratedSource:14:16 */;
+  %8 = multiply(%x12, %x2) /* ty=Tensor[(8, 32), float32] span=GeneratedSource:15:27 */;
+  %9 = add(%6, %7) /* ty=Tensor[(8, 32), float32] span=GeneratedSource:16:13 */;
+  %10 = collapse_sum_like(%8, %x2) /* ty=Tensor[(8, 32), float32] span=GeneratedSource:16:17 */;
+  %11 = add(%9, %10) /* ty=Tensor[(8, 32), float32] span=GeneratedSource:17:10 */;
+  %12 = (%11,) /* ty=(Tensor[(8, 32), float32],) span=GeneratedSource:30:16 */;
+  %13 = sqrt(%3) /* ty=Tensor[(2, 16, 1), float32] span=GeneratedSource:19:60 */;
+  %14 = divide(2f /* ty=float32 span=GeneratedSource:19:18 */, %13) /* ty=Tensor[(2, 16, 1), float32] span=GeneratedSource:20:30 */;
+  %15 = nn.batch_matmul(%x3, %14, transpose_b=True) /* ty=Tensor[(2, 11, 16), float32] span=GeneratedSource:31:10 */;
+  %16 = nn.batch_matmul(%x3, %x4, transpose_b=True) /* ty=Tensor[(2, 11, 16), float32] span=GeneratedSource:31:15 */;
+  %17 = nn.batch_matmul(%x3, %x5, transpose_b=True) /* ty=Tensor[(2, 11, 16), float32] span=GeneratedSource:31:20 */;
+  %18 = add(%x1, 1f /* ty=float32 span=GeneratedSource:23:20 */) /* ty=Tensor[(16, 32), float32] span=GeneratedSource:24:23 */;
+  %19 = nn.dense(%x6, %18, units=None) /* ty=Tensor[(5, 16), float32] span=GeneratedSource:26:13 */;
+  %20 = nn.dense(%x6, %x8, units=None) /* ty=Tensor[(5, 32), float32] span=GeneratedSource:27:13 */;
+  %21 = add(%19, %x7) /* ty=Tensor[(5, 16), float32] span=GeneratedSource:32:10 */;
+  %22 = add(%20, %x9) /* ty=Tensor[(5, 32), float32] span=GeneratedSource:32:15 */;
+  %23 = (%3, %4) /* ty=(Tensor[(2, 16, 1), float32], Tensor[(2, 8, 1), float32]) span=GeneratedSource:36:4 */;
+  %24 = nn.softmax(%1) /* ty=Tensor[(2, 16), float32] span=GeneratedSource:36:9 */;
+  %25 = (%x11, %12) /* ty=(Tensor[(8, 32), float32], (Tensor[(8, 32), float32],)) span=GeneratedSource:36:14 */;
+  %26 = (%15, %16, %17) /* ty=(Tensor[(2, 11, 16), float32], Tensor[(2, 11, 16), float32], Tensor[(2, 11, 16), float32]) span=GeneratedSource:36:19 */;
+  %27 = (%21, %22) /* ty=(Tensor[(5, 16), float32], Tensor[(5, 32), float32]) span=GeneratedSource:36:24 */;
+  %28 = nn.softmax(%2) /* ty=Tensor[(2, 8), float32] span=GeneratedSource:36:29 */;
+  %29 = cast_like(%0, %x10) /* ty=Tensor[(8, 32), int32] span=GeneratedSource:36:34 */;
+  %30 = ones(shape=[16, 32], dtype="float32") /* ty=Tensor[(16, 32), float32] span=GeneratedSource:36:39 */;
+  (%23, %24, %25, %26, %27, %28, %29, %30) /* ty=((Tensor[(2, 16, 1), float32], Tensor[(2, 8, 1), float32]), Tensor[(2, 16), float32], (Tensor[(8, 32), float32], (Tensor[(8, 32), float32],)), (Tensor[(2, 11, 16), float32], Tensor[(2, 11, 16), float32], Tensor[(2, 11, 16), float32]), (Tensor[(5, 16), float32], Tensor[(5, 32), float32]), Tensor[(2, 8), float32], Tensor[(8, 32), int32], Tensor[(16, 32), float32]) span=GeneratedSource:36:3 */
+}

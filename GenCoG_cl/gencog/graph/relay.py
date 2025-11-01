@@ -249,6 +249,7 @@ class GraphBuilder(relay.ExprFunctor):
         
         for out in outputs:
             out.value_.def_.succs.append(out)
+            out.preds.append(out.value_.def_)
 
         # Create graph
         return Graph(self._inputs, outputs, self._oprs, outrefs=self._outrefs, typevars=list(self._typevars.values()), 

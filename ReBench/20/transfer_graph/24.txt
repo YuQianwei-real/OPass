@@ -1,0 +1,166 @@
+#[version = "0.0.5"]
+def @main(%x0: Tensor[(1, 4, 2), int8] /* ty=Tensor[(1, 4, 2), int8] span=from_string:10:23 */, %x1: Tensor[(1, 4, 2), int8] /* ty=Tensor[(1, 4, 2), int8] span=from_string:7:13 */, %x2: Tensor[(31, 65), int64] /* ty=Tensor[(31, 65), int64] span=from_string:12:13 */, %x3: Tensor[(58), float32] /* ty=Tensor[(58), float32] span=from_string:32:23 */, %x4: Tensor[(1, 100, 2), int8] /* ty=Tensor[(1, 100, 2), int8] span=from_string:13:24 */, %x5: Tensor[(1, 18, 2), int8] /* ty=Tensor[(1, 18, 2), int8] span=from_string:17:24 */, %x6: Tensor[(1, 46, 2), int8] /* ty=Tensor[(1, 46, 2), int8] span=from_string:30:24 */, %x7: Tensor[(49, 17, 31), int32] /* ty=Tensor[(49, 17, 31), int32] span=from_string:40:24 */) -> (Tensor[(1, 4, 4), float32], Tensor[(1, 4, 2), float32], Tensor[(1, 4, 100), float32], Tensor[(31, 65), int32], Tensor[(1, 100, 18), int8], Tensor[(1, 4, 2), float32], Tensor[(1, 18, 46), int8], (Tensor[(1), float32], (Tensor[(1), float32],)), Tensor[(1, 2), int32], Tensor[(1, 100, 18), int32]) {
+  %0 = qnn.dequantize(%x0, 2f /* ty=float32 span=from_string:3:30 */, 0 /* ty=int32 span=from_string:3:72 */) /* ty=Tensor[(1, 4, 2), float32] span=from_string:5:24 */;
+  %1 = qnn.dequantize(%x1, 6f /* ty=float32 span=from_string:4:30 */, 0 /* ty=int32 span=from_string:4:72 */) /* ty=Tensor[(1, 4, 2), float32] span=from_string:36:13 */;
+  %2 = nn.batch_matmul(%0, %1, transpose_b=True) /* ty=Tensor[(1, 4, 4), float32] span=from_string:6:12 */;
+  %3 = add(%2, 1f /* ty=float32 span=from_string:6:18 */) /* ty=Tensor[(1, 4, 4), float32] span=from_string:31:13 */;
+  %4 = qnn.dequantize(%x0, 2f /* ty=float32 span=from_string:10:30 */, 0 /* ty=int32 span=from_string:10:73 */) /* ty=Tensor[(1, 4, 2), float32] span=from_string:33:25 */;
+  %5 = qnn.dequantize(%x4, 6f /* ty=float32 span=from_string:11:30 */, 0 /* ty=int32 span=from_string:11:73 */) /* ty=Tensor[(1, 100, 2), float32] span=from_string:33:29 */;
+  %6 = cast(%x2, dtype="bool") /* ty=Tensor[(31, 65), bool] span=from_string:34:14 */;
+  %7 = qnn.dequantize(%x4, 2f /* ty=float32 span=from_string:13:31 */, 0 /* ty=int32 span=from_string:13:74 */) /* ty=Tensor[(1, 100, 2), float32] span=from_string:15:25 */;
+  %8 = qnn.dequantize(%x5, 0.5f /* ty=float32 span=from_string:14:33 */, 0 /* ty=int32 span=from_string:14:76 */) /* ty=Tensor[(1, 18, 2), float32] span=from_string:15:30 */;
+  %9 = nn.batch_matmul(%7, %8, transpose_b=True) /* ty=Tensor[(1, 100, 18), float32] span=from_string:40:19 */;
+  %10 = ones(shape=[1], dtype="float32") /* ty=Tensor[(1), float32] span=from_string:36:17 */;
+  %11 = qnn.dequantize(%x5, 2f /* ty=float32 span=from_string:17:31 */, 0 /* ty=int32 span=from_string:17:74 */) /* ty=Tensor[(1, 18, 2), float32] span=from_string:19:25 */;
+  %12 = qnn.dequantize(%x6, 0.5f /* ty=float32 span=from_string:18:33 */, 0 /* ty=int32 span=from_string:18:76 */) /* ty=Tensor[(1, 46, 2), float32] span=from_string:19:30 */;
+  %13 = nn.batch_matmul(%11, %12, transpose_b=True) /* ty=Tensor[(1, 18, 46), float32] span=from_string:37:22 */;
+  %14 = ones(shape=[1], dtype="float32") /* ty=Tensor[(1), float32] */;
+  %15 = multiply(%14, %10) /* ty=Tensor[(1), float32] span=from_string:24:27 */;
+  %16 = multiply(%14, %10) /* ty=Tensor[(1), float32] span=from_string:27:27 */;
+  %17 = collapse_sum_to(%15, meta[relay.Constant][0] /* ty=Tensor[(1), int32] */, meta[relay.attrs.InitOpAttrs][0]) /* ty=Tensor[(1), float32] */;
+  %18 = collapse_sum_to(%16, meta[relay.Constant][1] /* ty=Tensor[(1), int32] */, meta[relay.attrs.InitOpAttrs][1]) /* ty=Tensor[(1), float32] */;
+  %19 = add(%17, %18) /* ty=Tensor[(1), float32] span=from_string:29:10 */;
+  %20 = (%19,) /* ty=(Tensor[(1), float32],) span=from_string:38:15 */;
+  %21 = erf(%3) /* ty=Tensor[(1, 4, 4), float32] span=from_string:41:4 */;
+  %22 = cast(%x1, dtype="float32") /* ty=Tensor[(1, 4, 2), float32] */;
+  %23 = nn.batch_matmul(%4, %5, transpose_b=True) /* ty=Tensor[(1, 4, 100), float32] span=from_string:41:14 */;
+  %24 = cast(%6, dtype="int32") /* ty=Tensor[(31, 65), int32] span=from_string:41:19 */;
+  %25 = qnn.quantize(%9, 1f /* ty=float32 span=from_string:35:29 */, 0 /* ty=int32 span=from_string:35:72 */, out_dtype="int8") /* ty=Tensor[(1, 100, 18), int8] span=from_string:41:24 */;
+  %26 = add(%1, %10) /* ty=Tensor[(1, 4, 2), float32] span=from_string:41:29 */;
+  %27 = qnn.quantize(%13, 1f /* ty=float32 span=from_string:37:29 */, 0 /* ty=int32 span=from_string:37:72 */, out_dtype="int8") /* ty=Tensor[(1, 18, 46), int8] span=from_string:41:34 */;
+  %28 = (%10, %20) /* ty=(Tensor[(1), float32], (Tensor[(1), float32],)) span=from_string:41:39 */;
+  %29 = argmax(%x6, axis=[1]) /* ty=Tensor[(1, 2), int32] */;
+  %30 = cast(%9, dtype="int32") /* ty=Tensor[(1, 100, 18), int32] */;
+  (%21, %22, %23, %24, %25, %26, %27, %28, %29, %30) /* ty=(Tensor[(1, 4, 4), float32], Tensor[(1, 4, 2), float32], Tensor[(1, 4, 100), float32], Tensor[(31, 65), int32], Tensor[(1, 100, 18), int8], Tensor[(1, 4, 2), float32], Tensor[(1, 18, 46), int8], (Tensor[(1), float32], (Tensor[(1), float32],)), Tensor[(1, 2), int32], Tensor[(1, 100, 18), int32]) span=from_string:3:3 */
+}
+
+#[metadata]
+{
+  "root": 1, 
+  "nodes": [
+    {
+      "type_key": ""
+    }, 
+    {
+      "type_key": "Map", 
+      "keys": [
+        "relay.attrs.InitOpAttrs", 
+        "relay.Constant"
+      ], 
+      "data": [2, 8]
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [3, 6]
+    }, 
+    {
+      "type_key": "relay.attrs.InitOpAttrs", 
+      "attrs": {
+        "dtype": "", 
+        "shape": "4"
+      }
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [5]
+    }, 
+    {
+      "type_key": "IntImm", 
+      "attrs": {
+        "dtype": "int32", 
+        "span": "0", 
+        "value": "1"
+      }
+    }, 
+    {
+      "type_key": "relay.attrs.InitOpAttrs", 
+      "attrs": {
+        "dtype": "", 
+        "shape": "7"
+      }
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [5]
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [9, 15]
+    }, 
+    {
+      "type_key": "relay.Constant", 
+      "attrs": {
+        "_checked_type_": "12", 
+        "data": "0", 
+        "span": "0", 
+        "virtual_device_": "10"
+      }
+    }, 
+    {
+      "type_key": "VirtualDevice", 
+      "attrs": {
+        "device_type_int": "-1", 
+        "memory_scope": "11", 
+        "target": "0", 
+        "virtual_device_id": "-1"
+      }
+    }, 
+    {
+      "type_key": "runtime.String"
+    }, 
+    {
+      "type_key": "relay.TensorType", 
+      "attrs": {
+        "dtype": "int32", 
+        "shape": "13", 
+        "span": "0"
+      }
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [14]
+    }, 
+    {
+      "type_key": "IntImm", 
+      "attrs": {
+        "dtype": "int32", 
+        "span": "0", 
+        "value": "1"
+      }
+    }, 
+    {
+      "type_key": "relay.Constant", 
+      "attrs": {
+        "_checked_type_": "16", 
+        "data": "1", 
+        "span": "0", 
+        "virtual_device_": "10"
+      }
+    }, 
+    {
+      "type_key": "relay.TensorType", 
+      "attrs": {
+        "dtype": "int32", 
+        "shape": "17", 
+        "span": "0"
+      }
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [18]
+    }, 
+    {
+      "type_key": "IntImm", 
+      "attrs": {
+        "dtype": "int32", 
+        "span": "0", 
+        "value": "1"
+      }
+    }
+  ], 
+  "b64ndarrays": [
+    "P6G0lvBAXt0AAAAAAAAAAAEAAAAAAAAAAQAAAAAgAQABAAAAAAAAAAQAAAAAAAAAAQAAAA==", 
+    "P6G0lvBAXt0AAAAAAAAAAAEAAAAAAAAAAQAAAAAgAQABAAAAAAAAAAQAAAAAAAAAAQAAAA=="
+  ], 
+  "attrs": {"tvm_version": "0.13.0"}
+}

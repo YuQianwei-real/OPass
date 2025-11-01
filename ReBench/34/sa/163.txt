@@ -1,0 +1,27 @@
+#[version = "0.0.5"]
+def @main(%x0: Tensor[(1, 64, 56, 56), float32] /* ty=Tensor[(1, 64, 56, 56), float32] span=from_string:5:29 */, %x1: Tensor[(64, 64, 3, 3), float32] /* ty=Tensor[(64, 64, 3, 3), float32] span=from_string:11:22 */) -> ((Tensor[(1, 64, 1, 1), float32], Tensor[(1, 64, 1, 1), float32]), float32, Tensor[(0, 127, 111, 56), float32], Tensor[(1, 64, 1, 1), float32], Tensor[(0, 111, 1, 1), float32], Tensor[(111, 56, 127, 0), float32]) {
+  let %x_0 = nn.global_max_pool2d(%x0);
+  let %x_1 = 2f /* ty=float32 span=from_string:4:24 */;
+  let %x_2 = multiply(%x_0, %x_1);
+  let %x_3 = (%x_0, %x_2) /* ty=(Tensor[(1, 64, 1, 1), float32], Tensor[(1, 64, 1, 1), float32]) span=from_string:23:4 */;
+  let %x_4 = 7.38906f /* ty=float32 span=from_string:23:17 */;
+  let %x_5 = nn.batch_to_space_nd(%x0, block_shape=[2, 2], crops=[[0, 1], [0, 1]]);
+  let %x_6 = nn.relu(%x_5);
+  let %x_7 = transpose(%x_6, axes=[0, 2, 3, 1]);
+  let %x_8 = transpose(%x_7, axes=[1, 2, 3, 0]);
+  let %x_9 = transpose(%x_8, axes=[3, 2, 0, 1]);
+  let %x_10 = ones(shape=[1], dtype="float32");
+  let %x_11 = add(%x_2, %x_10);
+  let %x_12 = nn.conv2d(%x_11, %x1, padding=[1, 1, 1, 1], channels=64, kernel_size=[3, 3]);
+  let %x_13 = nn.relu(%x_12);
+  let %x_14 = nn.global_max_pool2d(%x_7);
+  let %x_15 = nn.relu(%x_14);
+  let %x_16 = transpose(%x_15, axes=[0, 2, 3, 1]);
+  let %x_17 = transpose(%x_16, axes=[1, 2, 3, 0]);
+  let %x_18 = transpose(%x_17, axes=[3, 2, 0, 1]);
+  let %x_19 = layout_transform(%x_8, src_layout="NCHW", dst_layout="NCHW4c");
+  let %x_20 = layout_transform(%x_19, src_layout="NCHW4c", dst_layout="NCHW");
+  let %x_21 = nn.relu(%x_20);
+  let %x_22 = (%x_3, %x_4, %x_9, %x_13, %x_18, %x_21) /* ty=((Tensor[(1, 64, 1, 1), float32], Tensor[(1, 64, 1, 1), float32]), float32, Tensor[(0, 127, 111, 56), float32], Tensor[(1, 64, 1, 1), float32], Tensor[(0, 111, 1, 1), float32], Tensor[(111, 56, 127, 0), float32]) span=from_string:3:3 */;
+  %x_22
+}

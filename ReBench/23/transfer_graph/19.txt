@@ -1,0 +1,112 @@
+#[version = "0.0.5"]
+def @main(%x0: Tensor[(3, 1), float32] /* ty=Tensor[(3, 1), float32] span=from_string:4:12 */, %x1: Tensor[(3, 3), float32] /* ty=Tensor[(3, 3), float32] */, %x2: Tensor[(3, 1), float32] /* ty=Tensor[(3, 1), float32] span=from_string:14:23 */, %x3: Tensor[(50), float32] /* ty=Tensor[(50), float32] */, %x4: Tensor[(3, 55), float32] /* ty=Tensor[(3, 55), float32] */, %x5: float32 /* ty=float32 span=from_string:11:13 */) -> (Tensor[(3, 3), float16], Tensor[(3, 3), float16], Tensor[(3, 1), float32], Tensor[(2), int32], Tensor[(3, 1), float32], Tensor[(50), float16], Tensor[(3, 55), float32], Tensor[(2), int32]) {
+  let %x_0 = cast(%x0, dtype="float16");
+  let %x_1 = broadcast_to(%x_0, shape=[3, 3], dtype="float16");
+  let %x_2 = ones(shape=[3, 3], dtype="float16");
+  let %x_3 = erf(%x0);
+  let %x_4 = subtract(%x_3, %x2);
+  let %x_5 = multiply(%x_4, %x2);
+  let %x_6 = meta[relay.Constant][0] /* ty=Tensor[(2), int32] span=from_string:19:23 */;
+  let %x_7 = ones(shape=[1], dtype="float16");
+  let %x_8 = cast(%x_7, dtype="float32");
+  let %x_9 = multiply(%x_8, %x_4);
+  let %x_10 = cast(%x_9, dtype="bfloat16");
+  let %x_11 = cast(%x_10, dtype="float32");
+  let %x_12 = clip(%x_11, a_min=-0.2f, a_max=0.4f);
+  let %x_13 = broadcast_to(%x_7, shape=[50], dtype="float16");
+  let %x_14 = broadcast_to(%x_9, shape=[3, 55]);
+  let %x_15 = cast(%x5, dtype="float16");
+  let %x_16 = full(%x_15, shape=[2], dtype="int32");
+  let %x_17 = (%x_1, %x_2, %x_5, %x_6, %x_12, %x_13, %x_14, %x_16) /* ty=(Tensor[(3, 3), float16], Tensor[(3, 3), float16], Tensor[(3, 1), float32], Tensor[(2), int32], Tensor[(3, 1), float32], Tensor[(50), float16], Tensor[(3, 55), float32], Tensor[(2), int32]) span=from_string:3:3 */;
+  %x_17
+}
+
+#[metadata]
+{
+  "root": 1, 
+  "nodes": [
+    {
+      "type_key": ""
+    }, 
+    {
+      "type_key": "Map", 
+      "keys": [
+        "relay.Constant"
+      ], 
+      "data": [2]
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [3]
+    }, 
+    {
+      "type_key": "relay.Constant", 
+      "attrs": {
+        "_checked_type_": "8", 
+        "data": "0", 
+        "span": "6", 
+        "virtual_device_": "4"
+      }
+    }, 
+    {
+      "type_key": "VirtualDevice", 
+      "attrs": {
+        "device_type_int": "-1", 
+        "memory_scope": "5", 
+        "target": "0", 
+        "virtual_device_id": "-1"
+      }
+    }, 
+    {
+      "type_key": "runtime.String"
+    }, 
+    {
+      "type_key": "Span", 
+      "attrs": {
+        "column": "23", 
+        "end_column": "41", 
+        "end_line": "19", 
+        "line": "19", 
+        "source_name": "7"
+      }
+    }, 
+    {
+      "type_key": "SourceName", 
+      "repr_str": "from_string"
+    }, 
+    {
+      "type_key": "relay.TensorType", 
+      "attrs": {
+        "dtype": "int32", 
+        "shape": "9", 
+        "span": "11"
+      }
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [10]
+    }, 
+    {
+      "type_key": "IntImm", 
+      "attrs": {
+        "dtype": "int32", 
+        "span": "0", 
+        "value": "2"
+      }
+    }, 
+    {
+      "type_key": "Span", 
+      "attrs": {
+        "column": "503", 
+        "end_column": "523", 
+        "end_line": "2", 
+        "line": "2", 
+        "source_name": "7"
+      }
+    }
+  ], 
+  "b64ndarrays": [
+    "P6G0lvBAXt0AAAAAAAAAAAEAAAAAAAAAAQAAAAAgAQACAAAAAAAAAAgAAAAAAAAAAwAAAAMAAAA="
+  ], 
+  "attrs": {"tvm_version": "0.13.0"}
+}

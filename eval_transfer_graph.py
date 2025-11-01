@@ -38,12 +38,12 @@ def main():
         print('#################')
         print(f'Tuning case {dn}...')
         case_path = os.path.join(args.directory, dn)
-        # if os.path.exists(os.path.join(case_path, 'tune_results_serenity.json')):
-        #     print('Found tune results.')
-        #     continue
-        if os.path.exists(os.path.join(case_path, 'tune_results.json')):
-            print('Found tune results.')
+        if os.path.exists(os.path.join(case_path, 'tune_results_serenity.json')):
+            print('Found serenity tune results')
             continue
+      # if os.path.exists(os.path.join(case_path, 'tune_results.json')):
+       #    print('Found tune results.')
+       #    continue
 
         code_path = os.path.join(case_path, 'code.txt')
         cmd = ['python3', 'run_transfer_graph.py', f'-p={code_path}', f'-e={args.epochs}', f'-s={rng.integers(2 ** 63)}']

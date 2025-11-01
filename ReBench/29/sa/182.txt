@@ -1,0 +1,41 @@
+#[version = "0.0.5"]
+def @main(%x0: Tensor[(1, 16, 16, 16), float32] /* ty=Tensor[(1, 16, 16, 16), float32] span=GeneratedSource:3:12 */, %x1: Tensor[(64, 16, 3, 3), float32] /* ty=Tensor[(64, 16, 3, 3), float32] span=GeneratedSource:5:22 */, %x2: Tensor[(64, 64, 3, 3), float32] /* ty=Tensor[(64, 64, 3, 3), float32] span=GeneratedSource:19:19 */, %x3: Tensor[(64, 16, 3, 3), float32] /* ty=Tensor[(64, 16, 3, 3), float32] span=GeneratedSource:31:19 */) -> (Tensor[(1, 64, 16, 16), float32], Tensor[(1, 16, 16, 64), float32], Tensor[(1, 16, 16, 16), float32], Tensor[(1, 64, 16, 16), float32], float32, Tensor[(64, 48, 16), float32], Tensor[(64, 64, 16, 1), float32]) {
+  %0 = exp(%x0) /* ty=Tensor[(1, 16, 16, 16), float32] span=GeneratedSource:15:13 */;
+  %1 = zeros_like(%0) /* ty=Tensor[(1, 16, 16, 16), float32] span=GeneratedSource:15:17 */;
+  %2 = nn.conv2d(%1, %x1, padding=[1, 1, 1, 1], channels=64, kernel_size=[3, 3]) /* ty=Tensor[(1, 64, 16, 16), float32] span=GeneratedSource:18:17 */;
+  %3 = nn.relu(%2) /* ty=Tensor[(1, 64, 16, 16), float32] span=GeneratedSource:10:16 */;
+  %4 = nn.relu(%2) /* ty=Tensor[(1, 64, 16, 16), float32] span=GeneratedSource:9:12 */;
+  %5 = add(%3, 1f /* ty=float32 span=GeneratedSource:8:18 */) /* ty=Tensor[(1, 64, 16, 16), float32] span=GeneratedSource:34:13 */;
+  %6 = add(%4, 1f /* ty=float32 span=GeneratedSource:9:18 */) /* ty=Tensor[(1, 64, 16, 16), float32] span=GeneratedSource:34:17 */;
+  %7 = nn.relu(%3) /* ty=Tensor[(1, 64, 16, 16), float32] span=GeneratedSource:11:18 */;
+  %8 = transpose(%7, axes=None) /* ty=Tensor[(16, 16, 64, 1), float32] span=GeneratedSource:12:18 */;
+  %9 = transpose(%8, axes=None) /* ty=Tensor[(1, 64, 16, 16), float32] span=GeneratedSource:13:19 */;
+  %10 = transpose(%9, axes=[0, 2, -1, 1]) /* ty=Tensor[(1, 16, 16, 64), float32] span=GeneratedSource:14:19 */;
+  %11 = transpose(%10, axes=None) /* ty=Tensor[(64, 16, 16, 1), float32] span=GeneratedSource:35:19 */;
+  %12 = add(%0, %1) /* ty=Tensor[(1, 16, 16, 16), float32] span=GeneratedSource:16:19 */;
+  %13 = transpose(%12, axes=[0, 2, 3, 1]) /* ty=Tensor[(1, 16, 16, 16), float32] span=GeneratedSource:17:26 */;
+  %14 = layout_transform(%13, src_layout="NHWC", dst_layout="HWCN") /* ty=Tensor[(16, 16, 16, 1), float32] span=GeneratedSource:36:19 */;
+  %15 = nn.relu(%2) /* ty=Tensor[(1, 64, 16, 16), float32] span=GeneratedSource:20:19 */;
+  %16 = multiply(%x2, 2f /* ty=float32 span=GeneratedSource:19:26 */) /* ty=Tensor[(64, 64, 3, 3), float32] span=GeneratedSource:20:24 */;
+  %17 = nn.conv2d(%15, %16, padding=[1, 1, 1, 1], channels=64, kernel_size=[3, 3]) /* ty=Tensor[(1, 64, 16, 16), float32] span=GeneratedSource:21:57 */;
+  %18 = add(0f /* ty=float32 span=GeneratedSource:21:15 */, %17) /* ty=Tensor[(1, 64, 16, 16), float32] span=GeneratedSource:37:17 */;
+  %19 = squeeze(%18) /* ty=Tensor[(64, 16, 16), float32] span=GeneratedSource:27:13 */;
+  %20 = squeeze(%19) /* ty=Tensor[(64, 16, 16), float32] span=GeneratedSource:24:13 */;
+  %21 = add(%20, 1f /* ty=float32 span=GeneratedSource:24:20 */) /* ty=Tensor[(64, 16, 16), float32] span=GeneratedSource:26:13 */;
+  %22 = add(%19, 1f /* ty=float32 span=GeneratedSource:25:20 */) /* ty=Tensor[(64, 16, 16), float32] span=GeneratedSource:28:10 */;
+  %23 = add(%21, 1f /* ty=float32 span=GeneratedSource:26:20 */) /* ty=Tensor[(64, 16, 16), float32] span=GeneratedSource:28:15 */;
+  %24 = add(%19, 1f /* ty=float32 span=GeneratedSource:27:20 */) /* ty=Tensor[(64, 16, 16), float32] span=GeneratedSource:28:20 */;
+  %25 = (%22, %23, %24) /* ty=(Tensor[(64, 16, 16), float32], Tensor[(64, 16, 16), float32], Tensor[(64, 16, 16), float32]) span=GeneratedSource:29:21 */;
+  %26 = concatenate(%25, axis=1) /* ty=Tensor[(64, 48, 16), float32] span=GeneratedSource:30:17 */;
+  %27 = squeeze(%26) /* ty=Tensor[(64, 48, 16), float32] span=GeneratedSource:38:13 */;
+  %28 = multiply(%x3, 2f /* ty=float32 span=GeneratedSource:31:26 */) /* ty=Tensor[(64, 16, 3, 3), float32] span=GeneratedSource:32:24 */;
+  %29 = nn.conv2d(%11, %28, padding=[1, 1, 1, 1], channels=64, kernel_size=[3, 3]) /* ty=Tensor[(64, 64, 16, 1), float32] span=GeneratedSource:33:57 */;
+  %30 = add(0f /* ty=float32 span=GeneratedSource:33:15 */, %29) /* ty=Tensor[(64, 64, 16, 1), float32] span=GeneratedSource:39:17 */;
+  %31 = add(%5, %6) /* ty=Tensor[(1, 64, 16, 16), float32] span=GeneratedSource:40:4 */;
+  %32 = transpose(%11, axes=None) /* ty=Tensor[(1, 16, 16, 64), float32] span=GeneratedSource:40:9 */;
+  %33 = transpose(%14, axes=[3, 0, 1, 2]) /* ty=Tensor[(1, 16, 16, 16), float32] span=GeneratedSource:40:14 */;
+  %34 = nn.relu(%18) /* ty=Tensor[(1, 64, 16, 16), float32] span=GeneratedSource:40:19 */;
+  %35 = add(%27, 1f /* ty=float32 span=GeneratedSource:38:20 */) /* ty=Tensor[(64, 48, 16), float32] span=GeneratedSource:40:68 */;
+  %36 = nn.relu(%30) /* ty=Tensor[(64, 64, 16, 1), float32] span=GeneratedSource:40:73 */;
+  (%31, %32, %33, %34, 0f /* ty=float32 span=GeneratedSource:40:26 */, %35, %36) /* ty=(Tensor[(1, 64, 16, 16), float32], Tensor[(1, 16, 16, 64), float32], Tensor[(1, 16, 16, 16), float32], Tensor[(1, 64, 16, 16), float32], float32, Tensor[(64, 48, 16), float32], Tensor[(64, 64, 16, 1), float32]) span=GeneratedSource:3:3 */
+}

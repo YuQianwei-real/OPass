@@ -1,0 +1,117 @@
+#[version = "0.0.5"]
+def @main(%x0: int32 /* ty=int32 span=from_string:5:13 */, %x1: int32 /* ty=int32 span=from_string:4:37 */) -> (bool, uint8, int32, int32, uint8, int32, int32, float32) {
+  %0 = less(%x0, 10 /* ty=int32 span=from_string:5:20 */) /* ty=bool span=from_string:12:13 */;
+  %1 = qnn.dequantize(meta[relay.Constant][0] /* ty=uint8 span=from_string:6:28 */, 2f /* ty=float32 span=from_string:6:65 */, 114 /* ty=int32 span=from_string:6:109 */) /* ty=float32 span=from_string:7:22 */;
+  %2 = nn.leaky_relu(%1, alpha=0.1f) /* ty=float32 span=from_string:13:21 */;
+  %3 = qnn.dequantize(meta[relay.Constant][1] /* ty=uint8 span=from_string:8:28 */, 2f /* ty=float32 span=from_string:8:65 */, 114 /* ty=int32 span=from_string:8:110 */) /* ty=float32 span=from_string:10:12 */;
+  %4 = clip(%3, a_min=0f, a_max=6f) /* ty=float32 span=from_string:14:21 */;
+  %5 = add(%3, 1f /* ty=float32 span=from_string:10:18 */) /* ty=float32 span=from_string:11:12 */;
+  %6 = exp(%5) /* ty=float32 span=from_string:15:17 */;
+  %7 = min(%0) /* ty=bool span=from_string:16:4 */;
+  %8 = qnn.quantize(%2, 2f /* ty=float32 span=from_string:13:27 */, 114 /* ty=int32 span=from_string:13:71 */, out_dtype="uint8") /* ty=uint8 span=from_string:16:8 */;
+  %9 = qnn.quantize(%4, 2f /* ty=float32 span=from_string:14:27 */, 114 /* ty=int32 span=from_string:14:72 */, out_dtype="uint8") /* ty=uint8 span=from_string:16:48 */;
+  %10 = squeeze(%6) /* ty=float32 span=from_string:16:75 */;
+  (%7, %8, 0 /* ty=int32 span=from_string:16:13 */, 1 /* ty=int32 span=from_string:16:31 */, %9, 1 /* ty=int32 span=from_string:16:53 */, %x0, %10) /* ty=(bool, uint8, int32, int32, uint8, int32, int32, float32) span=from_string:16:3 */
+}
+
+#[metadata]
+{
+  "root": 1, 
+  "nodes": [
+    {
+      "type_key": ""
+    }, 
+    {
+      "type_key": "Map", 
+      "keys": [
+        "relay.Constant"
+      ], 
+      "data": [2]
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [3, 10]
+    }, 
+    {
+      "type_key": "relay.Constant", 
+      "attrs": {
+        "_checked_type_": "8", 
+        "data": "0", 
+        "span": "6", 
+        "virtual_device_": "4"
+      }
+    }, 
+    {
+      "type_key": "VirtualDevice", 
+      "attrs": {
+        "device_type_int": "-1", 
+        "memory_scope": "5", 
+        "target": "0", 
+        "virtual_device_id": "-1"
+      }
+    }, 
+    {
+      "type_key": "runtime.String"
+    }, 
+    {
+      "type_key": "Span", 
+      "attrs": {
+        "column": "28", 
+        "end_column": "46", 
+        "end_line": "6", 
+        "line": "6", 
+        "source_name": "7"
+      }
+    }, 
+    {
+      "type_key": "SourceName", 
+      "repr_str": "from_string"
+    }, 
+    {
+      "type_key": "relay.TensorType", 
+      "attrs": {
+        "dtype": "uint8", 
+        "shape": "9", 
+        "span": "0"
+      }
+    }, 
+    {
+      "type_key": "Array"
+    }, 
+    {
+      "type_key": "relay.Constant", 
+      "attrs": {
+        "_checked_type_": "12", 
+        "data": "1", 
+        "span": "11", 
+        "virtual_device_": "4"
+      }
+    }, 
+    {
+      "type_key": "Span", 
+      "attrs": {
+        "column": "28", 
+        "end_column": "46", 
+        "end_line": "8", 
+        "line": "8", 
+        "source_name": "7"
+      }
+    }, 
+    {
+      "type_key": "relay.TensorType", 
+      "attrs": {
+        "dtype": "uint8", 
+        "shape": "13", 
+        "span": "0"
+      }
+    }, 
+    {
+      "type_key": "Array"
+    }
+  ], 
+  "b64ndarrays": [
+    "P6G0lvBAXt0AAAAAAAAAAAEAAAAAAAAAAAAAAAEIAQABAAAAAAAAAAI=", 
+    "P6G0lvBAXt0AAAAAAAAAAAEAAAAAAAAAAAAAAAEIAQABAAAAAAAAAAI="
+  ], 
+  "attrs": {"tvm_version": "0.13.0"}
+}

@@ -1,0 +1,46 @@
+#[version = "0.0.5"]
+def @main(%x0: Tensor[(1, 3, 10, 10), int8] /* ty=Tensor[(1, 3, 10, 10), int8] span=from_string:13:15 */, %x1: Tensor[(1, 6, 10, 10), float32] /* ty=Tensor[(1, 6, 10, 10), float32] span=from_string:19:18 */, %x2: Tensor[(92), int64] /* ty=Tensor[(92), int64] span=from_string:34:19 */, %x3: Tensor[(1, 6, 10, 41), float32] /* ty=Tensor[(1, 6, 10, 41), float32] span=from_string:20:15 */, %x4: Tensor[(1, 6, 10, 72), float32] /* ty=Tensor[(1, 6, 10, 72), float32] span=from_string:22:10 */) -> (int8, Tensor[(1, 6, 10, 10), float32], Tensor[(1, 3, 5, 5), float32], Tensor[(1, 10, 5), int32], int32, float32, Tensor[(92, 10, 5), float32], Tensor[(1, 6, 10, 123), float32], Tensor[(0, 40, 40, 1), float32]) {
+  let %x_0 = nn.depth_to_space(%x0, block_size=4);
+  let %x_1 = max(%x_0);
+  let %x_2 = 2f /* ty=float32 span=from_string:4:30 */;
+  let %x_3 = 0 /* ty=int32 span=from_string:4:72 */;
+  let %x_4 = qnn.dequantize(%x0, %x_2, %x_3);
+  let %x_5 = nn.max_pool2d(%x_4, pool_size=[2, 2], strides=[2, 2], padding=[0, 0, 0, 0]);
+  let %x_6 = nn.upsampling(%x_5, scale_h=2f, scale_w=2f);
+  let %x_7 = (%x_6, %x_4) /* ty=(Tensor[(1, 3, 10, 10), float32], Tensor[(1, 3, 10, 10), float32]) span=from_string:18:21 */;
+  let %x_8 = concatenate(%x_7, axis=1);
+  let %x_9 = annotation.stop_fusion(%x_8);
+  let %x_10 = (%x_9,) /* ty=(Tensor[(1, 6, 10, 10), float32],) span=from_string:11:20 */;
+  let %x_11 = concatenate(%x_10, axis=1);
+  let %x_12 = 1f /* ty=float32 span=from_string:31:19 */;
+  let %x_13 = add(%x_11, %x_12);
+  let %x_14 = zeros(shape=[1], dtype="float32");
+  let %x_15 = add(%x_5, %x_14);
+  let %x_16 = split(%x0, indices_or_sections=2, axis=3);
+  let %x_17 = %x_16.0;
+  let %x_18 = 2f /* ty=float32 span=from_string:15:31 */;
+  let %x_19 = 0 /* ty=int32 span=from_string:15:74 */;
+  let %x_20 = qnn.dequantize(%x_17, %x_18, %x_19);
+  let %x_21 = argmin(%x_20, axis=[1]);
+  let %x_22 = 600 /* ty=int32 span=from_string:37:27 */;
+  let %x_23 = 20.0855f /* ty=float32 span=from_string:37:75 */;
+  let %x_24 = squeeze(%x_20);
+  let %x_25 = strided_slice(%x_24, begin=[0, 0, 0], end=[3, 10, 5], strides=[1, 1, 1], axes=None);
+  let %x_26 = take(%x_25, %x2, axis=0);
+  let %x_27 = concatenate(%x_7, axis=1);
+  let %x_28 = add(%x_27, %x1);
+  let %x_29 = (%x_28, %x3) /* ty=(Tensor[(1, 6, 10, 10), float32], Tensor[(1, 6, 10, 41), float32]) span=from_string:21:21 */;
+  let %x_30 = concatenate(%x_29, axis=3);
+  let %x_31 = annotation.stop_fusion(%x_30);
+  let %x_32 = (%x4,) /* ty=(Tensor[(1, 6, 10, 72), float32],) span=from_string:23:21 */;
+  let %x_33 = concatenate(%x_32, axis=3);
+  let %x_34 = annotation.stop_fusion(%x_33);
+  let %x_35 = (%x_31, %x_34) /* ty=(Tensor[(1, 6, 10, 51), float32], Tensor[(1, 6, 10, 72), float32]) span=from_string:35:21 */;
+  let %x_36 = concatenate(%x_35, axis=3);
+  let %x_37 = nn.depth_to_space(%x_4, block_size=4);
+  let %x_38 = layout_transform(%x_37, src_layout="NCHW", dst_layout="NHWC");
+  let %x_39 = layout_transform(%x_38, src_layout="NHWC", dst_layout="CHWN");
+  let %x_40 = nn.relu(%x_39);
+  let %x_41 = (%x_1, %x_13, %x_15, %x_21, %x_22, %x_23, %x_26, %x_36, %x_40) /* ty=(int8, Tensor[(1, 6, 10, 10), float32], Tensor[(1, 3, 5, 5), float32], Tensor[(1, 10, 5), int32], int32, float32, Tensor[(92, 10, 5), float32], Tensor[(1, 6, 10, 123), float32], Tensor[(0, 40, 40, 1), float32]) span=from_string:3:3 */;
+  %x_41
+}

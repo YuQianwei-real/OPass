@@ -1,33 +1,26 @@
 #[version = "0.0.5"]
-def @main(%x0: Tensor[(1, 3, 224, 224), int8] /* ty=Tensor[(1, 3, 224, 224), int8] span=from_string:13:14 */) -> (Tensor[(1, 3, 224, 112), float32], Tensor[(1, 112, 3, 224), float32], int32, Tensor[(1, 3, 4, 2), int8], Tensor[(1, 3, 224, 224), int32], Tensor[(1, 28, 3, 224, 4), float32], Tensor[(1, 6, 224, 112), float32]) {
-  let %x_0 = 2f /* ty=float32 span=from_string:3:30 */;
-  let %x_1 = 0 /* ty=int32 span=from_string:3:72 */;
-  let %x_2 = qnn.dequantize(%x0, %x_0, %x_1);
-  let %x_3 = split(%x_2, indices_or_sections=2, axis=3);
-  let %x_4 = %x_3.0;
-  let %x_5 = transpose(%x_4, axes=[0, 3, 1, 2]);
-  let %x_6 = layout_transform(%x_5, src_layout="NCHW", dst_layout="NCHW4c");
-  let %x_7 = nn.relu(%x_6);
-  let %x_8 = layout_transform(%x_7, src_layout="NCHW4c", dst_layout="NHWC");
-  let %x_9 = exp(%x_5);
-  let %x_10 = 2 /* ty=int32 span=from_string:25:15 */;
-  let %x_11 = split(%x0, indices_or_sections=2, axis=3);
-  let %x_12 = %x_11.0;
-  let %x_13 = image.resize2d(%x_12, size=[4, 4], roi=[0f, 0f, 0f, 0f], rounding_method="");
-  let %x_14 = split(%x_13, indices_or_sections=2, axis=3);
-  let %x_15 = %x_14.0;
-  let %x_16 = topk(%x0, k=1, axis=0, ret_type="values", is_ascend=True, dtype="float32");
-  let %x_17 = argsort(%x_16, axis=1, dtype="int32");
-  let %x_18 = nn.relu(%x_6);
-  let %x_19 = 2f /* ty=float32 span=from_string:14:30 */;
-  let %x_20 = 0 /* ty=int32 span=from_string:14:73 */;
-  let %x_21 = qnn.dequantize(%x_12, %x_19, %x_20);
-  let %x_22 = nn.max_pool2d(%x_21, pool_size=[2, 2], strides=[2, 2], padding=[0, 0, 0, 0]);
-  let %x_23 = nn.upsampling(%x_22, scale_h=2f, scale_w=2f);
-  let %x_24 = (%x_23, %x_21) /* ty=(Tensor[(1, 3, 224, 112), float32], Tensor[(1, 3, 224, 112), float32]) span=from_string:18:21 */;
-  let %x_25 = concatenate(%x_24, axis=1);
-  let %x_26 = 1f /* ty=float32 span=from_string:24:20 */;
-  let %x_27 = add(%x_25, %x_26);
-  let %x_28 = (%x_8, %x_9, %x_10, %x_15, %x_17, %x_18, %x_27) /* ty=(Tensor[(1, 3, 224, 112), float32], Tensor[(1, 112, 3, 224), float32], int32, Tensor[(1, 3, 4, 2), int8], Tensor[(1, 3, 224, 224), int32], Tensor[(1, 28, 3, 224, 4), float32], Tensor[(1, 6, 224, 112), float32]) span=from_string:3:3 */;
-  %x_28
+def @main(%x0: Tensor[(1, 3, 224, 224), int8] /* ty=Tensor[(1, 3, 224, 224), int8] span=from_string:16:24 */) -> (Tensor[(1, 3, 224, 112), float32], Tensor[(1, 112, 3, 224), float32], int32, Tensor[(1, 3, 4, 2), int8], Tensor[(1, 3, 224, 224), int32], Tensor[(1, 28, 3, 224, 4), float32], Tensor[(1, 6, 224, 112), float32]) {
+  %0 = qnn.dequantize(%x0, 2f /* ty=float32 span=from_string:3:30 */, 0 /* ty=int32 span=from_string:3:72 */) /* ty=Tensor[(1, 3, 224, 224), float32] span=from_string:4:14 */;
+  %1 = split(%0, indices_or_sections=2, axis=3) /* ty=(Tensor[(1, 3, 224, 112), float32], Tensor[(1, 3, 224, 112), float32]) span=from_string:5:8 */;
+  %2 = %1.0 /* ty=Tensor[(1, 3, 224, 112), float32] span=from_string:9:21 */;
+  %3 = transpose(%2, axes=[0, 3, 1, 2]) /* ty=Tensor[(1, 112, 3, 224), float32] span=from_string:24:13 */;
+  %4 = layout_transform(%3, src_layout="NCHW", dst_layout="NCHW4c") /* ty=Tensor[(1, 28, 3, 224, 4), float32] span=from_string:27:17 */;
+  %5 = nn.relu(%4) /* ty=Tensor[(1, 28, 3, 224, 4), float32] span=from_string:23:26 */;
+  %6 = split(%x0, indices_or_sections=2, axis=3) /* ty=(Tensor[(1, 3, 224, 112), int8], Tensor[(1, 3, 224, 112), int8]) span=from_string:5:8 */;
+  %7 = %6.0 /* ty=Tensor[(1, 3, 224, 112), int8] span=from_string:9:21 */;
+  %8 = image.resize2d(%7, size=[4, 4], roi=[0f, 0f, 0f, 0f], rounding_method="") /* ty=Tensor[(1, 3, 4, 4), int8] span=from_string:12:21 */;
+  %9 = split(%8, indices_or_sections=2, axis=3) /* ty=(Tensor[(1, 3, 4, 2), int8], Tensor[(1, 3, 4, 2), int8]) span=from_string:15:9 */;
+  %10 = topk(%x0, k=1, axis=0, ret_type="values", is_ascend=True, dtype="float32") /* ty=Tensor[(1, 3, 224, 224), int8] span=from_string:18:22 */;
+  %11 = qnn.dequantize(%7, 2f /* ty=float32 span=from_string:10:29 */, 0 /* ty=int32 span=from_string:10:72 */) /* ty=Tensor[(1, 3, 224, 112), float32] span=from_string:21:15 */;
+  %12 = nn.max_pool2d(%11, pool_size=[2, 2], strides=[2, 2], padding=[0, 0, 0, 0]) /* ty=Tensor[(1, 3, 112, 56), float32] span=from_string:20:23 */;
+  %13 = nn.upsampling(%12, scale_h=2f, scale_w=2f) /* ty=Tensor[(1, 3, 224, 112), float32] span=from_string:21:10 */;
+  %14 = (%13, %11) /* ty=(Tensor[(1, 3, 224, 112), float32], Tensor[(1, 3, 224, 112), float32]) span=from_string:22:21 */;
+  %15 = concatenate(%14, axis=1) /* ty=Tensor[(1, 6, 224, 112), float32] span=from_string:28:13 */;
+  %16 = layout_transform(%5, src_layout="NCHW4c", dst_layout="NHWC") /* ty=Tensor[(1, 3, 224, 112), float32] span=from_string:29:4 */;
+  %17 = exp(%3) /* ty=Tensor[(1, 112, 3, 224), float32] span=from_string:29:9 */;
+  %18 = %9.0 /* ty=Tensor[(1, 3, 4, 2), int8] span=from_string:25:22 */;
+  %19 = argsort(%10, axis=1, dtype="int32") /* ty=Tensor[(1, 3, 224, 224), int32] span=from_string:29:60 */;
+  %20 = nn.relu(%4) /* ty=Tensor[(1, 28, 3, 224, 4), float32] span=from_string:29:65 */;
+  %21 = add(%15, 1f /* ty=float32 span=from_string:28:20 */) /* ty=Tensor[(1, 6, 224, 112), float32] span=from_string:29:70 */;
+  (%16, %17, 2 /* ty=int32 span=from_string:29:15 */, %18, %19, %20, %21) /* ty=(Tensor[(1, 3, 224, 112), float32], Tensor[(1, 112, 3, 224), float32], int32, Tensor[(1, 3, 4, 2), int8], Tensor[(1, 3, 224, 224), int32], Tensor[(1, 28, 3, 224, 4), float32], Tensor[(1, 6, 224, 112), float32]) span=from_string:3:3 */
 }

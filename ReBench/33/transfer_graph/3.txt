@@ -1,0 +1,17 @@
+#[version = "0.0.5"]
+def @main(%x0: Tensor[(1, 64, 56, 56), float32] /* ty=Tensor[(1, 64, 56, 56), float32] span=from_string:8:22 */, %x1: Tensor[(54, 64, 1, 1), float32] /* ty=Tensor[(54, 64, 1, 1), float32] span=from_string:7:16 */, %x2: Tensor[(28, 60, 95, 44), int32] /* ty=Tensor[(28, 60, 95, 44), int32] span=from_string:10:22 */, %x3: Tensor[(3456, 1, 1), float32] /* ty=Tensor[(3456, 1, 1), float32] */, %x4: Tensor[(55, 64, 1, 1), float32] /* ty=Tensor[(55, 64, 1, 1), float32] */) -> (Tensor[(1, 64, 56, 56), float32], Tensor[(1, 64, 1, 1), float32], Tensor[(55, 64, 1, 1), int32], Tensor[(54, 64, 1, 1), float32], Tensor[(1), float32], int32) {
+  %0 = ones(shape=[1], dtype="float32") /* ty=Tensor[(1), float32] span=from_string:12:19 */;
+  %1 = nn.global_max_pool2d(%x0) /* ty=Tensor[(1, 64, 1, 1), float32] span=from_string:9:22 */;
+  %2 = (%1, %x1) /* ty=(Tensor[(1, 64, 1, 1), float32], Tensor[(54, 64, 1, 1), float32]) span=from_string:6:20 */;
+  %3 = concatenate(%2) /* ty=Tensor[(55, 64, 1, 1), float32] */;
+  %4 = annotation.stop_fusion(%3) /* ty=Tensor[(55, 64, 1, 1), float32] */;
+  %5 = (%4,) /* ty=(Tensor[(55, 64, 1, 1), float32],) span=from_string:6:20 */;
+  %6 = concatenate(%5) /* ty=Tensor[(55, 64, 1, 1), float32] */;
+  %7 = reshape(%x1, newshape=[3456, 1, 1]) /* ty=Tensor[(3456, 1, 1), float32] span=from_string:11:16 */;
+  %8 = multiply(%0, %x0) /* ty=Tensor[(1, 64, 56, 56), float32] span=from_string:13:4 */;
+  %9 = multiply(%1, %1) /* ty=Tensor[(1, 64, 1, 1), float32] span=from_string:13:8 */;
+  %10 = cast_like(%6, %x2) /* ty=Tensor[(55, 64, 1, 1), int32] span=from_string:13:12 */;
+  %11 = reshape(%7, newshape=[54, 64, 1, 1]) /* ty=Tensor[(54, 64, 1, 1), float32] span=from_string:13:16 */;
+  %12 = nn.softmax(%0) /* ty=Tensor[(1), float32] span=from_string:13:20 */;
+  (%8, %9, %10, %11, %12, 3520 /* ty=int32 span=from_string:13:28 */) /* ty=(Tensor[(1, 64, 56, 56), float32], Tensor[(1, 64, 1, 1), float32], Tensor[(55, 64, 1, 1), int32], Tensor[(54, 64, 1, 1), float32], Tensor[(1), float32], int32) span=from_string:3:3 */
+}

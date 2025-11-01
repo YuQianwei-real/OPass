@@ -1,0 +1,55 @@
+#[version = "0.0.5"]
+def @main(%x0: Tensor[(1, 64, 56, 56), float32] /* ty=Tensor[(1, 64, 56, 56), float32] span=from_string:5:9 */, %x1: Tensor[(29, 64, 56, 56), float32] /* ty=Tensor[(29, 64, 56, 56), float32] span=from_string:5:14 */, %x2: Tensor[(30, 64, 56, 92), float32] /* ty=Tensor[(30, 64, 56, 92), float32] span=from_string:14:14 */, %x3: Tensor[(30, 64, 56, 20), float32] /* ty=Tensor[(30, 64, 56, 20), float32] span=from_string:36:14 */, %x4: Tensor[(64, 64, 3, 3), float32] /* ty=Tensor[(64, 64, 3, 3), float32] span=from_string:27:14 */) -> (Tensor[(1, 64, 1, 1), float16], Tensor[(30, 64, 56, 168), float32], Tensor[(30, 64, 56, 92), float32], Tensor[(30, 64, 1, 1), float16], Tensor[(30, 64, 56, 56), float32], Tensor[(30, 64, 56, 20), float32], float32) {
+  let %x_0 = cast(%x0, dtype="float16");
+  let %x_1 = cast(%x_0, dtype="float16");
+  let %x_2 = nn.global_max_pool2d(%x_1);
+  let %x_3 = (%x0, %x1) /* ty=(Tensor[(1, 64, 56, 56), float32], Tensor[(29, 64, 56, 56), float32]) span=from_string:20:21 */;
+  let %x_4 = concatenate(%x_3);
+  let %x_5 = (%x_4, %x2) /* ty=(Tensor[(30, 64, 56, 56), float32], Tensor[(30, 64, 56, 92), float32]) span=from_string:8:20 */;
+  let %x_6 = concatenate(%x_5, axis=3);
+  let %x_7 = annotation.stop_fusion(%x_6);
+  let %x_8 = (%x3,) /* ty=(Tensor[(30, 64, 56, 20), float32],) span=from_string:10:20 */;
+  let %x_9 = concatenate(%x_8, axis=3);
+  let %x_10 = annotation.stop_fusion(%x_9);
+  let %x_11 = (%x_7, %x_10) /* ty=(Tensor[(30, 64, 56, 148), float32], Tensor[(30, 64, 56, 20), float32]) span=from_string:44:21 */;
+  let %x_12 = concatenate(%x_11, axis=3);
+  let %x_13 = cast(%x2, dtype="float16");
+  let %x_14 = cast(%x_13, dtype="float16");
+  let %x_15 = cast(%x_14, dtype="bfloat16");
+  let %x_16 = cast(%x_15, dtype="float32");
+  let %x_17 = cast(%x_16, dtype="float32");
+  let %x_18 = clip(%x_17, a_min=-0.2f, a_max=0.4f);
+  let %x_19 = 0f /* ty=float32 span=from_string:19:16 */;
+  let %x_20 = cast(%x_19, dtype="float16");
+  let %x_21 = cast(%x_20, dtype="float16");
+  let %x_22 = concatenate(%x_3);
+  let %x_23 = annotation.stop_fusion(%x_22);
+  let %x_24 = (%x_23,) /* ty=(Tensor[(30, 64, 56, 56), float32],) span=from_string:23:21 */;
+  let %x_25 = concatenate(%x_24);
+  let %x_26 = ones_like(%x_25);
+  let %x_27 = add(%x_25, %x_26);
+  let %x_28 = nn.global_max_pool2d(%x_27);
+  let %x_29 = cast(%x_28, dtype="float16");
+  let %x_30 = cast(%x4, dtype="float16");
+  let %x_31 = cast(%x_30, dtype="float16");
+  let %x_32 = 2f /* ty=float32 span=from_string:28:16 */;
+  let %x_33 = cast(%x_32, dtype="float16");
+  let %x_34 = cast(%x_33, dtype="float16");
+  let %x_35 = multiply(%x_31, %x_34);
+  let %x_36 = nn.conv2d(%x_29, %x_35, padding=[1, 1, 1, 1], channels=64, kernel_size=[3, 3], out_dtype="float16");
+  let %x_37 = add(%x_21, %x_36);
+  let %x_38 = nn.relu(%x_37);
+  let %x_39 = erf(%x_27);
+  let %x_40 = cast(%x3, dtype="float16");
+  let %x_41 = cast(%x_40, dtype="float16");
+  let %x_42 = 1f /* ty=float32 span=from_string:37:16 */;
+  let %x_43 = cast(%x_42, dtype="float16");
+  let %x_44 = cast(%x_43, dtype="float16");
+  let %x_45 = add(%x_41, %x_44);
+  let %x_46 = cast(%x_45, dtype="float32");
+  let %x_47 = exp(%x_46);
+  let %x_48 = squeeze(%x_47);
+  let %x_49 = 2.71828f /* ty=float32 span=from_string:49:42 */;
+  let %x_50 = (%x_2, %x_12, %x_18, %x_38, %x_39, %x_48, %x_49) /* ty=(Tensor[(1, 64, 1, 1), float16], Tensor[(30, 64, 56, 168), float32], Tensor[(30, 64, 56, 92), float32], Tensor[(30, 64, 1, 1), float16], Tensor[(30, 64, 56, 56), float32], Tensor[(30, 64, 56, 20), float32], float32) span=from_string:3:3 */;
+  %x_50
+}

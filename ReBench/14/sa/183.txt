@@ -11,7 +11,7 @@ def @main(%x0: Tensor[(1, 3, 224, 224), int8] /* ty=Tensor[(1, 3, 224, 224), int
   let %x_8 = layout_transform(%x_7, src_layout="NCHW4c", dst_layout="NCHW");
   let %x_9 = transpose(%x_8, axes=[0, 2, 3, 1]);
   let %x_10 = exp(%x_5);
-  let %x_11 = 2 /* ty=int32 span=from_string:33:15 */;
+  let %x_11 = 2 /* ty=int32 span=from_string:36:15 */;
   let %x_12 = 2f /* ty=float32 span=from_string:10:27 */;
   let %x_13 = 0 /* ty=int32 span=from_string:10:70 */;
   let %x_14 = qnn.quantize(%x_4, %x_12, %x_13, out_dtype="int8");
@@ -27,8 +27,8 @@ def @main(%x0: Tensor[(1, 3, 224, 224), int8] /* ty=Tensor[(1, 3, 224, 224), int
   let %x_24 = qnn.dequantize(%x_21, %x_22, %x_23);
   let %x_25 = split(%x_24, indices_or_sections=2, axis=3);
   let %x_26 = %x_25.0;
-  let %x_27 = 2f /* ty=float32 span=from_string:29:29 */;
-  let %x_28 = 0 /* ty=int32 span=from_string:29:72 */;
+  let %x_27 = 2f /* ty=float32 span=from_string:32:29 */;
+  let %x_28 = 0 /* ty=int32 span=from_string:32:72 */;
   let %x_29 = qnn.quantize(%x_26, %x_27, %x_28, out_dtype="int8");
   let %x_30 = 2f /* ty=float32 span=from_string:17:31 */;
   let %x_31 = 0 /* ty=int32 span=from_string:17:74 */;
@@ -48,8 +48,11 @@ def @main(%x0: Tensor[(1, 3, 224, 224), int8] /* ty=Tensor[(1, 3, 224, 224), int
   let %x_45 = nn.upsampling(%x_44, scale_h=2f, scale_w=2f);
   let %x_46 = (%x_45, %x_17) /* ty=(Tensor[(1, 3, 224, 112), float32], Tensor[(1, 3, 224, 112), float32]) span=from_string:26:21 */;
   let %x_47 = concatenate(%x_46, axis=1);
-  let %x_48 = 1f /* ty=float32 span=from_string:32:20 */;
-  let %x_49 = add(%x_47, %x_48);
-  let %x_50 = (%x_9, %x_10, %x_11, %x_29, %x_40, %x_43, %x_49) /* ty=(Tensor[(1, 3, 224, 112), float32], Tensor[(1, 112, 3, 224), float32], int32, Tensor[(1, 3, 4, 2), int8], Tensor[(1, 3, 224, 224), int32], Tensor[(1, 28, 3, 224, 4), float32], Tensor[(1, 6, 224, 112), float32]) span=from_string:3:3 */;
-  %x_50
+  let %x_48 = annotation.stop_fusion(%x_47);
+  let %x_49 = (%x_48,) /* ty=(Tensor[(1, 6, 224, 112), float32],) span=from_string:29:21 */;
+  let %x_50 = concatenate(%x_49, axis=1);
+  let %x_51 = 1f /* ty=float32 span=from_string:35:20 */;
+  let %x_52 = add(%x_50, %x_51);
+  let %x_53 = (%x_9, %x_10, %x_11, %x_29, %x_40, %x_43, %x_52) /* ty=(Tensor[(1, 3, 224, 112), float32], Tensor[(1, 112, 3, 224), float32], int32, Tensor[(1, 3, 4, 2), int8], Tensor[(1, 3, 224, 224), int32], Tensor[(1, 28, 3, 224, 4), float32], Tensor[(1, 6, 224, 112), float32]) span=from_string:3:3 */;
+  %x_53
 }

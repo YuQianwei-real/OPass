@@ -1,0 +1,90 @@
+#[version = "0.0.5"]
+def @main(%x0: Tensor[(1, 3, 10, 10), int8] /* ty=Tensor[(1, 3, 10, 10), int8] */, %x1: Tensor[(1, 6, 10, 10), float32] /* ty=Tensor[(1, 6, 10, 10), float32] */, %x2: Tensor[(92), int64] /* ty=Tensor[(92), int64] */, %x3: Tensor[(1, 6, 10, 41), float32] /* ty=Tensor[(1, 6, 10, 41), float32] */, %x4: Tensor[(1, 6, 10, 72), float32] /* ty=Tensor[(1, 6, 10, 72), float32] */) -> (int8, Tensor[(1, 6, 10, 10), float32], Tensor[(1, 3, 5, 5), float32], Tensor[(1, 10, 5), int32], int32, float32, Tensor[(92, 10, 5), float32], Tensor[(1, 6, 10, 123), float32], Tensor[(0, 40, 40, 1), float32]) {
+  let %x_0 = 2f /* ty=float32 span=from_string:3:65 */;
+  let %x_1 = 0 /* ty=int32 span=from_string:4:62 */;
+  let %x_2 = qnn.dequantize(%x0, %x_0, %x_1);
+  let %x_3 = nn.depth_to_space(%x_2, block_size=4);
+  let %x_4 = max(%x_3);
+  let %x_5 = 2f /* ty=float32 span=from_string:8:65 */;
+  let %x_6 = 0 /* ty=int32 span=from_string:9:62 */;
+  let %x_7 = qnn.quantize(%x_4, %x_5, %x_6, out_dtype="int8");
+  let %x_8 = nn.max_pool2d(%x_2, pool_size=[2, 2], strides=[2, 2], padding=[0, 0, 0, 0]);
+  let %x_9 = nn.upsampling(%x_8, scale_h=2f, scale_w=2f);
+  let %x_10 = (%x_9, %x_2);
+  let %x_11 = concatenate(%x_10, axis=1);
+  let %x_12 = 1f /* ty=float32 span=from_string:15:67 */;
+  let %x_13 = add(%x_11, %x_12);
+  let %x_16 = meta[relay.Constant][0];
+  let %x_17 = add(%x_8, %x_16);
+  let %x_18 = 2f /* ty=float32 span=from_string:19:67 */;
+  let %x_19 = 0 /* ty=int32 span=from_string:20:64 */;
+  let %x_20 = qnn.dequantize(%x0, %x_18, %x_19);
+  let %x_21 = split(%x_20, indices_or_sections=2, axis=3);
+  let %x_22 = %x_21.0;
+  let %x_23 = 2f /* ty=float32 span=from_string:24:67 */;
+  let %x_24 = 0 /* ty=int32 span=from_string:25:64 */;
+  let %x_25 = qnn.quantize(%x_22, %x_23, %x_24, out_dtype="int8");
+  let %x_26 = 2f /* ty=float32 span=from_string:27:67 */;
+  let %x_27 = 0 /* ty=int32 span=from_string:28:64 */;
+  let %x_28 = qnn.dequantize(%x_25, %x_26, %x_27);
+  let %x_29 = argmin(%x_28, axis=[1]);
+  let %x_30 = 600 /* ty=int32 span=from_string:31:66 */;
+  let %x_31 = 20.0855f /* ty=float32 span=from_string:32:73 */;
+  let %x_32 = squeeze(%x_28);
+  let %x_33 = strided_slice(%x_32, begin=[0, 0, 0], end=[3, 10, 5], strides=[1, 1, 1], axes=None);
+  let %x_34 = take(%x_33, %x2, axis=0);
+  let %x_35 = add(%x_11, %x1);
+  let %x_36 = (%x_35, %x3, %x4);
+  let %x_37 = concatenate(%x_36, axis=3);
+  let %x_38 = layout_transform(%x_3, src_layout="NCHW", dst_layout="NHWC");
+  let %x_39 = layout_transform(%x_38, src_layout="NHWC", dst_layout="CHWN");
+  let %x_40 = nn.relu(%x_39);
+  let %x_41 = (%x_7, %x_13, %x_17, %x_29, %x_30, %x_31, %x_34, %x_37, %x_40);
+  %x_41
+}
+
+#[metadata]
+{
+  "root": 1, 
+  "nodes": [
+    {
+      "type_key": ""
+    }, 
+    {
+      "type_key": "Map", 
+      "keys": [
+        "relay.Constant"
+      ], 
+      "data": [2]
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [3]
+    }, 
+    {
+      "type_key": "relay.Constant", 
+      "attrs": {
+        "_checked_type_": "0", 
+        "data": "0", 
+        "span": "0", 
+        "virtual_device_": "4"
+      }
+    }, 
+    {
+      "type_key": "VirtualDevice", 
+      "attrs": {
+        "device_type_int": "-1", 
+        "memory_scope": "5", 
+        "target": "0", 
+        "virtual_device_id": "-1"
+      }
+    }, 
+    {
+      "type_key": "runtime.String"
+    }
+  ], 
+  "b64ndarrays": [
+    "P6G0lvBAXt0AAAAAAAAAAAEAAAAAAAAAAQAAAAIgAQABAAAAAAAAAAQAAAAAAAAAAAAAAA=="
+  ], 
+  "attrs": {"tvm_version": "0.13.0"}
+}

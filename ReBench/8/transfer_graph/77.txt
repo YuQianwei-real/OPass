@@ -1,30 +1,16 @@
 #[version = "0.0.5"]
-def @main(%x0: Tensor[(1, 16), float32] /* ty=Tensor[(1, 16), float32] span=from_string:11:11 */, %x1: Tensor[(16), float32] /* ty=Tensor[(16), float32] */) -> (Tensor[(1, 16), float16], float32, float32, float32, float32, float32, Tensor[(1, 16), float16], Tensor[(16), float16], Tensor[(2), int32]) {
-  %8 = fn (%p01: Tensor[(1, 16), float32] /* ty=Tensor[(1, 16), float32] span=from_string:4:15 */, Primitive=1) -> Tensor[(1, 16), float16] {
-    %3 = cast(%p01, dtype="float16") /* ty=Tensor[(1, 16), float16] span=from_string:5:15 */;
-    %4 = cast(%3, dtype="float16") /* ty=Tensor[(1, 16), float16] span=from_string:7:18 */;
-    %5 = cast(1f /* ty=float32 span=from_string:6:17 */, dtype="float16") /* ty=float16 span=from_string:8:15 */;
-    %6 = nn.relu(%4) /* ty=Tensor[(1, 16), float16] span=from_string:9:9 */;
-    %7 = cast(%5, dtype="float16") /* ty=float16 span=from_string:9:13 */;
-    add(%6, %7) /* ty=Tensor[(1, 16), float16] span=from_string:4:5 */
-  } /* ty=fn (Tensor[(1, 16), float32]) -> Tensor[(1, 16), float16] span=from_string:11:8 */;
-  %9 = %8(%x0) /* ty=Tensor[(1, 16), float16] span=from_string:26:13 */;
-  %10 = fn (%p0: Tensor[(1, 16), float16] /* ty=Tensor[(1, 16), float16] span=from_string:15:19 */, Primitive=1) -> Tensor[(1, 16), float16] {
-    %0 = cast(2f /* ty=float32 span=from_string:13:17 */, dtype="float16") /* ty=float16 span=from_string:14:15 */;
-    %1 = cast(%0, dtype="float16") /* ty=float16 span=from_string:16:9 */;
-    %2 = add(%p0, %p0) /* ty=Tensor[(1, 16), float16] span=from_string:16:13 */;
-    add(%1, %2) /* ty=Tensor[(1, 16), float16] span=from_string:13:5 */
-  } /* ty=fn (Tensor[(1, 16), float16]) -> Tensor[(1, 16), float16] span=from_string:24:9 */;
-  %11 = fn (Primitive=1) -> Tensor[(1, 16), float16] {
-    ones(shape=[1, 16], dtype="float16") /* ty=Tensor[(1, 16), float16] span=from_string:19:5 */
-  } /* ty=fn () -> Tensor[(1, 16), float16] span=from_string:25:9 */;
-  %12 = fn (%p02: Tensor[(1, 16), float16] /* ty=Tensor[(1, 16), float16] span=from_string:22:13 */, Primitive=1, relay.reshape_only=1) -> Tensor[(16), float16] {
-    reshape(%p02, newshape=[16]) /* ty=Tensor[(16), float16] span=from_string:22:5 */
-  } /* ty=fn (Tensor[(1, 16), float16]) -> Tensor[(16), float16] span=from_string:26:9 */;
-  %13 = %10(%9) /* ty=Tensor[(1, 16), float16] span=from_string:27:4 */;
-  %14 = %11() /* ty=Tensor[(1, 16), float16] span=from_string:27:244 */;
-  %15 = %12(%9) /* ty=Tensor[(16), float16] span=from_string:27:249 */;
-  (%13, 4f /* ty=float32 span=from_string:27:11 */, 7.38906f /* ty=float32 span=from_string:27:61 */, 20.0855f /* ty=float32 span=from_string:27:111 */, 1f /* ty=float32 span=from_string:27:156 */, 6f /* ty=float32 span=from_string:27:201 */, %14, %15, meta[relay.Constant][0] /* ty=Tensor[(2), int32] span=from_string:27:259 */) /* ty=(Tensor[(1, 16), float16], float32, float32, float32, float32, float32, Tensor[(1, 16), float16], Tensor[(16), float16], Tensor[(2), int32]) span=from_string:3:3 */
+def @main(%x0: Tensor[(1, 16), float32] /* ty=Tensor[(1, 16), float32] span=from_string:4:13 */, %x1: Tensor[(16), float32] /* ty=Tensor[(16), float32] */) -> (Tensor[(1, 16), float16], float32, float32, float32, float32, float32, Tensor[(1, 16), float16], Tensor[(16), float16], Tensor[(2), int32]) {
+  %0 = cast(%x0, dtype="float16") /* ty=Tensor[(1, 16), float16] span=from_string:5:13 */;
+  %1 = cast(%0, dtype="float16") /* ty=Tensor[(1, 16), float16] span=from_string:10:16 */;
+  %2 = nn.relu(%1) /* ty=Tensor[(1, 16), float16] span=from_string:12:12 */;
+  %3 = nn.relu(%1) /* ty=Tensor[(1, 16), float16] span=from_string:13:13 */;
+  %4 = add(%2, 1f16 /* ty=float16 */) /* ty=Tensor[(1, 16), float16] span=from_string:15:13 */;
+  %5 = add(%3, 1f16 /* ty=float16 */) /* ty=Tensor[(1, 16), float16] span=from_string:18:17 */;
+  %6 = add(%4, %5) /* ty=Tensor[(1, 16), float16] span=from_string:16:18 */;
+  %7 = add(2f16 /* ty=float16 */, %6) /* ty=Tensor[(1, 16), float16] span=from_string:19:4 */;
+  %8 = ones(shape=[1, 16], dtype="float16") /* ty=Tensor[(1, 16), float16] span=from_string:19:241 */;
+  %9 = reshape(%5, newshape=[16]) /* ty=Tensor[(16), float16] span=from_string:19:246 */;
+  (%7, 4f /* ty=float32 span=from_string:19:11 */, 7.38906f /* ty=float32 span=from_string:19:61 */, 20.0855f /* ty=float32 span=from_string:19:111 */, 1f /* ty=float32 span=from_string:19:155 */, 6f /* ty=float32 span=from_string:19:199 */, %8, %9, meta[relay.Constant][0] /* ty=Tensor[(2), int32] span=from_string:19:256 */) /* ty=(Tensor[(1, 16), float16], float32, float32, float32, float32, float32, Tensor[(1, 16), float16], Tensor[(16), float16], Tensor[(2), int32]) span=from_string:3:3 */
 }
 
 #[metadata]
@@ -69,10 +55,10 @@ def @main(%x0: Tensor[(1, 16), float32] /* ty=Tensor[(1, 16), float32] span=from
     {
       "type_key": "Span", 
       "attrs": {
-        "column": "259", 
-        "end_column": "277", 
-        "end_line": "27", 
-        "line": "27", 
+        "column": "256", 
+        "end_column": "274", 
+        "end_line": "19", 
+        "line": "19", 
         "source_name": "7"
       }
     }, 
